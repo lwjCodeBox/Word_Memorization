@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(CWordMemorizationDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_WM_CREATE()
 	ON_WM_CLOSE()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -105,10 +106,31 @@ int CWordMemorizationDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 void CWordMemorizationDlg::OnClose()
 {
-	mp_Libxl->m_Book->release();
-	delete mp_Libxl;
-
-	CDialogEx::OnClose();
+	int check = MessageBox(L"정말로 종료할거얌??", L"종료 확인 메시지 창", MB_OKCANCEL | MB_ICONEXCLAMATION);
+	
+	if (IDCANCEL == check) 
+		return; // 아니오를 클릭했을 경우 OnClose()를 빠져나옴.
+	else 
+		CDialogEx::OnClose();
 }
 
 
+void CWordMemorizationDlg::OnDestroy()
+{
+	mp_Libxl->m_Book->release();
+	delete mp_Libxl;
+
+	CDialogEx::OnDestroy();
+}
+
+
+BOOL CWordMemorizationDlg::PreTranslateMessage(MSG* pMsg)
+{
+	if (pMsg->message == WM_KEYDOWN) {
+		if (pMsg->wParam == VK_ESCAPE)
+		{
+			return true; // true면 계속해서 메시지 처리를 하지 않음.
+		}
+	}
+	return CDialogEx::PreTranslateMessage(pMsg);
+}

@@ -43,4 +43,6 @@ public:
 	
 	CEdit m_Edit1;	
 	CEdit m_Edit2;
+	afx_msg void OnDestroy();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
