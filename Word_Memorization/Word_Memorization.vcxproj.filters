@@ -33,6 +33,15 @@
     <ClInclude Include="_CExcelLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CTab1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CTab2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CTab3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Word_Memorization.cpp">
@@ -45,6 +54,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="_CExcelLib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CTab1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CTab2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CTab3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

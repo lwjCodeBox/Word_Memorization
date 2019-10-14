@@ -190,6 +190,9 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CTab1.h" />
+    <ClInclude Include="CTab2.h" />
+    <ClInclude Include="CTab3.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -198,6 +201,9 @@
     <ClInclude Include="_CExcelLib.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CTab1.cpp" />
+    <ClCompile Include="CTab2.cpp" />
+    <ClCompile Include="CTab3.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

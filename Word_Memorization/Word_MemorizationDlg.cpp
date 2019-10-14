@@ -28,6 +28,7 @@ void CWordMemorizationDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT1, m_Edit1);
 	DDX_Control(pDX, IDC_EDIT2, m_Edit2);
+	DDX_Control(pDX, IDC_TAB1, m_Tab);
 }
 
 BEGIN_MESSAGE_MAP(CWordMemorizationDlg, CDialogEx)
@@ -36,6 +37,7 @@ BEGIN_MESSAGE_MAP(CWordMemorizationDlg, CDialogEx)
 	ON_WM_CREATE()
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()
+	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB1, &CWordMemorizationDlg::OnTcnSelchangeTab1)
 END_MESSAGE_MAP()
 
 
@@ -54,6 +56,30 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	SetDlgItemText(IDC_EDIT2, mp_Libxl->m_ExcelList[4][1]);
 	SetDlgItemText(IDC_EDIT1, mp_Libxl->m_pSheet1->name());
 	
+	m_Tab.InsertItem(0, L"첫 번째");
+	m_Tab.InsertItem(1, L"두 번째");
+	m_Tab.InsertItem(2, L"세 번째");
+
+	m_Tab.SetCurSel(0);
+
+	CRect rect;
+	m_Tab.GetWindowRect(&rect);
+
+	mp_DlgTab1 = new CTab1;
+	mp_DlgTab1->Create(IDD_DIALOG1, &m_Tab);
+	mp_DlgTab1->MoveWindow(0, 25, rect.Width(), rect.Height());
+	mp_DlgTab1->ShowWindow(SW_SHOW);
+
+	mp_DlgTab2 = new CTab2;
+	mp_DlgTab2->Create(IDD_DIALOG2, &m_Tab);
+	mp_DlgTab2->MoveWindow(0, 25, rect.Width(), rect.Height());
+	mp_DlgTab2->ShowWindow(SW_HIDE);
+
+	mp_DlgTab3 = new CTab3;
+	mp_DlgTab3->Create(IDD_DIALOG3, &m_Tab);
+	mp_DlgTab3->MoveWindow(0, 25, rect.Width(), rect.Height());
+	mp_DlgTab3->ShowWindow(SW_HIDE);
+
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -110,16 +136,18 @@ void CWordMemorizationDlg::OnClose()
 	
 	if (IDCANCEL == check) 
 		return; // 아니오를 클릭했을 경우 OnClose()를 빠져나옴.
-	else 
+	else {
+		mp_Libxl->m_Book->release();
+		delete mp_Libxl;
+
 		CDialogEx::OnClose();
+	}
+		
 }
 
 
 void CWordMemorizationDlg::OnDestroy()
 {
-	mp_Libxl->m_Book->release();
-	delete mp_Libxl;
-
 	CDialogEx::OnDestroy();
 }
 
@@ -133,4 +161,32 @@ BOOL CWordMemorizationDlg::PreTranslateMessage(MSG* pMsg)
 		}
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);
+}
+
+
+void CWordMemorizationDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	int t_sel = m_Tab.GetCurSel();
+
+	switch (t_sel) {
+	case 0:
+		mp_DlgTab1->ShowWindow(SW_SHOW);
+		mp_DlgTab2->ShowWindow(SW_HIDE);
+		mp_DlgTab3->ShowWindow(SW_HIDE);
+		break;
+
+	case 1:
+		mp_DlgTab1->ShowWindow(SW_HIDE);
+		mp_DlgTab2->ShowWindow(SW_SHOW);
+		mp_DlgTab3->ShowWindow(SW_HIDE);
+		break;
+
+	case 2:
+		mp_DlgTab1->ShowWindow(SW_HIDE);
+		mp_DlgTab2->ShowWindow(SW_HIDE);
+		mp_DlgTab3->ShowWindow(SW_SHOW);
+		break;
+	}
+
+	*pResult = 0;
 }
