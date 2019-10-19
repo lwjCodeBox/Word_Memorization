@@ -64,7 +64,7 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 
 	CRect rect;
 	m_Tab.GetWindowRect(&rect);
-
+	    
 	mp_DlgTab1 = new CTab1;
 	mp_DlgTab1->Create(IDD_DIALOG1, &m_Tab);
 	mp_DlgTab1->MoveWindow(0, 25, rect.Width(), rect.Height());
@@ -137,9 +137,26 @@ void CWordMemorizationDlg::OnClose()
 	if (IDCANCEL == check) 
 		return; // 아니오를 클릭했을 경우 OnClose()를 빠져나옴.
 	else {
+		// Libxl 객체 파괴
 		mp_Libxl->m_Book->release();
 		delete mp_Libxl;
+		mp_Libxl = NULL;
 
+		// Tab Control 다이얼로그 객체 파괴
+		mp_DlgTab1->DestroyWindow();
+		delete mp_DlgTab1;
+		mp_DlgTab1 = NULL;
+
+		mp_DlgTab2->DestroyWindow();
+		delete mp_DlgTab2;
+		mp_DlgTab2 = NULL;
+
+		mp_DlgTab3->DestroyWindow();
+		delete mp_DlgTab3;
+		mp_DlgTab3 = NULL;
+
+		
+		
 		CDialogEx::OnClose();
 	}
 		
@@ -179,6 +196,8 @@ void CWordMemorizationDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult)
 		mp_DlgTab1->ShowWindow(SW_HIDE);
 		mp_DlgTab2->ShowWindow(SW_SHOW);
 		mp_DlgTab3->ShowWindow(SW_HIDE);
+
+		mp_DlgTab2->ListInitialize();
 		break;
 
 	case 2:

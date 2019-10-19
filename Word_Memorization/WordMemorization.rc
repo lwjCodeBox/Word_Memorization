@@ -88,11 +88,12 @@ BEGIN
     LTEXT           "Tab 1",IDC_STATIC,285,162,19,8
 END
 
-IDD_DIALOG2 DIALOGEX 0, 0, 311, 177
+IDD_DIALOG2 DIALOGEX 0, 0, 447, 266
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Tab 2",IDC_STATIC,285,155,19,8
+    CONTROL         "",IDC_LIST1,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,433,158
+    LTEXT           "Static",IDC_STATIC,15,188,18,8
 END
 
 IDD_DIALOG3 DIALOGEX 0, 0, 311, 177
@@ -122,9 +123,9 @@ BEGIN
     IDD_DIALOG2, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 304
+        RIGHTMARGIN, 440
         TOPMARGIN, 7
-        BOTTOMMARGIN, 170
+        BOTTOMMARGIN, 259
     END
 
     IDD_DIALOG3, DIALOG
@@ -186,6 +187,36 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_WORD_MEMORIZATION_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 477
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 278
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_WORD_MEMORIZATION_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // Version
 //
 
@@ -220,36 +251,6 @@ BEGIN
     BEGIN
         VALUE "Translation", 0x409, 1200
     END
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO
-BEGIN
-    IDD_WORD_MEMORIZATION_DIALOG, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 477
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 278
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// AFX_DIALOG_LAYOUT
-//
-
-IDD_WORD_MEMORIZATION_DIALOG AFX_DIALOG_LAYOUT
-BEGIN
-    0
 END
 
 #endif    // English (United States) resources

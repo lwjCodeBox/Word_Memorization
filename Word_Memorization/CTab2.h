@@ -20,4 +20,12 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
+public:
+	CListCtrl m_ListControl;
+	CFont m_editFont;
+	
+
+// Function List
+public:
+	void ListInitialize();
 };
