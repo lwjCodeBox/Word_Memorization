@@ -61,3 +61,13 @@ bool _CExcelLib::InitReadExcel(CString(*ap_ExcelList)[2])
 
 	return false;
 }
+
+CString _CExcelLib::getExcelValue(int a_Row, int a_Col)
+{
+	return m_ExcelList[a_Row][a_Col];
+}
+
+CString _CExcelLib::getExclSheetName(int a_Sheet)
+{
+	return m_Book->getSheet(a_Sheet)->name();
+}

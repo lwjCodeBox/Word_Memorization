@@ -3,6 +3,7 @@
 
 // CTab2 dialog
 
+class CWordMemorizationDlg;
 class CTab2 : public CDialogEx
 {
 	DECLARE_DYNAMIC(CTab2)
@@ -24,7 +25,7 @@ public:
 	CListCtrl m_ListControl;
 	CFont m_editFont;
 	
-
+	CWordMemorizationDlg* tp_MainDlg;
 // Function List
 public:
 	void ListInitialize();

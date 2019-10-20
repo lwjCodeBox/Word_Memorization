@@ -10,6 +10,10 @@ class _CExcelLib
 public:
 	_CExcelLib();
 
+	CString getExcelValue(int a_Row, int a_Col);
+	CString getExclSheetName(int a_Sheet);
+
+private:
 	Sheet* getSheetByName(Book* book, const wchar_t* name); // 사용하고 있는 Sheet의 이름을 얻어옴.
 
 	bool ExcelCertified();
@@ -19,6 +23,7 @@ public:
 	Book* m_Book;
 	Sheet* m_pSheet1;
 	
+private:
 	CString m_ExcelList[50][2];   
 }; 
 

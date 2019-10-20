@@ -4,13 +4,14 @@
 
 #pragma once
 
-#include "_CExcelLib.h"
-
 #include "CTab1.h"
 #include "CTab2.h"
 #include "CTab3.h"
 
+#include "_CExcelLib.h"
+
 class _CExcelLib;
+
 // CWordMemorizationDlg dialog
 class CWordMemorizationDlg : public CDialogEx
 {
@@ -19,7 +20,7 @@ public:
 	CTab1* mp_DlgTab1;
 	CTab2* mp_DlgTab2;
 	CTab3* mp_DlgTab3;
-
+	
 	_CExcelLib *mp_Libxl;
 // Construction
 public:

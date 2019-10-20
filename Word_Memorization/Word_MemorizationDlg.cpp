@@ -30,7 +30,6 @@ void CWordMemorizationDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT2, m_Edit2);
 	DDX_Control(pDX, IDC_TAB1, m_Tab);
 }
-
 BEGIN_MESSAGE_MAP(CWordMemorizationDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
@@ -53,8 +52,8 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-	SetDlgItemText(IDC_EDIT2, mp_Libxl->m_ExcelList[4][1]);
-	SetDlgItemText(IDC_EDIT1, mp_Libxl->m_pSheet1->name());
+	SetDlgItemText(IDC_EDIT2, mp_Libxl->getExcelValue(4, 1));
+	SetDlgItemText(IDC_EDIT1, mp_Libxl->getExclSheetName(0)); // 0 is means first Excel Sheet
 	
 	m_Tab.InsertItem(0, L"첫 번째");
 	m_Tab.InsertItem(1, L"두 번째");
@@ -80,6 +79,7 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	mp_DlgTab3->MoveWindow(0, 25, rect.Width(), rect.Height());
 	mp_DlgTab3->ShowWindow(SW_HIDE);
 
+	mp_DlgTab2->ListInitialize();
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -126,6 +126,7 @@ int CWordMemorizationDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	mp_Libxl = new _CExcelLib;
+
 	return 0;
 }
 
@@ -154,8 +155,6 @@ void CWordMemorizationDlg::OnClose()
 		mp_DlgTab3->DestroyWindow();
 		delete mp_DlgTab3;
 		mp_DlgTab3 = NULL;
-
-		
 		
 		CDialogEx::OnClose();
 	}
@@ -196,8 +195,6 @@ void CWordMemorizationDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult)
 		mp_DlgTab1->ShowWindow(SW_HIDE);
 		mp_DlgTab2->ShowWindow(SW_SHOW);
 		mp_DlgTab3->ShowWindow(SW_HIDE);
-
-		mp_DlgTab2->ListInitialize();
 		break;
 
 	case 2:

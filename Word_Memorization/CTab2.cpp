@@ -6,6 +6,7 @@
 #include "CTab2.h"
 #include "afxdialogex.h"
 
+#include "Word_MemorizationDlg.h"
 
 // CTab2 dialog
 
@@ -14,7 +15,7 @@ IMPLEMENT_DYNAMIC(CTab2, CDialogEx)
 CTab2::CTab2(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG2, pParent)
 {
-
+	tp_MainDlg = (CWordMemorizationDlg*)::AfxGetMainWnd();
 }
 
 CTab2::~CTab2()
@@ -36,16 +37,16 @@ void CTab2::ListInitialize()
 	m_ListControl.SetExtendedStyle(LVS_EX_GRIDLINES);
 
 	// 타이틀 삽입 
-	m_ListControl.InsertColumn(0, _T("Category"), LVCFMT_LEFT, 200, -1);
-	m_ListControl.InsertColumn(1, _T("Before"), LVCFMT_RIGHT, 109, -1);
-	m_ListControl.InsertColumn(2, _T("After"), LVCFMT_CENTER, 109, -1);
+	m_ListControl.InsertColumn(0, _T("첫 번째 타이틀"), LVCFMT_LEFT, 200, -1); // 왼쪽 정렬
+	m_ListControl.InsertColumn(1, _T("두 번째 타이틀"), LVCFMT_RIGHT, 109, -1); // 오른쪽 정렬
+	m_ListControl.InsertColumn(2, _T("세 번째 타이틀"), LVCFMT_CENTER, 109, -1); // 가운데 정렬
 
 	// Row 0 
-	m_ListControl.InsertItem(0, _T("Virtual Size"));
-	m_ListControl.InsertItem(1, _T("CheckSum"));
-	m_ListControl.InsertItem(2, _T("Size of Image"));
-	m_ListControl.InsertItem(3, _T("Size of Raw Data"));
-	m_ListControl.InsertItem(4, _T("Size of Initialized Data"));
+	m_ListControl.InsertItem(0, _T("1."));
+	m_ListControl.InsertItem(1, _T("2."));
+	m_ListControl.InsertItem(2, _T("3."));
+	m_ListControl.InsertItem(3, _T("4."));
+	m_ListControl.InsertItem(4, _T("5."));
 
 	int t_Num = m_ListControl.GetItemCount();
 	
@@ -59,6 +60,8 @@ void CTab2::ListInitialize()
 	str.Format(L"%d", t_Num);
 	SetDlgItemText(IDC_STATIC, str);
 
+	m_ListControl.SetItem(0, 1, LVIF_TEXT, tp_MainDlg->mp_Libxl->getExcelValue(2, 1), 0, 0, 0, NULL);
+	
 /* Sample Example Code
 	// 첫번째 인자는 행, 두번째 인자는 열을 의마한다. 
 	m_ListControl.SetItem(0, 1, LVIF_TEXT, _T("0행 1열"), 0, 0, 0, NULL);
