@@ -55,9 +55,9 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	SetDlgItemText(IDC_EDIT2, mp_Libxl->getExcelValue(4, 1));
 	SetDlgItemText(IDC_EDIT1, mp_Libxl->getExclSheetName(0)); // 0 is means first Excel Sheet
 	
-	m_Tab.InsertItem(0, L"Ã¹ ¹øÂ°");
-	m_Tab.InsertItem(1, L"µÎ ¹øÂ°");
-	m_Tab.InsertItem(2, L"¼¼ ¹øÂ°");
+	m_Tab.InsertItem(0, L"ÅÇ 1");
+	m_Tab.InsertItem(1, L"ÅÇ 2");
+	m_Tab.InsertItem(2, L"ÅÇ 3");
 
 	m_Tab.SetCurSel(0);
 

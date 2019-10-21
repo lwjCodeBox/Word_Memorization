@@ -25,7 +25,7 @@ public:
 	CListCtrl m_ListControl;
 	CFont m_editFont;
 	
-	CWordMemorizationDlg* tp_MainDlg;
+	CWordMemorizationDlg* mp_MainDlg;
 // Function List
 public:
 	void ListInitialize();

@@ -15,7 +15,7 @@ IMPLEMENT_DYNAMIC(CTab2, CDialogEx)
 CTab2::CTab2(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG2, pParent)
 {
-	tp_MainDlg = (CWordMemorizationDlg*)::AfxGetMainWnd();
+
 }
 
 CTab2::~CTab2()
@@ -37,9 +37,9 @@ void CTab2::ListInitialize()
 	m_ListControl.SetExtendedStyle(LVS_EX_GRIDLINES);
 
 	// 타이틀 삽입 
-	m_ListControl.InsertColumn(0, _T("첫 번째 타이틀"), LVCFMT_LEFT, 200, -1); // 왼쪽 정렬
-	m_ListControl.InsertColumn(1, _T("두 번째 타이틀"), LVCFMT_RIGHT, 109, -1); // 오른쪽 정렬
-	m_ListControl.InsertColumn(2, _T("세 번째 타이틀"), LVCFMT_CENTER, 109, -1); // 가운데 정렬
+	m_ListControl.InsertColumn(0, _T("단어"), LVCFMT_LEFT, 200, -1); // 왼쪽 정렬
+	m_ListControl.InsertColumn(1, _T("뜻"), LVCFMT_RIGHT, 109, -1); // 오른쪽 정렬
+	m_ListControl.InsertColumn(2, _T("발음 기호"), LVCFMT_CENTER, 109, -1); // 가운데 정렬
 
 	// Row 0 
 	m_ListControl.InsertItem(0, _T("1."));
@@ -60,7 +60,11 @@ void CTab2::ListInitialize()
 	str.Format(L"%d", t_Num);
 	SetDlgItemText(IDC_STATIC, str);
 
-	m_ListControl.SetItem(0, 1, LVIF_TEXT, tp_MainDlg->mp_Libxl->getExcelValue(2, 1), 0, 0, 0, NULL);
+	mp_MainDlg = (CWordMemorizationDlg*)::AfxGetMainWnd();
+	for (int i = 0; i < 10; i++)
+	{
+		m_ListControl.SetItem(i, 1, LVIF_TEXT, mp_MainDlg->mp_Libxl->getExcelValue(i+2, 1), 0, 0, 0, NULL);
+	}
 	
 /* Sample Example Code
 	// 첫번째 인자는 행, 두번째 인자는 열을 의마한다. 
