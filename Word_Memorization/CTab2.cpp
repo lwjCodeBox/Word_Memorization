@@ -65,6 +65,11 @@ void CTab2::ListInitialize()
 	{
 		m_ListControl.SetItem(i, 1, LVIF_TEXT, mp_MainDlg->mp_Libxl->getExcelValue(i+2, 1), 0, 0, 0, NULL);
 	}
+
+	for (int i = 0; i < 10; i++)
+	{
+		m_ListControl.SetItem(i, 2, LVIF_TEXT, mp_MainDlg->mp_Libxl->getExcelValue(i + 2, 2), 0, 0, 0, NULL);
+	}
 	
 /* Sample Example Code
 	// 첫번째 인자는 행, 두번째 인자는 열을 의마한다. 
