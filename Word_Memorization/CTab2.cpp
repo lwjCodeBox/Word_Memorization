@@ -60,7 +60,10 @@ void CTab2::ListInitialize()
 	str.Format(L"%d", t_Num);
 	SetDlgItemText(IDC_STATIC, str);
 
-	mp_MainDlg = (CWordMemorizationDlg*)::AfxGetMainWnd();
+	// AfxGetMainWnd(), fxGetApp()->GetMainWnd() 이 두 방법은 메인 윈도우의 정보를 가져옴.
+	// 아래 있는 코드(주석 안된 코드)가 좀더 안정적으로 사용할 수 있는 듯함. 쓰레드 문제 뭐시기?? 
+	//mp_MainDlg = (CWordMemorizationDlg*)::AfxGetMainWnd();
+	mp_MainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 	for (int i = 0; i < 10; i++)
 	{
 		m_ListControl.SetItem(i, 1, LVIF_TEXT, mp_MainDlg->mp_Libxl->getExcelValue(i+2, 1), 0, 0, 0, NULL);
