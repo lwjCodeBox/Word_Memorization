@@ -36,24 +36,29 @@ bool _CExcelLib::ExcelCertified()
 }
 
 
-bool _CExcelLib::InitReadExcel(CString(*ap_ExcelList)[2])
+bool _CExcelLib::InitReadExcel(CString(*ap_ExcelList)[9])
 {
 	libxl::Format* format = NULL;
 
-	m_pSheet1 = getSheetByName(m_Book, L"Sheet1");
+	m_pSheet1 = getSheetByName(m_Book, L"Sheet2");
 
 	if (m_pSheet1) {
-		int t_row_start = 2; // (행 시작 위치)
-		int t_col_start = 1; // (열 시작 위치)
-		int t_row_end = 5;
-		int t_col_end = 2;
+		int t_col_start = 2; // (행 시작 위치)
+		int t_col_end = 17;
+		int t_row_start = 2; // (열 시작 위치)
+		int t_row_end = 9;
 
-		for (int i = t_row_start; i < t_row_end + 1; i++) {
+		/*for (int i = t_row_start; i < t_row_end + 1; i++) {
 			for (int j = t_col_start; j < t_col_end + 1; j++) {
-				ap_ExcelList[i][j] = m_pSheet1->readStr(i, j, &format);
+				ap_ExcelList[i-2][9-j] = m_pSheet1->readStr(i, j, &format);
+			}
+		}*/
+		for (int i = t_col_start; i < t_col_end + 1; i++) {
+			for (int j = t_row_start; j < t_row_end + 1; j++) {
+				ap_ExcelList[i - 2][9 - j] = m_pSheet1->readStr(i, j, &format);
 			}
 		}
-
+		//m_pSheet1->readStr(t_row_start, t_col_end, &format);
 		//AfxMessageBox(ap_ExcelList[2][1]);
 
 		return true;
