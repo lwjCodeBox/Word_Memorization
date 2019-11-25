@@ -167,5 +167,5 @@ void CTab3::PrintExcelSheet(int a_Col, int a_Row)
 	//dc.TextOutW( 80 + (a_Row * 60), 20 + (37 - strLen) + (a_Col * 150), str);
 	int row = 250 + ((7 - a_Row) * 250 + (strLen + 70));
 	int col = 60 + ((a_Col + 1) * 60) + 20;
-	dc.TextOutW(row, col, str); // 열, 행
+	dc.TextOutW(row, col, str); // 열, 행 
 }
