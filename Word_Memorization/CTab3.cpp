@@ -43,11 +43,11 @@ void CTab3::OnPaint()
 					   // Do not call CDialogEx::OnPaint() for painting messages
 
 	CPen pen;
-	pen.CreatePen(PS_DOT, 3, RGB(0, 0, 128));    // 파란색보다 좀더 찐한 파란색 펜을 생성
+	pen.CreatePen(PS_DOT, 3, RGB(128, 128, 128)); 
 	CPen *p_OldPen = dc.SelectObject(&pen);
 
 	CBrush brush;
-	brush.CreateSolidBrush(RGB(0, 100, 200));     // 파란색 채움색을 생성
+	brush.CreateSolidBrush(RGB(200, 200, 200));     
 	CBrush *p_OldBrush = dc.SelectObject(&brush);
 	
 	// Test code
@@ -81,6 +81,8 @@ void CTab3::OnPaint()
 	// 팬, 브러쉬 객체 삭제
 	pen.DeleteObject();
 	brush.DeleteObject();
+
+	PrintInitializeCell(&dc);
 }
 
 
@@ -90,22 +92,22 @@ void CTab3::OnLButtonDown(UINT nFlags, CPoint point)
 	CClientDC dc(this);
 
 	CPen pen;
-	pen.CreatePen(PS_DOT, 3, RGB(0, 0, 128));    // 파란색보다 좀더 찐한 파란색 펜을 생성
+	pen.CreatePen(PS_DOT, 3, RGB(128, 128, 128));   
 	CPen *p_OldPen = dc.SelectObject(&pen);
 
 	CBrush brush;
-	brush.CreateSolidBrush(RGB(0, 100, 200));     // 파란색 채움색을 생성
+	brush.CreateSolidBrush(RGB(200, 200, 200));    
 	CBrush *p_OldBrush = dc.SelectObject(&brush);
 
 	//CPaintDC dc2(this); // device context for painting
 	CClientDC dc2(this);
 
-	//CPen pen2;
-	//pen2.CreatePen(PS_DOT, 3, RGB(0, 0, 128));    // 파란색보다 좀더 찐한 파란색 펜을 생성
-	//CPen *p_OldPen2 = dc2.SelectObject(&pen2);
+	CPen pen2;
+	pen2.CreatePen(PS_DOT, 3, RGB(128, 128, 128));
+	CPen *p_OldPen2 = dc2.SelectObject(&pen2);
 
 	CBrush brush2;
-	brush2.CreateSolidBrush(RGB(0, 255, 0));     // 라임 채움색을 생성
+	brush2.CreateSolidBrush(RGB(0, 200, 0));     // 라임 채움색을 생성
 	CBrush *p_OldBrush2 = dc2.SelectObject(&brush2);
 
 	// 250의 의미가 사각형의 폭을 말하며 사각형 폭 넓이 만큼 나눔.
@@ -115,44 +117,54 @@ void CTab3::OnLButtonDown(UINT nFlags, CPoint point)
 	int startHeight, endHeight;
 
 	if ((rx > 0 && rx < 9) && (ry > 0 && ry < 17)) { // 0번째 위치 즉, 맨 앞에 있는 사격형에는 클릭을 해도 색 변경이 없음.
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 17; j++) {
-				startWidth = 20 + i * 250; // x좌표 시작점
-				endWidht = startWidth + 250;
-				startHeight = 60 + j * 60;
-				endHeight = startHeight + 60;
-
-				dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
-			}
-		}
+		// 모두다 그리기.
+		//for (int i = 0; i < 9; i++) {
+		//	for (int j = 0; j < 17; j++) {
+		//		startWidth = 20 + i * 250; // x좌표 시작점
+		//		endWidht = startWidth + 250;
+		//		startHeight = 60 + j * 60;
+		//		endHeight = startHeight + 60;
+		//
+		//		dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
+		//	}
+		//}
 		startWidth = 20 + rx * 250; // x좌표 시작점
 		endWidht = startWidth + 250;
 		startHeight = 60 + ry * 60;
 		endHeight = startHeight + 60;
 		
-		dc2.Rectangle(startWidth, startHeight, endWidht, endHeight);
+		unsigned char t_status = m_CellClickStatus[ry-1] >> rx;
+		unsigned char t_BitPos = 8 - rx;
+		if (0 == t_status) {
+			m_CellClickStatus[ry-1] ^= BitSetting(t_BitPos); // ry-1를 하는 이유는 맨위는 고정 셀이라 터치가 안됨 그래서 ry가 1부터 들어옴. 그래서 -1을 해야함.
+			dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
+		}
+		else {
+			m_CellClickStatus[ry - 1] ^= BitSetting(t_BitPos); // ry-1를 하는 이유는 맨위는 고정 셀이라 터치가 안됨 그래서 ry가 1부터 들어옴. 그래서 -1을 해야함.
+			dc2.Rectangle(startWidth, startHeight, endWidht, endHeight);
+		}
+
 
 		// 열에 8-rx을 해야하는 이유는 맨 앞칸은 라인 번호를 출력하는 곳이기 때문에
 		// 실제로 0,0이 되는 위치는 두 번째 칸부터이다. 
-		PrintExcelSheet(ry-1, 8-rx); // 행(a_Col),열(a_Row) 
+		PrintSelectedCell(ry-1, 8-rx); // 행(a_Col),열(a_Row) 
 	}
 	
-
 	dc.SelectObject(p_OldBrush);
 	dc.SelectObject(p_OldPen);
 	pen.DeleteObject();
 	brush.DeleteObject();
 
 	dc2.SelectObject(p_OldBrush2);
-	//dc2.SelectObject(p_OldPen2);
-	//pen2.DeleteObject();
+	dc2.SelectObject(p_OldPen2);
+	pen2.DeleteObject();
 	brush2.DeleteObject();
 	
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 
 
-void CTab3::PrintExcelSheet(int a_Col, int a_Row)
+void CTab3::PrintSelectedCell(int a_Col, int a_Row)
 {
 	CClientDC dc(this);
 	//////////////// 엑셀에서 텍스트 출력 /////////////
@@ -168,4 +180,48 @@ void CTab3::PrintExcelSheet(int a_Col, int a_Row)
 	int row = 250 + ((7 - a_Row) * 250 + (strLen + 70));
 	int col = 60 + ((a_Col + 1) * 60) + 20;
 	dc.TextOutW(row, col, str); // 열, 행 
+}
+
+void CTab3::PrintInitializeCell(CPaintDC *a_DC)
+{
+	CString str;
+	mp_MainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	
+	for (int col = 0; col < 15 + 1; col++) { // 행(col)
+		for (int row = 0; row < 7 + 1; row++) { // 열(row)
+			str.Format(L"%s", mp_MainDlg->mp_Libxl->getExcelValue(col, row)); // 행(col), 열(row) 
+			unsigned char strLen = str.GetLength();
+
+			a_DC->SetBkMode(TRANSPARENT);
+			a_DC->SetTextColor(RGB(0, 0, 0));
+			
+			int t_row = 250 + ((7 - row) * 250 + (strLen + 70));
+			int t_col = 60 + ((col + 1) * 60) + 20;
+			a_DC->TextOutW(t_row, t_col, str); // 열, 행 
+		}
+	}
+}
+
+unsigned char CTab3::BitSetting(unsigned char a_BitPos)
+{
+	switch (a_BitPos)
+	{
+	case 0:
+		return 1;
+	case 1:
+		return 2;
+	case 2:
+		return 4;
+	case 3:
+		return 8;
+	case 4:
+		return 10;
+	case 5:
+		return 20;
+	case 6:
+		return 40;
+	case 7:
+		return 80;
+	}
+	return 0;
 }
