@@ -14,7 +14,15 @@ IMPLEMENT_DYNAMIC(CTab3, CDialogEx)
 
 CTab3::CTab3(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG3, pParent)
-{	
+{
+	//arr[rows][columns]라는 int형 2차원 배열이 있다고 가정하면
+	//for (int i = 0; i < rows; i++) {
+	//	memset(arr[i], 초기화하고자 하는 값, sizeof(int) * colums);
+	//}
+	int row = 15, column = 8;
+	for (int i = 0; i < row; i++) {
+		memset(m_CellClickStatus[i], 0, column * sizeof(unsigned char));
+	}
 }
 
 CTab3::~CTab3()
@@ -133,14 +141,13 @@ void CTab3::OnLButtonDown(UINT nFlags, CPoint point)
 		startHeight = 60 + ry * 60;
 		endHeight = startHeight + 60;
 		
-		unsigned char t_status = m_CellClickStatus[ry-1] >> rx;
-		unsigned char t_BitPos = 8 - rx;
-		if (0 == t_status) {
-			m_CellClickStatus[ry-1] ^= BitSetting(t_BitPos); // ry-1를 하는 이유는 맨위는 고정 셀이라 터치가 안됨 그래서 ry가 1부터 들어옴. 그래서 -1을 해야함.
+		// 클릭을 했었는지 안했었는지 판단.
+		if (1 == m_CellClickStatus[ry - 1][8 - rx]) {
+			m_CellClickStatus[ry - 1][8 - rx] = 0;
 			dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
 		}
 		else {
-			m_CellClickStatus[ry - 1] ^= BitSetting(t_BitPos); // ry-1를 하는 이유는 맨위는 고정 셀이라 터치가 안됨 그래서 ry가 1부터 들어옴. 그래서 -1을 해야함.
+			m_CellClickStatus[ry - 1][8 - rx] = 1;
 			dc2.Rectangle(startWidth, startHeight, endWidht, endHeight);
 		}
 
@@ -200,28 +207,4 @@ void CTab3::PrintInitializeCell(CPaintDC *a_DC)
 			a_DC->TextOutW(t_row, t_col, str); // 열, 행 
 		}
 	}
-}
-
-unsigned char CTab3::BitSetting(unsigned char a_BitPos)
-{
-	switch (a_BitPos)
-	{
-	case 0:
-		return 1;
-	case 1:
-		return 2;
-	case 2:
-		return 4;
-	case 3:
-		return 8;
-	case 4:
-		return 10;
-	case 5:
-		return 20;
-	case 6:
-		return 40;
-	case 7:
-		return 80;
-	}
-	return 0;
 }

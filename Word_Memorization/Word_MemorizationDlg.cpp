@@ -8,6 +8,8 @@
 #include "Word_MemorizationDlg.h"
 #include "afxdialogex.h"
 
+#include "CSharedMemory.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -80,6 +82,9 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	mp_DlgTab3->ShowWindow(SW_HIDE);
 
 	mp_DlgTab2->ListInitialize();
+
+	CSharedMemory SM;
+	SM.Init_SharedMemory();
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

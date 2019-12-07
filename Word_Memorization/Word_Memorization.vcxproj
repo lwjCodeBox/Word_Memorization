@@ -190,6 +190,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CSharedMemory.h" />
     <ClInclude Include="CTab1.h" />
     <ClInclude Include="CTab2.h" />
     <ClInclude Include="CTab3.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="_CExcelLib.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CSharedMemory.cpp" />
     <ClCompile Include="CTab1.cpp" />
     <ClCompile Include="CTab2.cpp" />
     <ClCompile Include="CTab3.cpp" />
