@@ -15,6 +15,8 @@ IMPLEMENT_DYNAMIC(CTab3, CDialogEx)
 CTab3::CTab3(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG3, pParent)
 {
+	mp_MainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+
 	//arr[rows][columns]라는 int형 2차원 배열이 있다고 가정하면
 	//for (int i = 0; i < rows; i++) {
 	//	memset(arr[i], 초기화하고자 하는 값, sizeof(int) * colums);
@@ -67,7 +69,44 @@ void CTab3::OnPaint()
 	//for (int i = 0; i < 9; i++) {
 	//	dc.Rectangle(20 + i * 150, 60, 20 + (i + 1) * 150, 120); // x좌표 시작점, y좌표 시작점, x좌표 끝지점, y좌표 끝지점
 	//}
+	
+/* Sample Code of Builder XE5
+	// Load Protocol Signal Name from Config.xlsx
+	int grid_row = 0;
+	int t_gap_col = 0; // for merge cell
+	int t_gap_row = 0; // Skip... Later...
 
+	for (int i = row_first; i < row_last; i++) {
+		for (int j = col_first; j < col_last; j++) {
+			tempStr = (wchar_t *)sheet->readStr(i, j, &format);
+			p_grid->Cells[j][grid_row + 1] = tempStr;
+
+			bMerge = sheet->getMerge(i, j, &merge_row_first, &merge_row_last, &merge_col_first, &merge_col_last);
+			if (bMerge) { // do not handle cells merged more than 1 BYTE.
+				t_gap_col = merge_col_last - merge_col_first + 1; // +1 is essential
+				p_grid->MergeCells(j, grid_row, t_gap_col, 1);
+				p_grid->MergeCells(j, grid_row + 1, t_gap_col, 1);
+				j += (t_gap_col - 1);
+			}
+		}
+		grid_row += 2;
+	}
+*/
+	bool bMerge = false;
+
+	int row_first = 0; // user define (행 시작 위치)
+	int row_last = 0;
+	int col_first = 0; // user define (열 시작 위치)
+	int col_last = 0; // user define
+
+	int mergeCount = 0;
+	for (int i = 2; i < 10; i++) {
+		bMerge = mp_MainDlg->mp_Libxl->m_pSheet1->getMerge(2, i, &row_first, &row_last, &col_first, &col_last);
+		if (bMerge) {
+			mergeCount++;
+		}
+	}
+	
 	int startWidth, endWidht;
 	int startHeight, endHeight;
 	for (int i = 0; i < 9; i++) {
@@ -91,6 +130,7 @@ void CTab3::OnPaint()
 	brush.DeleteObject();
 
 	PrintInitializeCell(&dc);
+	FixedCellText(&dc);
 }
 
 
@@ -154,7 +194,7 @@ void CTab3::OnLButtonDown(UINT nFlags, CPoint point)
 
 		// 열에 8-rx을 해야하는 이유는 맨 앞칸은 라인 번호를 출력하는 곳이기 때문에
 		// 실제로 0,0이 되는 위치는 두 번째 칸부터이다. 
-		PrintSelectedCell(ry-1, 8-rx); // 행(a_Col),열(a_Row) 
+		PrintSelectedCell(ry-1, 8-rx); // 행(a_Row),열(a_Col) 
 	}
 	
 	dc.SelectObject(p_OldBrush);
@@ -170,13 +210,11 @@ void CTab3::OnLButtonDown(UINT nFlags, CPoint point)
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 
-
 void CTab3::PrintSelectedCell(int a_Col, int a_Row)
 {
 	CClientDC dc(this);
-	//////////////// 엑셀에서 텍스트 출력 /////////////
-	mp_MainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 
+	//////////////// 엑셀에서 텍스트 출력 /////////////
 	CString str;
 	str.Format(L"%s", mp_MainDlg->mp_Libxl->getExcelValue(a_Col, a_Row));
 	unsigned char strLen = str.GetLength();
@@ -186,16 +224,15 @@ void CTab3::PrintSelectedCell(int a_Col, int a_Row)
 	//dc.TextOutW( 80 + (a_Row * 60), 20 + (37 - strLen) + (a_Col * 150), str);
 	int row = 250 + ((7 - a_Row) * 250 + (strLen + 70));
 	int col = 60 + ((a_Col + 1) * 60) + 20;
-	dc.TextOutW(row, col, str); // 열, 행 
+	dc.TextOutW(row, col, str); // 행, 열 
 }
 
 void CTab3::PrintInitializeCell(CPaintDC *a_DC)
 {
 	CString str;
-	mp_MainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 	
-	for (int col = 0; col < 15 + 1; col++) { // 행(col)
-		for (int row = 0; row < 7 + 1; row++) { // 열(row)
+	for (int col = 0; col < 15 + 1; col++) { // 열(col)
+		for (int row = 0; row < 7 + 1; row++) { // 행(row)
 			str.Format(L"%s", mp_MainDlg->mp_Libxl->getExcelValue(col, row)); // 행(col), 열(row) 
 			unsigned char strLen = str.GetLength();
 
@@ -204,7 +241,39 @@ void CTab3::PrintInitializeCell(CPaintDC *a_DC)
 			
 			int t_row = 250 + ((7 - row) * 250 + (strLen + 70));
 			int t_col = 60 + ((col + 1) * 60) + 20;
-			a_DC->TextOutW(t_row, t_col, str); // 열, 행 
+			a_DC->TextOutW(t_row, t_col, str); // 행, 열
 		}
+	}
+}
+
+void CTab3::FixedCellText(CPaintDC *a_DC)
+{
+	CString str;
+
+	// 열(row)
+	for (int row = 0; row < 7 + 1; row++) { 
+		unsigned char strLen = str.GetLength();
+
+		a_DC->SetBkMode(TRANSPARENT);
+		a_DC->SetTextColor(RGB(140, 0, 255));
+			
+		int t_row = 250 + ((7 - row) * 250 + (strLen + 70));
+		int t_col = 80; //60 + ((col + 1) * 60) + 20;
+
+		str.Format(L"Bit %d", row);
+		a_DC->TextOutW(t_row, t_col, str); // 열, 행 
+	}
+	// 행(col)
+	for (int col = 0; col < 15 + 1; col++) { 
+		unsigned char strLen = str.GetLength();
+
+		a_DC->SetBkMode(TRANSPARENT);
+		a_DC->SetTextColor(RGB(140, 0, 255));
+
+		int t_row = strLen + 70 ; //250 + ((7 - row) * 250 + (strLen + 70));
+		int t_col = 60 + ((col + 1) * 60) + 20;
+
+		str.Format(L"Word %d", col);
+		a_DC->TextOutW(t_row, t_col, str); // 열, 행 
 	}
 }

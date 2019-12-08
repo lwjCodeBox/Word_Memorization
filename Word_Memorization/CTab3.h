@@ -19,6 +19,7 @@ private:
 private:
 	void PrintSelectedCell(int a_Col, int a_Row);
 	void PrintInitializeCell(CPaintDC *a_DC);
+	void FixedCellText(CPaintDC *a_DC);
 
 public:
 	CTab3(CWnd* pParent = nullptr);   // standard constructor

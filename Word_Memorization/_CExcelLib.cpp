@@ -43,9 +43,9 @@ bool _CExcelLib::InitReadExcel(CString(*ap_ExcelList)[9])
 	m_pSheet1 = getSheetByName(m_Book, L"Sheet2");
 
 	if (m_pSheet1) {
-		int t_col_start = 2; // (행 시작 위치)
+		int t_col_start = 2; // (열 시작 위치)
 		int t_col_end = 17;
-		int t_row_start = 2; // (열 시작 위치)
+		int t_row_start = 2; // (행 시작 위치)
 		int t_row_end = 9;
 
 		/*for (int i = t_row_start; i < t_row_end + 1; i++) {
