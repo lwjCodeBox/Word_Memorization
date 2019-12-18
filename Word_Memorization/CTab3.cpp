@@ -119,16 +119,6 @@ void CTab3::OnPaint()
 	dc.SelectObject(p_OldBrush);
 	brush.DeleteObject();
 
-	
-
-	int row_first = 0; // user define (행 시작 위치)
-	int row_last = 0;
-	int col_first = 0; // user define (열 시작 위치)
-	int col_last = 0; // user define
-
-	int mergeCount = 0;
-	bool bMerge = false;
-
 	// not fixed row, col
 	brush.CreateSolidBrush(RGB(200, 200, 200));
 	p_OldBrush = dc.SelectObject(&brush);
@@ -136,17 +126,6 @@ void CTab3::OnPaint()
 	// 전체 초기화
 	for (int j = 1; j < 17; j++) {
 		for (int i = 1; i < 9; i++) {
-			//if (i == 9) break; // i가 9까지 가면 비트 표현을 한칸 더 하는데 엑셀에서 읽어오는 위치는 9까지라서 아래 코드에서 +1을 해줌.
-
-			// 병합이 되어 있는지 체크
-			//bMerge = mp_MainDlg->mp_Libxl->m_pSheet1->getMerge(j+1, i+1, &row_first, &row_last, &col_first, &col_last);
-			//if (bMerge) {
-			//	mergeCount++;
-			//}
-			//else {
-			//	mergeCount = 0;
-			//}
-
 			startWidth = 20 + i * 250; // x좌표 시작점
 			endWidht = startWidth + 250;
 			startHeight = 60 + j * 60;
@@ -157,12 +136,17 @@ void CTab3::OnPaint()
 	}
 
 	// 병합된 부분만 다시 그림
+	int row_first = 0; // user define (행 시작 위치)
+	int row_last = 0;
+	int col_first = 0; // user define (열 시작 위치)
+	int col_last = 0; // user define
+
+	int mergeCount = 0;
+	bool bMerge = false;
 	int firstMergeCellPos = 0;
 
-	for (int j = 1; j < 18; j++) {
-		for (int i = 1; i < 10; i++) {
-			if (j == 17) break;
-			if (i == 9) break; 
+	for (int j = 1; j < 17; j++) {
+		for (int i = 1; i < 9+1; i++) { // 어디까지 병합이 되었는지 확인해야 하므로 한 칸더 체크를 해야함. 그래서 한 칸더 체크 하기 위해  +1을 함.
 			bMerge = mp_MainDlg->mp_Libxl->m_pSheet1->getMerge(j + 1, i + 1, &row_first, &row_last, &col_first, &col_last);
 
 			if (bMerge) {
@@ -174,18 +158,18 @@ void CTab3::OnPaint()
 				continue;
 			}
 			else {
-				if (0 == mergeCount) {
+				if (0 == mergeCount) { // 병합이 안돼고 단일 비트 상태 일때.
 					startWidth = 20 + i * 250;
 				}
 				else {
-					endWidht = startWidth + (250 * mergeCount);
+					endWidht = startWidth + (250 * mergeCount); // 원래는 이렇게 생김. >> endWidht = startWidth + 250;
+					startHeight = 60 + j * 60;
+					endHeight = startHeight + 60;
+					
+					dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
 					
 					firstMergeCellPos = 0;
 					mergeCount = 0;
-
-					startHeight = 60 + j * 60;
-					endHeight = startHeight + 60;
-					dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
 				}
 			}
 		}
