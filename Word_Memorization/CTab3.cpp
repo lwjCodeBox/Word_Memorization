@@ -51,13 +51,13 @@ void CTab3::OnPaint()
 	CPaintDC dc(this); // device context for painting
 					   // TODO: Add your message handler code here
 					   // Do not call CDialogEx::OnPaint() for painting messages
-
+	
 	CPen pen;
 	pen.CreatePen(PS_DOT, 3, RGB(128, 128, 128)); 
 	CPen *p_OldPen = dc.SelectObject(&pen);
 
 	CBrush brush;
-	brush.CreateSolidBrush(RGB(200, 200, 200));     
+	brush.CreateSolidBrush(RGB(150, 200, 200));     
 	CBrush *p_OldBrush = dc.SelectObject(&brush);
 	
 	// Test code
@@ -92,24 +92,11 @@ void CTab3::OnPaint()
 		grid_row += 2;
 	}
 */
-	bool bMerge = false;
-
-	int row_first = 0; // user define (행 시작 위치)
-	int row_last = 0;
-	int col_first = 0; // user define (열 시작 위치)
-	int col_last = 0; // user define
-
-	int mergeCount = 0;
-	for (int i = 2; i < 10; i++) {
-		bMerge = mp_MainDlg->mp_Libxl->m_pSheet1->getMerge(2, i, &row_first, &row_last, &col_first, &col_last);
-		if (bMerge) {
-			mergeCount++;
-		}
-	}
 	
+	// fixed row, col
 	int startWidth, endWidht;
 	int startHeight, endHeight;
-	for (int i = 0; i < 9; i++) {
+	for (int i = 0; i < 1; i++) {
 		for (int j = 0; j < 17; j++) {
 			startWidth = 20 + i * 250; // x좌표 시작점
 			endWidht = startWidth + 250;
@@ -119,7 +106,91 @@ void CTab3::OnPaint()
 			dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
 		}
 	}
+	for (int i = 0; i < 9; i++) {
+		for (int j = 0; j < 1; j++) {
+			startWidth = 20 + i * 250; // x좌표 시작점
+			endWidht = startWidth + 250;
+			startHeight = 60 + j * 60;
+			endHeight = startHeight + 60;
+
+			dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
+		}
+	}
+	dc.SelectObject(p_OldBrush);
+	brush.DeleteObject();
+
 	
+
+	int row_first = 0; // user define (행 시작 위치)
+	int row_last = 0;
+	int col_first = 0; // user define (열 시작 위치)
+	int col_last = 0; // user define
+
+	int mergeCount = 0;
+	bool bMerge = false;
+
+	// not fixed row, col
+	brush.CreateSolidBrush(RGB(200, 200, 200));
+	p_OldBrush = dc.SelectObject(&brush);
+
+	// 전체 초기화
+	for (int j = 1; j < 17; j++) {
+		for (int i = 1; i < 9; i++) {
+			//if (i == 9) break; // i가 9까지 가면 비트 표현을 한칸 더 하는데 엑셀에서 읽어오는 위치는 9까지라서 아래 코드에서 +1을 해줌.
+
+			// 병합이 되어 있는지 체크
+			//bMerge = mp_MainDlg->mp_Libxl->m_pSheet1->getMerge(j+1, i+1, &row_first, &row_last, &col_first, &col_last);
+			//if (bMerge) {
+			//	mergeCount++;
+			//}
+			//else {
+			//	mergeCount = 0;
+			//}
+
+			startWidth = 20 + i * 250; // x좌표 시작점
+			endWidht = startWidth + 250;
+			startHeight = 60 + j * 60;
+			endHeight = startHeight + 60;
+
+			dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
+		}
+	}
+
+	// 병합된 부분만 다시 그림
+	int firstMergeCellPos = 0;
+
+	for (int j = 1; j < 18; j++) {
+		for (int i = 1; i < 10; i++) {
+			if (j == 17) break;
+			if (i == 9) break; 
+			bMerge = mp_MainDlg->mp_Libxl->m_pSheet1->getMerge(j + 1, i + 1, &row_first, &row_last, &col_first, &col_last);
+
+			if (bMerge) {
+				if (firstMergeCellPos == 0)
+					startWidth = 20 + i * 250; 
+
+				firstMergeCellPos++;
+				mergeCount++;
+				continue;
+			}
+			else {
+				if (0 == mergeCount) {
+					startWidth = 20 + i * 250;
+				}
+				else {
+					endWidht = startWidth + (250 * mergeCount);
+					
+					firstMergeCellPos = 0;
+					mergeCount = 0;
+
+					startHeight = 60 + j * 60;
+					endHeight = startHeight + 60;
+					dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
+				}
+			}
+		}
+	}
+
 	// 일시적으로 색을 변경했기 때문에 원래의 색상으로 되돌리는 것이 다른 시스템
 	// 또는 프로그램을 위해 바람직하다.
 	dc.SelectObject(p_OldBrush);
