@@ -98,20 +98,20 @@ void CTab3::OnPaint()
 	int startHeight, endHeight;
 	for (int i = 0; i < 1; i++) {
 		for (int j = 0; j < 17; j++) {
-			startWidth = 20 + i * 250; // x좌표 시작점
-			endWidht = startWidth + 250;
-			startHeight = 60 + j * 60;
-			endHeight = startHeight + 60;
+			startWidth = 20 + i * 120; // x좌표 시작점
+			endWidht = startWidth + 120;
+			startHeight = 35 + j * 35;
+			endHeight = startHeight + 35;
 
 			dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
 		}
 	}
 	for (int i = 0; i < 9; i++) {
 		for (int j = 0; j < 1; j++) {
-			startWidth = 20 + i * 250; // x좌표 시작점
-			endWidht = startWidth + 250;
-			startHeight = 60 + j * 60;
-			endHeight = startHeight + 60;
+			startWidth = 20 + i * 120; // x좌표 시작점
+			endWidht = startWidth + 120;
+			startHeight = 35 + j * 35;
+			endHeight = startHeight + 35;
 
 			dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
 		}
@@ -126,10 +126,10 @@ void CTab3::OnPaint()
 	// 전체 초기화
 	for (int j = 1; j < 17; j++) {
 		for (int i = 1; i < 9; i++) {
-			startWidth = 20 + i * 250; // x좌표 시작점
-			endWidht = startWidth + 250;
-			startHeight = 60 + j * 60;
-			endHeight = startHeight + 60;
+			startWidth = 20 + i * 120; // x좌표 시작점
+			endWidht = startWidth + 120;
+			startHeight = 35 + j * 35;
+			endHeight = startHeight + 35;
 
 			dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
 		}
@@ -151,7 +151,7 @@ void CTab3::OnPaint()
 
 			if (bMerge) {
 				if (firstMergeCellPos == 0)
-					startWidth = 20 + i * 250; 
+					startWidth = 20 + i * 120; 
 
 				firstMergeCellPos++;
 				mergeCount++;
@@ -159,12 +159,12 @@ void CTab3::OnPaint()
 			}
 			else {
 				if (0 == mergeCount) { // 병합이 안돼고 단일 비트 상태 일때.
-					startWidth = 20 + i * 250;
+					startWidth = 20 + i * 120;
 				}
 				else {
-					endWidht = startWidth + (250 * mergeCount); // 원래는 이렇게 생김. >> endWidht = startWidth + 250;
-					startHeight = 60 + j * 60;
-					endHeight = startHeight + 60;
+					endWidht = startWidth + (120 * mergeCount); // 원래는 이렇게 생김. >> endWidht = startWidth + 120;
+					startHeight = 35 + j * 35;
+					endHeight = startHeight + 35;
 					
 					dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
 					
@@ -215,7 +215,7 @@ void CTab3::OnLButtonDown(UINT nFlags, CPoint point)
 
 	// 250의 의미가 사각형의 폭을 말하며 사각형 폭 넓이 만큼 나눔.
 	// 60의 의미가 사각형의 높이를 말하며 사각형 높이 만큼 나눔.
-	unsigned int rx = (unsigned int)(point.x - 20) / 250, ry = (unsigned int)(point.y - 60) / 60; 
+	unsigned int rx = (unsigned int)(point.x - 20) / 120, ry = (unsigned int)(point.y - 35) / 35; 
 	int startWidth, endWidht;
 	int startHeight, endHeight;
 
@@ -231,10 +231,10 @@ void CTab3::OnLButtonDown(UINT nFlags, CPoint point)
 		//		dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
 		//	}
 		//}
-		startWidth = 20 + rx * 250; // x좌표 시작점
-		endWidht = startWidth + 250;
-		startHeight = 60 + ry * 60;
-		endHeight = startHeight + 60;
+		startWidth = 20 + rx * 120; // x좌표 시작점
+		endWidht = startWidth + 120;
+		startHeight = 35 + ry * 35;
+		endHeight = startHeight + 35;
 		
 		// 클릭을 했었는지 안했었는지 판단.
 		if (1 == m_CellClickStatus[ry - 1][8 - rx]) {
@@ -276,9 +276,9 @@ void CTab3::PrintSelectedCell(int a_Col, int a_Row)
 
 	dc.SetBkMode(TRANSPARENT);
 	dc.SetTextColor(RGB(0, 0, 0));
-	//dc.TextOutW( 80 + (a_Row * 60), 20 + (37 - strLen) + (a_Col * 150), str);
-	int row = 250 + ((7 - a_Row) * 250 + (strLen + 70));
-	int col = 60 + ((a_Col + 1) * 60) + 20;
+	
+	int row = 120 + ((7 - a_Row) * 120 + (strLen + 60));
+	int col = 25 + ((a_Col + 1) * 35) + 20;
 	dc.TextOutW(row, col, str); // 행, 열 
 }
 
@@ -293,9 +293,9 @@ void CTab3::PrintInitializeCell(CPaintDC *a_DC)
 
 			a_DC->SetBkMode(TRANSPARENT);
 			a_DC->SetTextColor(RGB(0, 0, 0));
-			
-			int t_row = 250 + ((7 - row) * 250 + (strLen + 70));
-			int t_col = 60 + ((col + 1) * 60) + 20;
+			120 + ((7 - row) * 120 + (strLen + 60));
+			int t_row = 120 + ((7 - row) * 120 + (strLen + 60));
+			int t_col = 25 + ((col + 1) * 35) + 20;
 			a_DC->TextOutW(t_row, t_col, str); // 행, 열
 		}
 	}
@@ -312,8 +312,8 @@ void CTab3::FixedCellText(CPaintDC *a_DC)
 		a_DC->SetBkMode(TRANSPARENT);
 		a_DC->SetTextColor(RGB(140, 0, 255));
 			
-		int t_row = 250 + ((7 - row) * 250 + (strLen + 70));
-		int t_col = 80; //60 + ((col + 1) * 60) + 20;
+		int t_row = 120 + ((7 - row) * 120 + (strLen + 60));
+		int t_col = 45; //25 + ((col + 1) * 35) + 20;
 
 		str.Format(L"Bit %d", row);
 		a_DC->TextOutW(t_row, t_col, str); // 열, 행 
@@ -325,8 +325,8 @@ void CTab3::FixedCellText(CPaintDC *a_DC)
 		a_DC->SetBkMode(TRANSPARENT);
 		a_DC->SetTextColor(RGB(140, 0, 255));
 
-		int t_row = strLen + 70 ; //250 + ((7 - row) * 250 + (strLen + 70));
-		int t_col = 60 + ((col + 1) * 60) + 20;
+		int t_row = strLen + 60 ; //120 + ((7 - row) * 120 + (strLen + 60));
+		int t_col = 25 + ((col + 1) * 35) + 20;
 
 		str.Format(L"Word %d", col);
 		a_DC->TextOutW(t_row, t_col, str); // 열, 행 
