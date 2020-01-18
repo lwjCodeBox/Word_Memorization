@@ -149,21 +149,12 @@ void CWordMemorizationDlg::OnClose()
 		mp_Libxl = NULL;
 
 		// Tab Control ´ÙÀÌ¾ó·Î±× °´Ã¼ ÆÄ±«
-		mp_DlgTab1->DestroyWindow();
-		delete mp_DlgTab1;
-		mp_DlgTab1 = NULL;
-
-		mp_DlgTab2->DestroyWindow();
-		delete mp_DlgTab2;
-		mp_DlgTab2 = NULL;
-
-		mp_DlgTab3->DestroyWindow();
-		delete mp_DlgTab3;
-		mp_DlgTab3 = NULL;
+		if (mp_DlgTab1 != NULL)	mp_DlgTab1->DestroyWindow();
+		if (mp_DlgTab2 != NULL)	mp_DlgTab2->DestroyWindow();
+		if (mp_DlgTab3 != NULL) mp_DlgTab3->DestroyWindow();
 		
 		CDialogEx::OnClose();
 	}
-		
 }
 
 
@@ -210,4 +201,19 @@ void CWordMemorizationDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult)
 	}
 
 	*pResult = 0;
+}
+
+
+void CWordMemorizationDlg::PostNcDestroy()
+{
+	delete mp_DlgTab1;
+	mp_DlgTab1 = NULL;
+
+	delete mp_DlgTab2;
+	mp_DlgTab2 = NULL;
+
+	delete mp_DlgTab3;
+	mp_DlgTab3 = NULL;
+
+	CDialogEx::PostNcDestroy();
 }

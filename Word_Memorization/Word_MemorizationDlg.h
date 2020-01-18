@@ -56,4 +56,5 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	CTabCtrl m_Tab;
 	afx_msg void OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);
+	virtual void PostNcDestroy();
 };

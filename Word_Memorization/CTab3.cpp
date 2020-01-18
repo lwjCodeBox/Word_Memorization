@@ -1,6 +1,6 @@
 // CTab3.cpp : implementation file
 //
-// Commit Test
+
 #include "pch.h"
 #include "Word_Memorization.h"
 #include "CTab3.h"
@@ -29,6 +29,7 @@ CTab3::CTab3(CWnd* pParent /*=nullptr*/)
 
 CTab3::~CTab3()
 {
+	
 }
 
 void CTab3::DoDataExchange(CDataExchange* pDX)
@@ -213,11 +214,14 @@ void CTab3::OnLButtonDown(UINT nFlags, CPoint point)
 	brush2.CreateSolidBrush(RGB(0, 200, 0));     // 라임 채움색을 생성
 	CBrush *p_OldBrush2 = dc2.SelectObject(&brush2);
 
-	// 250의 의미가 사각형의 폭을 말하며 사각형 폭 넓이 만큼 나눔.
-	// 60의 의미가 사각형의 높이를 말하며 사각형 높이 만큼 나눔.
+	// 120의 의미가 사각형의 폭을 말하며 사각형 폭 넓이 만큼 나눔.
+	// 35의 의미가 사각형의 높이를 말하며 사각형 높이 만큼 나눔.
 	unsigned int rx = (unsigned int)(point.x - 20) / 120, ry = (unsigned int)(point.y - 35) / 35; 
+
 	int startWidth, endWidht;
 	int startHeight, endHeight;
+
+	unsigned char textPos_rx, textPos_ry;
 
 	if ((rx > 0 && rx < 9) && (ry > 0 && ry < 17)) { // 0번째 위치 즉, 맨 앞에 있는 사격형에는 클릭을 해도 색 변경이 없음.
 		// 모두다 그리기.
@@ -231,36 +235,141 @@ void CTab3::OnLButtonDown(UINT nFlags, CPoint point)
 		//		dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
 		//	}
 		//}
+		
+
 		startWidth = 20 + rx * 120; // x좌표 시작점
 		endWidht = startWidth + 120;
 		startHeight = 35 + ry * 35;
 		endHeight = startHeight + 35;
 		
 		// 클릭을 했었는지 안했었는지 판단.
-		if (1 == m_CellClickStatus[ry - 1][8 - rx]) {
-			m_CellClickStatus[ry - 1][8 - rx] = 0;
-			dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
+		if (1 == m_CellClickStatus[ry - 1][8 - rx]) { // 셀을 회색으로 채움
+			int row_first = 0; // user define (행 시작 위치)
+			int row_last = 0;
+			int col_first = 0; // user define (열 시작 위치)
+			int col_last = 0; // user define
+
+			int mergeCount = 0;
+			bool bMerge = false;
+			int firstMergeCellPos = 0;
+
+			bMerge = mp_MainDlg->mp_Libxl->m_pSheet1->getMerge(ry + 1, rx + 1, &row_first, &row_last, &col_first, &col_last);
+			if (bMerge) {
+				// 이 반복문을 통해 셀이 머지된곳 중 가장 첫번째 위치를 가리키게 함.
+				while (1) {
+					if (!bMerge) {
+						textPos_rx = rx;
+						textPos_ry = ry;
+						break;
+					}
+
+					rx--;
+					bMerge = mp_MainDlg->mp_Libxl->m_pSheet1->getMerge(ry + 1, rx + 1, &row_first, &row_last, &col_first, &col_last);
+				}
+
+				// 병합이 시작된 부분 부터 병합이 끝난 지점까지 반복문을 돌림.
+				for (int i = rx + 1; i < 9 + 1; i++) { // 어디까지 병합이 되었는지 확인해야 하므로 한 칸더 체크를 해야함. 그래서 한 칸더 체크 하기 위해  +1을 함.
+					bMerge = mp_MainDlg->mp_Libxl->m_pSheet1->getMerge(ry + 1, i + 1, &row_first, &row_last, &col_first, &col_last);
+
+					if (bMerge) {
+						if (firstMergeCellPos == 0)
+							startWidth = 20 + i * 120;
+
+						m_CellClickStatus[ry - 1][8 - i] = 0;
+
+						firstMergeCellPos++;
+						mergeCount++;
+					}
+					else {
+						if (bMerge == false) { // 병합이 된부분이 끝났지점 일때 이 조건을 탐.
+							endWidht = startWidth + (120 * mergeCount); // 원래는 이렇게 생김. >> endWidht = startWidth + 120;
+							startHeight = 35 + ry * 35;
+							endHeight = startHeight + 35;
+
+							dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
+							PrintSelectedCell(ry - 1, 8 - (rx + 1)); // 행(a_Row),열(a_Col)
+							break;
+						}
+					}
+				}
+			}
+			else {
+				m_CellClickStatus[ry - 1][8 - rx] = 0;
+				dc.Rectangle(startWidth, startHeight, endWidht, endHeight);
+				PrintSelectedCell(ry - 1, 8 - rx); // 행(a_Row),열(a_Col)
+			}			
 		}
-		else {
-			m_CellClickStatus[ry - 1][8 - rx] = 1;
-			dc2.Rectangle(startWidth, startHeight, endWidht, endHeight);
+		else { // 셀을 초록색으로 채움
+			int row_first = 0; // user define (행 시작 위치)
+			int row_last = 0;
+			int col_first = 0; // user define (열 시작 위치)
+			int col_last = 0; // user define
+
+			int mergeCount = 0;
+			bool bMerge = false;
+			int firstMergeCellPos = 0;
+			
+			bMerge = mp_MainDlg->mp_Libxl->m_pSheet1->getMerge(ry + 1, rx + 1, &row_first, &row_last, &col_first, &col_last);
+			if(bMerge) {
+				// 이 반복문을 통해 셀이 머지된곳 중 가장 첫번째 위치를 가리키게 함.
+				while (1) {
+					if (!bMerge) {
+						break;
+					}
+					
+					rx--; 			
+					bMerge = mp_MainDlg->mp_Libxl->m_pSheet1->getMerge(ry + 1, rx + 1, &row_first, &row_last, &col_first, &col_last);
+				}
+
+				// 병합이 시작된 부분 부터 병합이 끝난 지점까지 반복문을 돌림.
+				for (int i = rx+1; i < 9 + 1; i++) { // 어디까지 병합이 되었는지 확인해야 하므로 한 칸더 체크를 해야함. 그래서 한 칸더 체크 하기 위해  +1을 함.
+					bMerge = mp_MainDlg->mp_Libxl->m_pSheet1->getMerge(ry + 1, i + 1, &row_first, &row_last, &col_first, &col_last);
+
+					if (bMerge) {
+						if (firstMergeCellPos == 0) {
+							startWidth = 20 + i * 120;
+						}
+
+						m_CellClickStatus[ry - 1][8 - i] = 1;
+
+						firstMergeCellPos++;
+						mergeCount++;
+					}
+					else {
+						if (bMerge == false) { // 병합이 된부분이 끝났지점 일때 이 조건을 탐.
+							endWidht = startWidth + (120 * mergeCount); // 원래는 이렇게 생김. >> endWidht = startWidth + 120;
+							startHeight = 35 + ry * 35;
+							endHeight = startHeight + 35;
+
+							dc2.Rectangle(startWidth, startHeight, endWidht, endHeight);
+							PrintSelectedCell(ry - 1, 8 - (rx+1)); // 행(a_Row),열(a_Col)
+							break;
+						}
+					}
+				}
+			}
+			else {
+				m_CellClickStatus[ry - 1][8 - rx] = 1;
+				dc2.Rectangle(startWidth, startHeight, endWidht, endHeight);
+				PrintSelectedCell(ry - 1, 8 - rx); // 행(a_Row),열(a_Col)
+			}
+			
 		}
 
+		dc.SelectObject(p_OldBrush);
+		dc.SelectObject(p_OldPen);
+		pen.DeleteObject();
+		brush.DeleteObject();
+
+		dc2.SelectObject(p_OldBrush2);
+		dc2.SelectObject(p_OldPen2);
+		pen2.DeleteObject();
+		brush2.DeleteObject();
 
 		// 열에 8-rx을 해야하는 이유는 맨 앞칸은 라인 번호를 출력하는 곳이기 때문에
 		// 실제로 0,0이 되는 위치는 두 번째 칸부터이다. 
-		PrintSelectedCell(ry-1, 8-rx); // 행(a_Row),열(a_Col) 
+		//PrintSelectedCell(ry - 1, 8 - rx); // 행(a_Row),열(a_Col) 		
 	}
-	
-	dc.SelectObject(p_OldBrush);
-	dc.SelectObject(p_OldPen);
-	pen.DeleteObject();
-	brush.DeleteObject();
-
-	dc2.SelectObject(p_OldBrush2);
-	dc2.SelectObject(p_OldPen2);
-	pen2.DeleteObject();
-	brush2.DeleteObject();
 	
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
