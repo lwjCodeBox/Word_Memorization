@@ -8,8 +8,6 @@
 #include "Word_MemorizationDlg.h"
 #include "afxdialogex.h"
 
-#include "CSharedMemory.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -83,8 +81,23 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 
 	mp_DlgTab2->ListInitialize();
 
-	CSharedMemory SM;
-	SM.Init_SharedMemory();
+	// Attach to Shared Memory
+	int memSize = sizeof(TSharedMemory) * (mp_Libxl->getTotalNode() + 1); // +1 mean is MyNode.
+	m_sm = new CSharedMemory(memSize);
+	m_sm->Init_SharedMemory();
+	m_sm->Attach();
+
+	m_pData = (TSharedMemory*)m_sm->GetData();
+
+	BYTE t_data_buf[32] = { 0, };
+
+	//memcpy(&(m_pData->data[12][0]), t_data_buf, 32);
+	&m_pData->data[12][0];
+	memset(t_data_buf, 0, 32);
+
+
+	//BYTE t_buffer[SM_DATA_MAX_LENGTH];
+	//memcpy(t_buffer, &(m_pData->data[0][0]), 32);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

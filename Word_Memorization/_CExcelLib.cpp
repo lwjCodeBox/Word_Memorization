@@ -48,18 +48,13 @@ bool _CExcelLib::InitReadExcel(CString(*ap_ExcelList)[9])
 		int t_row_start = 2; // (행 시작 위치)
 		int t_row_end = 9;
 
-		/*for (int i = t_row_start; i < t_row_end + 1; i++) {
-			for (int j = t_col_start; j < t_col_end + 1; j++) {
-				ap_ExcelList[i-2][9-j] = m_pSheet1->readStr(i, j, &format);
-			}
-		}*/
 		for (int i = t_col_start; i < t_col_end + 1; i++) {
 			for (int j = t_row_start; j < t_row_end + 1; j++) {
 				ap_ExcelList[i - 2][9 - j] = m_pSheet1->readStr(i, j, &format);
 			}
 		}
-		//m_pSheet1->readStr(t_row_start, t_col_end, &format);
-		//AfxMessageBox(ap_ExcelList[2][1]);
+		
+		m_TotalNode = (int)m_pSheet1->readNum(2, 15, &format);
 
 		return true;
 	}
@@ -75,4 +70,9 @@ CString _CExcelLib::getExcelValue(int a_Row, int a_Col)
 CString _CExcelLib::getExclSheetName(int a_Sheet)
 {
 	return m_Book->getSheet(a_Sheet)->name();
+}
+
+int _CExcelLib::getTotalNode()
+{
+	return m_TotalNode;
 }

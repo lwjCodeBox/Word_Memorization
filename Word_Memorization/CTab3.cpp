@@ -437,7 +437,7 @@ void CTab3::FixedCellText(CPaintDC *a_DC)
 		int t_row = strLen + 60 ; //120 + ((7 - row) * 120 + (strLen + 60));
 		int t_col = 25 + ((col + 1) * 35) + 20;
 
-		str.Format(L"Word %d", col);
+		str.Format(L"Byte %d", col);
 		a_DC->TextOutW(t_row, t_col, str); // ї­, За 
 	}
 }

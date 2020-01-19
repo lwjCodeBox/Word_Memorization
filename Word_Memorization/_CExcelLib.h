@@ -12,6 +12,7 @@ public:
 
 	CString getExcelValue(int a_Row, int a_Col);
 	CString getExclSheetName(int a_Sheet);
+	int getTotalNode();
 
 private:
 	Sheet* getSheetByName(Book* book, const wchar_t* name); // 사용하고 있는 Sheet의 이름을 얻어옴.
@@ -25,6 +26,7 @@ public:
 	
 private:
 	CString m_ExcelList[18][9];   
+	int m_TotalNode;
 }; 
 
  
