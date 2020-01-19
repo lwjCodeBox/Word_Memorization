@@ -2,7 +2,7 @@
 #include "CSharedMemory.h"
 
 CSharedMemory::CSharedMemory(int a_memSize)
-	: m_nMemSize(a_memSize), m_handle(NULL)
+	: m_Ptr(NULL), m_nMemSize(a_memSize), m_handle(NULL)
 {
 }
 
