@@ -368,7 +368,7 @@ void CTab3::OnLButtonDown(UINT nFlags, CPoint point)
 
 		// 열에 8-rx을 해야하는 이유는 맨 앞칸은 라인 번호를 출력하는 곳이기 때문에
 		// 실제로 0,0이 되는 위치는 두 번째 칸부터이다. 
-		//PrintSelectedCell(ry - 1, 8 - rx); // 행(a_Row),열(a_Col) 		
+		//PrintSelectedCell(ry - 1, 8 - rx); // 행(a_Row),열(a_Col) 	
 	}
 	
 	CDialogEx::OnLButtonDown(nFlags, point);

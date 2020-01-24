@@ -3,7 +3,6 @@
 
 // CTab3 dialog
 
-
 //class _CExcelLib;
 class CWordMemorizationDlg;
 class CTab3 : public CDialogEx
