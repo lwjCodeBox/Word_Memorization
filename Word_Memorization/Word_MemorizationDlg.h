@@ -10,6 +10,8 @@
 
 #include "_CExcelLib.h"
 
+#include "CSharedMemory.h"
+
 class _CExcelLib;
 
 // CWordMemorizationDlg dialog
@@ -22,6 +24,11 @@ public:
 	CTab3* mp_DlgTab3;
 	
 	_CExcelLib *mp_Libxl;
+
+	// Shared Memory
+	CSharedMemory* m_sm; // For Allocating Shared Memory (Realtime Protocol)
+	TSharedMemory* m_pData; // Pointer of Shared Memory (Realtime Protocol)
+
 // Construction
 public:
 	CWordMemorizationDlg(CWnd* pParent = nullptr);	// standard constructor
@@ -56,4 +63,5 @@ public:
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	CTabCtrl m_Tab;
 	afx_msg void OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);
+	virtual void PostNcDestroy();
 };
