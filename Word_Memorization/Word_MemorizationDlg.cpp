@@ -81,6 +81,23 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 
 	mp_DlgTab2->ListInitialize();
 
+	// Attach to Shared Memory
+	int memSize = sizeof(TSharedMemory) * (mp_Libxl->getTotalNode() + 1); // +1 mean is MyNode.
+	m_sm = new CSharedMemory(memSize);
+	m_sm->Init_SharedMemory();
+	m_sm->Attach();
+
+	m_pData = (TSharedMemory*)m_sm->GetData();
+	m_pData->data[0][10] = 0xBB;
+	m_pData->data[0][11] = 0xBB;
+
+	m_pData->data[1][0] = 0xAB;
+	m_pData->data[1][1] = 0xCD;
+
+	m_pData->data[2][0] = 0xDD;
+	m_pData->data[2][1] = 0xDD;
+
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -144,21 +161,12 @@ void CWordMemorizationDlg::OnClose()
 		mp_Libxl = NULL;
 
 		// Tab Control ´ÙÀÌ¾ó·Î±× °´Ã¼ ÆÄ±«
-		mp_DlgTab1->DestroyWindow();
-		delete mp_DlgTab1;
-		mp_DlgTab1 = NULL;
+		if (mp_DlgTab1 != NULL)	mp_DlgTab1->DestroyWindow();
+		if (mp_DlgTab2 != NULL)	mp_DlgTab2->DestroyWindow();
+		if (mp_DlgTab3 != NULL) mp_DlgTab3->DestroyWindow();
 
-		mp_DlgTab2->DestroyWindow();
-		delete mp_DlgTab2;
-		mp_DlgTab2 = NULL;
-
-		mp_DlgTab3->DestroyWindow();
-		delete mp_DlgTab3;
-		mp_DlgTab3 = NULL;
-		
 		CDialogEx::OnClose();
 	}
-		
 }
 
 
@@ -205,4 +213,19 @@ void CWordMemorizationDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult)
 	}
 
 	*pResult = 0;
+}
+
+
+void CWordMemorizationDlg::PostNcDestroy()
+{
+	delete mp_DlgTab1;
+	mp_DlgTab1 = NULL;
+
+	delete mp_DlgTab2;
+	mp_DlgTab2 = NULL;
+
+	delete mp_DlgTab3;
+	mp_DlgTab3 = NULL;
+
+	CDialogEx::PostNcDestroy();
 }
