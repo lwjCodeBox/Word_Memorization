@@ -25,11 +25,21 @@ CTab3::CTab3(CWnd* pParent /*=nullptr*/)
 	for (int i = 0; i < row; i++) {
 		memset(m_CellClickStatus[i], 0, column * sizeof(unsigned char));
 	}
+
+	m_pBtn = NULL;
 }
 
 CTab3::~CTab3()
 {
-	
+	if (m_pBtn != NULL)
+	{
+		for (int i = 0; i < MAX_BTN; i++)
+		{
+			delete m_pBtn[i];
+			m_pBtn[i] = NULL;
+		}
+		delete[] m_pBtn;
+	}
 }
 
 void CTab3::DoDataExchange(CDataExchange* pDX)
@@ -41,6 +51,8 @@ void CTab3::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CTab3, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_SHOWWINDOW()
+	ON_COMMAND_RANGE(BTN_ID_1, BTN_ID_10, CTab3::OnButtonEvent)
 END_MESSAGE_MAP()
 
 
@@ -441,3 +453,40 @@ void CTab3::FixedCellText(CPaintDC *a_DC)
 		a_DC->TextOutW(t_row, t_col, str); // 열, 행 
 	}
 }
+
+void CTab3::OnShowWindow(BOOL bShow, UINT nStatus)
+{
+	CDialogEx::OnShowWindow(bShow, nStatus);
+
+	m_pBtn = new CButton * [MAX_BTN];
+
+	CString caption = _T("");
+	for (int i = 0; i < MAX_BTN; i++)
+	{
+		m_pBtn[i] = new CButton();
+		caption.Format(_T("Car %d"), i);
+		m_pBtn[i]->Create(caption, WS_CHILD | WS_VISIBLE |
+			BS_PUSHBUTTON, CRect(20 + (101*i), 700, 120 + (101 * i), 750), this, BTN_ID_1 + i);
+		// 20 (x좌표 시작지점이 20이고) + 101 (1씩 간격을 둠), 
+		// 700 (y 좌표 시작 지점이 700이고), 
+		// 120 (x좌표 20 지점에서 100만큼 떨어진 위치 즉, 폭이 100인 사각형을 만들겠다는 의미) + 101 (마찬가지로 1씩 간격을 둠), 
+		// 750 (y좌표 700 지점에서 50만큼 떨어진 위치 즉, 높이가 50인 사격형을 만들겠다는 의미)
+	
+
+		
+	}
+	
+	//http://www.tipssoft.com/bulletin/board.php?bo_table=update&wr_id=69&sca=&sfl=wr_subject%7C%7Cwr_content&stx=%B9%F6%C6%B0&sop=and&page=6
+	
+	
+}
+
+
+void CTab3::OnButtonEvent(UINT ID)
+{
+	CString msg = _T("");
+	msg.Format(_T("%d MY BUTTON!"), ID - BTN_ID_1);
+	m_pBtn[0]->SetFont(_T"ww", 1);
+	AfxMessageBox(msg);
+}
+
