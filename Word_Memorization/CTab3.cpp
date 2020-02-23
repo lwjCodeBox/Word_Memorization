@@ -27,6 +27,8 @@ CTab3::CTab3(CWnd* pParent /*=nullptr*/)
 	}
 
 	m_pBtn = NULL;
+
+	m_pEdit = NULL;
 }
 
 CTab3::~CTab3()
@@ -39,6 +41,16 @@ CTab3::~CTab3()
 			m_pBtn[i] = NULL;
 		}
 		delete[] m_pBtn;
+	}
+
+	if (m_pEdit != NULL) 
+	{
+		for (int i = 0; i < MAX_EDIT; i++)
+		{
+			delete m_pEdit[i];
+			m_pEdit[i] = NULL;
+		}
+		delete[] m_pEdit;
 	}
 }
 
@@ -471,14 +483,20 @@ void CTab3::OnShowWindow(BOOL bShow, UINT nStatus)
 		// 700 (y 좌표 시작 지점이 700이고), 
 		// 120 (x좌표 20 지점에서 100만큼 떨어진 위치 즉, 폭이 100인 사각형을 만들겠다는 의미) + 101 (마찬가지로 1씩 간격을 둠), 
 		// 750 (y좌표 700 지점에서 50만큼 떨어진 위치 즉, 높이가 50인 사격형을 만들겠다는 의미)
-	
 
-		
 	}
 	
 	//http://www.tipssoft.com/bulletin/board.php?bo_table=update&wr_id=69&sca=&sfl=wr_subject%7C%7Cwr_content&stx=%B9%F6%C6%B0&sop=and&page=6
 	
-	
+	m_pEdit = new CEdit * [MAX_EDIT];
+
+	m_pEdit[0] = new CEdit();
+	m_pEdit[0]->Create(WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER, CRect(20, 800, 320, 850), this, EDIT_ID_1);
+
+	m_pEdit[1] = new CEdit();
+	m_pEdit[1]->Create(WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER, CRect(350, 800, 650, 850), this, EDIT_ID_2);
+
+	m_pEdit[0]->SetFont(GetFont());
 }
 
 
@@ -486,7 +504,7 @@ void CTab3::OnButtonEvent(UINT ID)
 {
 	CString msg = _T("");
 	msg.Format(_T("%d MY BUTTON!"), ID - BTN_ID_1);
-	m_pBtn[0]->SetFont(_T"ww", 1);
+
 	AfxMessageBox(msg);
 }
 
