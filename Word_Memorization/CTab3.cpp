@@ -8,6 +8,7 @@
 
 #include "Word_MemorizationDlg.h"
 
+
 // CTab3 dialog
 
 IMPLEMENT_DYNAMIC(CTab3, CDialogEx)
@@ -470,8 +471,8 @@ void CTab3::OnShowWindow(BOOL bShow, UINT nStatus)
 {
 	CDialogEx::OnShowWindow(bShow, nStatus);
 
+	// Create Button
 	m_pBtn = new CButton * [MAX_BTN];
-
 	CString caption = _T("");
 	for (int i = 0; i < MAX_BTN; i++)
 	{
@@ -487,23 +488,61 @@ void CTab3::OnShowWindow(BOOL bShow, UINT nStatus)
 	}
 	
 	//http://www.tipssoft.com/bulletin/board.php?bo_table=update&wr_id=69&sca=&sfl=wr_subject%7C%7Cwr_content&stx=%B9%F6%C6%B0&sop=and&page=6
-	
+	m_pBtn[10] = new CButton();
+	caption.Format(_T("Setting"));
+	m_pBtn[10]->Create(caption, WS_CHILD | WS_VISIBLE |
+		BS_PUSHBUTTON, CRect(1000, 800, 1200, 850), this, BTN_SEND);
+
+	// Create Edit
 	m_pEdit = new CEdit * [MAX_EDIT];
+	for (int i = 0; i < MAX_EDIT; i++)
+	{
+		m_pEdit[i] = new CEdit();
+		m_pEdit[i]->Create(WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER, CRect(20 + (i*330), 800, 320 + (i * 330), 850), this, EDIT_ID_1 + 1);
+		m_pEdit[i]->SetFont(GetFont());
+	}
 
-	m_pEdit[0] = new CEdit();
-	m_pEdit[0]->Create(WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER, CRect(20, 800, 320, 850), this, EDIT_ID_1);
-
-	m_pEdit[1] = new CEdit();
-	m_pEdit[1]->Create(WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER, CRect(350, 800, 650, 850), this, EDIT_ID_2);
-
-	m_pEdit[0]->SetFont(GetFont());
 }
 
 
 void CTab3::OnButtonEvent(UINT ID)
 {
 	CString msg = _T("");
-	msg.Format(_T("%d MY BUTTON!"), ID - BTN_ID_1);
+	if (20000 == ID) 
+	{
+		CString getPort, getNode, getInputValue;
+		m_pEdit[0]->GetWindowTextW(getPort);
+		m_pEdit[1]->GetWindowTextW(getNode);
+		m_pEdit[2]->GetWindowTextW(getInputValue);
+		
+		//memcpy(&(m_pData->data[t_mem_row_idx][0]), t_data_buf, MAX_DATA_COUNT_PER_PORT);
+		BYTE pSmValue[SM_DATA_MAX_COUNT] = {9, };
+		memset(pSmValue, 7, SM_DATA_MAX_COUNT);
+		
+		memset(mp_MainDlg->m_pData->data, 0, SM_DATA_MAX_COUNT);
+
+		memset(&(mp_MainDlg->m_pData->data[0][0]), 1, 1);
+		memset(&(mp_MainDlg->m_pData->data[0][15]), 0x15, 1);
+		memset(&(mp_MainDlg->m_pData->data[0][31]), 0x31, 1);
+
+		memset(&(mp_MainDlg->m_pData->data[1][0]), 22, 1);
+		memset(&(mp_MainDlg->m_pData->data[2][0]), 32, 1);
+		
+
+		//for (int i = 0; i < 6; i++)
+		//{
+		//	//memcpy(pSmValue, &(m_pData->data[i][0]), 10);
+		//	memcpy(&(m_pData->data[i][0]), pSmValue, 10);
+		//}
+
+		//memset(m_pData->data, 1, SM_DATA_MAX_COUNT);
+		//memcpy(pSmValue, m_pData->data, sizeof(m_pData->data));
+		//msg.Format(_T("Click Setting button %x", m_pData->data[1][0]));
+	}
+	else 
+	{
+		msg.Format(_T("%d MY BUTTON!"), ID - BTN_ID_1);
+	}
 
 	AfxMessageBox(msg);
 }

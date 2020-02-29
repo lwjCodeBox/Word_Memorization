@@ -4,7 +4,7 @@
 // CTab3 dialog
 
 // ********* Button *********
-#define MAX_BTN 10
+#define MAX_BTN 11
 
 #define BTN_ID_1  10001
 #define BTN_ID_2  10002
@@ -16,12 +16,15 @@
 #define BTN_ID_8  10008
 #define BTN_ID_9  10009
 #define BTN_ID_10 100010
+
+#define BTN_SEND 20000
 // **************************
 
 // ********** Edit **********
-#define MAX_EDIT 2
+#define MAX_EDIT 3
 #define EDIT_ID_1  20001
 #define EDIT_ID_2  20002
+#define EDIT_ID_3  20003
 // **************************
 
 
@@ -41,7 +44,6 @@ private:
 	CButton **m_pBtn; // 버튼 생성
 	CEdit **m_pEdit;// 에디트 생성
 
-	
 private:
 	void PrintSelectedCell(int a_Col, int a_Row);
 	void PrintInitializeCell(CPaintDC *a_DC);

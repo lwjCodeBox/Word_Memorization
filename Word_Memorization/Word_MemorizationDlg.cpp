@@ -88,15 +88,9 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	m_sm->Attach();
 
 	m_pData = (TSharedMemory*)m_sm->GetData();
-	m_pData->data[0][10] = 0xBB;
-	m_pData->data[0][11] = 0xBB;
-
-	m_pData->data[1][0] = 0xAB;
-	m_pData->data[1][1] = 0xCD;
-
-	m_pData->data[2][0] = 0xDD;
-	m_pData->data[2][1] = 0xDD;
-
+	// Test
+	//m_pData->data[0][0] = 0xff;
+	//memset(&(m_pData->data[0][0]), 7, 1);
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
