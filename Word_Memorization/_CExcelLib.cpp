@@ -76,3 +76,75 @@ int _CExcelLib::getTotalNode()
 {
 	return m_TotalNode;
 }
+
+bool _CExcelLib::Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data)
+{
+	libxl::Format *format = NULL;
+
+	m_pSheet2 = getSheetByName(m_Book, L"logical_port_adrs_2");
+
+	if (m_pSheet2) {
+		int t_col_start = 4; // (열 시작 위치)
+		int t_col_end = 123;
+		int t_row_start = 4; // (행 시작 위치)
+		int t_row_end = 9;
+
+		int t_mem_row_idx = 0;
+
+		unsigned short FCODE[5] = {0, 4, 8, 16, 32 };
+
+		int readFcode = 0; 
+
+		for (int i = t_col_start; i < t_col_end + 1; i++)
+		{
+			readFcode = m_pSheet2->readNum(i, 5, &format);
+			if (readFcode != 0)
+			{
+				memset(&(ap_SM_Data->data[t_mem_row_idx][0]), 8, FCODE[readFcode]);
+				t_mem_row_idx++;
+			}
+			else // fcod가 0인 경우
+			{
+				//t_col_end += 1;
+			}
+		}
+		return true;
+	}
+
+	return false;
+}
+
+//bool __fastcall TFormMain::LoadSaveData(Book **p_book) {
+//
+//	libxl::Format *format = NULL;
+//
+//	Sheet *t_sheet = getSheetByName(*p_book, L"Save");
+//	if (!t_sheet) return false;
+//
+//	const int t_row_start = 4;    // USER DEFINE
+//	const int t_col_start = 6;    // USER DEFINE
+//	int t_row_idx = t_row_start;
+//	int t_col_idx = t_col_start;
+//	int t_mem_row_idx = 0;
+//
+//	int t_limit = PORT_COUNT_PER_NODE * (m_NodeCnt + 1);
+//
+//	BYTE t_data_buf[MAX_DATA_COUNT_PER_PORT] = { 0, };
+//	for (int i = 0; i < t_limit; i++) {
+//
+//		if (!m_signal[i].Enabled) {
+//			t_row_idx++;
+//			continue;
+//		}
+//
+//		for (int j = 0; j < MAX_DATA_COUNT_PER_PORT; j++) {
+//			t_data_buf[j] = getCellValueI(t_sheet, t_row_idx, t_col_idx);
+//			t_col_idx++;
+//		}
+//		memcpy(&(m_pData->data[t_mem_row_idx][0]), t_data_buf, MAX_DATA_COUNT_PER_PORT);
+//		memset(t_data_buf, 0, MAX_DATA_COUNT_PER_PORT);
+//		t_col_idx = t_col_start;
+//		t_row_idx++;
+//		t_mem_row_idx++; // The Final Count of Used Port.
+//	}
+//}

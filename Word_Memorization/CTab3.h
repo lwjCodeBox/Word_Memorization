@@ -27,6 +27,9 @@
 #define EDIT_ID_3  20003
 // **************************
 
+// ********* Timer **********
+#define USER_TIMER_0 30000
+// **************************
 
 
 //class _CExcelLib;
@@ -43,6 +46,8 @@ private:
 
 	CButton **m_pBtn; // 버튼 생성
 	CEdit **m_pEdit;// 에디트 생성
+
+	unsigned short m_HeartBit;
 
 private:
 	void PrintSelectedCell(int a_Col, int a_Row);
@@ -68,4 +73,5 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 	void OnButtonEvent(UINT ID);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

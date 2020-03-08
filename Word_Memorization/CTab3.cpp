@@ -34,6 +34,7 @@ CTab3::CTab3(CWnd* pParent /*=nullptr*/)
 
 CTab3::~CTab3()
 {
+	// Button
 	if (m_pBtn != NULL)
 	{
 		for (int i = 0; i < MAX_BTN; i++)
@@ -44,6 +45,7 @@ CTab3::~CTab3()
 		delete[] m_pBtn;
 	}
 
+	// Edit
 	if (m_pEdit != NULL) 
 	{
 		for (int i = 0; i < MAX_EDIT; i++)
@@ -53,6 +55,9 @@ CTab3::~CTab3()
 		}
 		delete[] m_pEdit;
 	}
+
+	// Timer
+	KillTimer(USER_TIMER_0);
 }
 
 void CTab3::DoDataExchange(CDataExchange* pDX)
@@ -66,6 +71,7 @@ BEGIN_MESSAGE_MAP(CTab3, CDialogEx)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_SHOWWINDOW()
 	ON_COMMAND_RANGE(BTN_ID_1, BTN_ID_10, CTab3::OnButtonEvent)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -510,34 +516,23 @@ void CTab3::OnButtonEvent(UINT ID)
 	CString msg = _T("");
 	if (20000 == ID) 
 	{
+		// Set Directly
 		CString getPort, getNode, getInputValue;
 		m_pEdit[0]->GetWindowTextW(getPort);
 		m_pEdit[1]->GetWindowTextW(getNode);
 		m_pEdit[2]->GetWindowTextW(getInputValue);
+
+		int smArrPos1 = _ttoi(getPort);
+		int smArrPos2 = _ttoi(getNode);
+		int smArrPos3 = _ttoi(getInputValue);
+
+		//memset(mp_MainDlg->m_pData->data, 6, SM_DATA_MAX_COUNT*5);
+
+		memset(&(mp_MainDlg->m_pData->data[smArrPos1][smArrPos2]), smArrPos3, 1);
 		
-		//memcpy(&(m_pData->data[t_mem_row_idx][0]), t_data_buf, MAX_DATA_COUNT_PER_PORT);
-		BYTE pSmValue[SM_DATA_MAX_COUNT] = {9, };
-		memset(pSmValue, 7, SM_DATA_MAX_COUNT);
-		
-		memset(mp_MainDlg->m_pData->data, 0, SM_DATA_MAX_COUNT);
+		SetTimer(USER_TIMER_0, 300, NULL);
 
-		memset(&(mp_MainDlg->m_pData->data[0][0]), 1, 1);
-		memset(&(mp_MainDlg->m_pData->data[0][15]), 0x15, 1);
-		memset(&(mp_MainDlg->m_pData->data[0][31]), 0x31, 1);
-
-		memset(&(mp_MainDlg->m_pData->data[1][0]), 22, 1);
-		memset(&(mp_MainDlg->m_pData->data[2][0]), 32, 1);
-		
-
-		//for (int i = 0; i < 6; i++)
-		//{
-		//	//memcpy(pSmValue, &(m_pData->data[i][0]), 10);
-		//	memcpy(&(m_pData->data[i][0]), pSmValue, 10);
-		//}
-
-		//memset(m_pData->data, 1, SM_DATA_MAX_COUNT);
-		//memcpy(pSmValue, m_pData->data, sizeof(m_pData->data));
-		//msg.Format(_T("Click Setting button %x", m_pData->data[1][0]));
+		msg.Format(_T("%04x, %d"), mp_MainDlg->m_pData->data[smArrPos1][smArrPos2], smArrPos3);
 	}
 	else 
 	{
@@ -547,3 +542,24 @@ void CTab3::OnButtonEvent(UINT ID)
 	AfxMessageBox(msg);
 }
 
+
+
+void CTab3::OnTimer(UINT_PTR nIDEvent)
+{
+	switch (nIDEvent)
+	{
+	case USER_TIMER_0:
+		if (m_HeartBit != 0xFFFF) {
+			m_HeartBit = m_HeartBit + 1;        
+			memset(&(mp_MainDlg->m_pData->data[12/*smArrPos1*/][0]), m_HeartBit, 2);
+		}
+		else m_HeartBit = 0; 
+		break;
+
+	
+	default:
+		break;
+	}
+
+	CDialogEx::OnTimer(nIDEvent);
+}

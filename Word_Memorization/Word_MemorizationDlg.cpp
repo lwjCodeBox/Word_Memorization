@@ -82,12 +82,14 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	mp_DlgTab2->ListInitialize();
 
 	// Attach to Shared Memory
-	int memSize = sizeof(TSharedMemory) * (mp_Libxl->getTotalNode() + 1); // +1 mean is MyNode.
+	int memSize = sizeof(TSharedMemory) * (mp_Libxl->getTotalNode() + 1); // +1 mean is MyNode. // Original code
 	m_sm = new CSharedMemory(memSize);
 	m_sm->Init_SharedMemory();
 	m_sm->Attach();
 
 	m_pData = (TSharedMemory*)m_sm->GetData();
+	
+	mp_Libxl->Load_logical_Port_Adrs(m_pData);
 	// Test
 	//m_pData->data[0][0] = 0xff;
 	//memset(&(m_pData->data[0][0]), 7, 1);
