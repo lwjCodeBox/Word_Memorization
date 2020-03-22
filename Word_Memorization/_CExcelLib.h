@@ -16,6 +16,7 @@ public:
 	CString getExclSheetName(int a_Sheet);
 	int getTotalNode();
 	bool Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data);
+	void MVB_Init(TSharedMemory *ap_SM_Data);
 
 private:
 	Sheet* getSheetByName(Book* book, const wchar_t* name); // 사용하고 있는 Sheet의 이름을 얻어옴.

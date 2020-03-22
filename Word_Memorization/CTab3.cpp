@@ -530,9 +530,10 @@ void CTab3::OnButtonEvent(UINT ID)
 
 		memset(&(mp_MainDlg->m_pData->data[smArrPos1][smArrPos2]), smArrPos3, 1);
 		
+		m_HeartBit = 0;
 		SetTimer(USER_TIMER_0, 300, NULL);
 
-		msg.Format(_T("%04x, %d"), mp_MainDlg->m_pData->data[smArrPos1][smArrPos2], smArrPos3);
+		//msg.Format(_T("%04x, %d"), mp_MainDlg->m_pData->data[smArrPos1][smArrPos2], smArrPos3);
 	}
 	else 
 	{
@@ -550,8 +551,10 @@ void CTab3::OnTimer(UINT_PTR nIDEvent)
 	{
 	case USER_TIMER_0:
 		if (m_HeartBit != 0xFFFF) {
-			m_HeartBit = m_HeartBit + 1;        
-			memset(&(mp_MainDlg->m_pData->data[12/*smArrPos1*/][0]), m_HeartBit, 2);
+			m_HeartBit++;
+			//memset(&(mp_MainDlg->m_pData->data[31/*smArrPos1*/][0]), m_HeartBit, 2);
+			memset(&(mp_MainDlg->m_pData->data[141/*smArrPos1*/][0]), m_HeartBit, 2);
+			memset(&(mp_MainDlg->m_pData->data[142/*smArrPos1*/][0]), m_HeartBit, 2);
 		}
 		else m_HeartBit = 0; 
 		break;
