@@ -3,6 +3,8 @@
 
 // CTab1 dialog
 
+
+
 class CTab1 : public CDialogEx
 {
 	DECLARE_DYNAMIC(CTab1)
@@ -20,4 +22,6 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
+	
+public:
 };

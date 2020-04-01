@@ -36,25 +36,25 @@ bool _CExcelLib::ExcelCertified()
 }
 
 
-bool _CExcelLib::InitReadExcel(CString(*ap_ExcelList)[2])
+bool _CExcelLib::InitReadExcel(CString(*ap_ExcelList)[9])
 {
 	libxl::Format* format = NULL;
 
-	m_pSheet1 = getSheetByName(m_Book, L"Sheet1");
+	m_pSheet1 = getSheetByName(m_Book, L"Sheet2");
 
 	if (m_pSheet1) {
+		int t_col_start = 2; // (열 시작 위치)
+		int t_col_end = 17;
 		int t_row_start = 2; // (행 시작 위치)
-		int t_col_start = 1; // (열 시작 위치)
-		int t_row_end = 5;
-		int t_col_end = 2;
+		int t_row_end = 9;
 
-		for (int i = t_row_start; i < t_row_end + 1; i++) {
-			for (int j = t_col_start; j < t_col_end + 1; j++) {
-				ap_ExcelList[i][j] = m_pSheet1->readStr(i, j, &format);
+		for (int i = t_col_start; i < t_col_end + 1; i++) {
+			for (int j = t_row_start; j < t_row_end + 1; j++) {
+				ap_ExcelList[i - 2][9 - j] = m_pSheet1->readStr(i, j, &format);
 			}
 		}
-
-		//AfxMessageBox(ap_ExcelList[2][1]);
+		
+		m_TotalNode = (int)m_pSheet1->readNum(2, 15, &format);
 
 		return true;
 	}
@@ -71,3 +71,52 @@ CString _CExcelLib::getExclSheetName(int a_Sheet)
 {
 	return m_Book->getSheet(a_Sheet)->name();
 }
+
+int _CExcelLib::getTotalNode()
+{
+	return m_TotalNode;
+}
+
+bool _CExcelLib::Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data)
+{
+	libxl::Format *format = NULL;
+
+	m_pSheet2 = getSheetByName(m_Book, L"logical_port_adrs_2");
+
+	if (m_pSheet2) {
+		int t_col_start = 4; // (열 시작 위치)
+		int t_col_end = 123;
+		int t_row_start = 4; // (행 시작 위치)
+		int t_row_end = 9;
+
+		int t_mem_row_idx = 0;
+
+		unsigned short FCODE[5] = {0, 4, 8, 16, 32 };
+
+		 int readFcode = 0;
+
+		/*unsigned char buf[10][10];
+		unsigned char arr[5] = { 1,2,3,4,5 };
+
+		for (int node = 1; node < 6; node++) // 1 is myNode 
+		{		
+			for (int i = t_col_start; i < t_col_end + 1; i++)
+			{
+				readFcode = m_pSheet2->readNum(i, 5, &format);
+				if (readFcode != 0)
+				{
+					memset(&(ap_SM_Data->data[t_mem_row_idx][0]), 1, FCODE[readFcode]);
+					t_mem_row_idx++;
+				}
+			}
+		}
+		
+		memcpy(buf, arr, 5);
+		memset(buf, 9, sizeof(buf));*/
+
+		return true;
+	}
+
+	return false;
+}
+
