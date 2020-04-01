@@ -93,120 +93,58 @@ bool _CExcelLib::Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data)
 
 		unsigned short FCODE[5] = {0, 4, 8, 16, 32 };
 
-		//int readFcode = 0; 
+		int readFcode = 0; 
 
-		//byte t_data_buf[500] = { 7, };
-
-		//for (int node = 2; node < 6; node++) // 1 is myNode 
-		//{		
-		//	for (int i = t_col_start; i < t_col_end + 1; i++)
-		//	{
-		//		readFcode = m_pSheet2->readNum(i, 5, &format);
-		//		if (readFcode != 0)
-		//		{
-		//			//memcpy(&(ap_SM_Data->data[t_mem_row_idx][0]), t_data_buf, FCODE[readFcode]);
-		//			//memset(t_data_buf, 7, 500
-		//			memset(&(ap_SM_Data->data[t_mem_row_idx][0]), 7, FCODE[readFcode]);
-		//			t_mem_row_idx++;
-		//		}
-		//		else // fcod가 0인 경우
-		//		{
-		//			//t_col_end += 1;
-		//		}
-		//	}
-		//}
-
-		/*unsigned char buf[10][10];
-		unsigned char arr[5] = { 1,2,3,4,5 };
-
-		
-		memcpy(buf, arr, 5);
-		memset(buf, 9, sizeof(buf));*/
+		for (int i = t_col_start; i < t_col_end + 1; i++)
+		{
+			readFcode = m_pSheet2->readNum(i, 5, &format);
+			if (readFcode != 0)
+			{
+				memset(&(ap_SM_Data->data[t_mem_row_idx][0]), 8, FCODE[readFcode]);
+				t_mem_row_idx++;
+			}
+			else // fcod가 0인 경우
+			{
+				//t_col_end += 1;
+			}
+		}
 		return true;
 	}
 
 	return false;
 }
 
-
-//bool __fastcall tformmain::loadsavedata(book **p_book) {
+//bool __fastcall TFormMain::LoadSaveData(Book **p_book) {
 //
-//	libxl::format *format = null;
+//	libxl::Format *format = NULL;
 //
-//	sheet *t_sheet = getsheetbyname(*p_book, l"save");
+//	Sheet *t_sheet = getSheetByName(*p_book, L"Save");
 //	if (!t_sheet) return false;
 //
-//	const int t_row_start = 4;    // user define
-//	const int t_col_start = 6;    // user define
+//	const int t_row_start = 4;    // USER DEFINE
+//	const int t_col_start = 6;    // USER DEFINE
 //	int t_row_idx = t_row_start;
 //	int t_col_idx = t_col_start;
 //	int t_mem_row_idx = 0;
 //
-//	int t_limit = port_count_per_node * (m_nodecnt + 1);
+//	int t_limit = PORT_COUNT_PER_NODE * (m_NodeCnt + 1);
 //
-//	byte t_data_buf[max_data_count_per_port] = { 0, };
+//	BYTE t_data_buf[MAX_DATA_COUNT_PER_PORT] = { 0, };
 //	for (int i = 0; i < t_limit; i++) {
 //
-//		if (!m_signal[i].enabled) {
+//		if (!m_signal[i].Enabled) {
 //			t_row_idx++;
 //			continue;
 //		}
 //
-//		for (int j = 0; j < max_data_count_per_port; j++) {
-//			t_data_buf[j] = getcellvaluei(t_sheet, t_row_idx, t_col_idx);
+//		for (int j = 0; j < MAX_DATA_COUNT_PER_PORT; j++) {
+//			t_data_buf[j] = getCellValueI(t_sheet, t_row_idx, t_col_idx);
 //			t_col_idx++;
 //		}
-//		memcpy(&(m_pdata->data[t_mem_row_idx][0]), t_data_buf, max_data_count_per_port);
-//		memset(t_data_buf, 0, max_data_count_per_port);
+//		memcpy(&(m_pData->data[t_mem_row_idx][0]), t_data_buf, MAX_DATA_COUNT_PER_PORT);
+//		memset(t_data_buf, 0, MAX_DATA_COUNT_PER_PORT);
 //		t_col_idx = t_col_start;
 //		t_row_idx++;
-//		t_mem_row_idx++; // the final count of used port.
+//		t_mem_row_idx++; // The Final Count of Used Port.
 //	}
-//}
-
-//void _CExcelLib::MVB_Init(TSharedMemory *ap_SM_Data)
-//{
-//	PWORD pdwLinAdr;
-//	HANDLE hPhysicalMemory;
-//
-//	unsigned short FCODE[4] = { 4, 8, 16, 32 };
-//	unsigned short fCode;
-//	unsigned short portAdrs;
-//	unsigned short sTmpAdrs, sTmpNode;
-//	BYTE t_byte[32];
-//
-//	for (int realCnt = 0; realCnt < MvbCfg.RealPcsCnt; realCnt++) {
-//		fCode = ((MvbCfg.Pcs[realCnt].PortCfg[0] >> 12) & 0x000F);
-//		portAdrs = MvbCfg.Pcs[realCnt].PortCfg[1];
-//
-//		//pdwLinAdr = (PWORD)MapPhysToLin((PBYTE)(ADDR_MVB_DPRAM + 0x0000+(portAdrs*8)), 4, &hPhysicalMemory);
-//		//pdwLinAdr = (PWORD)g_sm_pData->data[realCnt];
-//
-//		for (int i = 0; i < FCODE[fCode - 1]; ) {
-//			t_byte[i] = ap_SM_Data->data[realCnt][i + 1];
-//			t_byte[i + 1] = ap_SM_Data->data[realCnt][i];
-//			i += 2;
-//		}
-//
-//		//        if(IntToStr(pdwLinAdr) == "1"){
-//		if (portAdrs > 0x1FF) { /* Node Memory mapping */
-//			sTmpNode = (portAdrs / 0x200) - 1;
-//			sTmpAdrs = (portAdrs % ((portAdrs / 0x200) * 0x200));
-//			//                memcpy( &vglo_lcData.allNode[sTmpNode].port[sTmpAdrs],  pdwLinAdr, FCODE[fCode-1]);
-//			memcpy(&vglo_lcData.allNode[sTmpNode].Port[sTmpAdrs], t_byte, FCODE[fCode - 1]);
-//		}
-//		else { /* My Node */
-////                memcpy( &vglo_lcData.myNode.port[portAdrs], pdwLinAdr, FCODE[fCode-1]);
-//			memcpy(&vglo_lcData.myNode.Port[portAdrs], t_byte, FCODE[fCode - 1]);
-//		}
-//
-//		//UnmapPhysicalMemory(hPhysicalMemory, (PBYTE)pdwLinAdr);
-////        }
-////        else{
-////            UnmapPhysicalMemory(hPhysicalMemory, (PBYTE)pdwLinAdr);
-//
-////            continue;
-////        }
-//	}
-//
 //}
