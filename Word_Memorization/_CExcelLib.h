@@ -15,8 +15,7 @@ public:
 	CString getExcelValue(int a_Row, int a_Col);
 	CString getExclSheetName(int a_Sheet);
 	int getTotalNode();
-	bool Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data);
-	void MVB_Init(TSharedMemory *ap_SM_Data);
+	bool Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data); // MVB 전체 초기화
 
 private:
 	Sheet* getSheetByName(Book* book, const wchar_t* name); // 사용하고 있는 Sheet의 이름을 얻어옴.

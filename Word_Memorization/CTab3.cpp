@@ -526,9 +526,7 @@ void CTab3::OnButtonEvent(UINT ID)
 		int smArrPos2 = _ttoi(getNode);
 		int smArrPos3 = _ttoi(getInputValue);
 
-		//memset(mp_MainDlg->m_pData->data, 6, SM_DATA_MAX_COUNT*5);
-
-		memset(&(mp_MainDlg->m_pData->data[smArrPos1][smArrPos2]), smArrPos3, 1);
+		//memset(&(mp_MainDlg->m_pData->data[smArrPos1][smArrPos2]), smArrPos3, 1);
 
 		memset(&(mp_MainDlg->m_pData->data[80][smArrPos2]), smArrPos3, 1);
 		
@@ -565,12 +563,14 @@ void CTab3::OnTimer(UINT_PTR nIDEvent)
 			memset(&(mp_MainDlg->m_pData->data[0/*smArrPos1*/][0]), m_HeartBit, 2);
 			memset(&(mp_MainDlg->m_pData->data[6/*smArrPos1*/][0]), m_HeartBit, 2);
 
-			memset(&(mp_MainDlg->m_pData->data[100/*smArrPos1*/][0]), m_HeartBit, 2);
-			memset(&(mp_MainDlg->m_pData->data[106/*smArrPos1*/][0]), m_HeartBit, 2);
+			memset(&(mp_MainDlg->m_pData->data[100][0]), m_HeartBit, 2);
+			memset(&(mp_MainDlg->m_pData->data[106][0]), m_HeartBit, 2);
+
+			// DU_Default1
+			memset(&(mp_MainDlg->m_pData->data[80][0]), m_HeartBit, 2);
 		}
 		else m_HeartBit = 0; 
 		break;
-
 	
 	default:
 		break;

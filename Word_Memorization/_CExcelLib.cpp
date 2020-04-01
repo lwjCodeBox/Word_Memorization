@@ -95,7 +95,7 @@ bool _CExcelLib::Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data)
 
 		 int readFcode = 0;
 
-		/*unsigned char buf[10][10];
+		unsigned char buf[10][10];
 		unsigned char arr[5] = { 1,2,3,4,5 };
 
 		for (int node = 1; node < 6; node++) // 1 is myNode 
@@ -105,14 +105,11 @@ bool _CExcelLib::Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data)
 				readFcode = m_pSheet2->readNum(i, 5, &format);
 				if (readFcode != 0)
 				{
-					memset(&(ap_SM_Data->data[t_mem_row_idx][0]), 1, FCODE[readFcode]);
+					memset(&(ap_SM_Data->data[t_mem_row_idx][0]), 2, FCODE[readFcode]);
 					t_mem_row_idx++;
 				}
 			}
 		}
-		
-		memcpy(buf, arr, 5);
-		memset(buf, 9, sizeof(buf));*/
 
 		return true;
 	}

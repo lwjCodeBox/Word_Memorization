@@ -89,8 +89,9 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 
 	m_pData = (TSharedMemory*)m_sm->GetData();
 	
-	mp_Libxl->Load_logical_Port_Adrs(m_pData);
 	// Test
+	//mp_Libxl->Load_logical_Port_Adrs(m_pData); // MVB 전체 초기화
+	
 	//m_pData->data[0][0] = 0xff;
 	//memset(&(m_pData->data[0][0]), 7, 1);
 
