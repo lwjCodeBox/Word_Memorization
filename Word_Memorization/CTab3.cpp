@@ -92,38 +92,7 @@ void CTab3::OnPaint()
 	brush.CreateSolidBrush(RGB(150, 200, 200));     
 	CBrush *p_OldBrush = dc.SelectObject(&brush);
 	
-	// Test code
-	//for (int i = 0; i < 8; i++) {
-	//	dc.Rectangle(20 + i * 30 + (i * 30), 130, 20 + (i + 1) * 30 + (i * 30), 190); // Æø 30¿¡ 30¸¸Å­ ¶³ÀÌÁø »ç°ÝÇü
-	//}
-
-	// Original code
-	//for (int i = 0; i < 9; i++) {
-	//	dc.Rectangle(20 + i * 150, 60, 20 + (i + 1) * 150, 120); // xÁÂÇ¥ ½ÃÀÛÁ¡, yÁÂÇ¥ ½ÃÀÛÁ¡, xÁÂÇ¥ ³¡ÁöÁ¡, yÁÂÇ¥ ³¡ÁöÁ¡
-	//}
 	
-/* Sample Code of Builder XE5
-	// Load Protocol Signal Name from Config.xlsx
-	int grid_row = 0;
-	int t_gap_col = 0; // for merge cell
-	int t_gap_row = 0; // Skip... Later...
-
-	for (int i = row_first; i < row_last; i++) {
-		for (int j = col_first; j < col_last; j++) {
-			tempStr = (wchar_t *)sheet->readStr(i, j, &format);
-			p_grid->Cells[j][grid_row + 1] = tempStr;
-
-			bMerge = sheet->getMerge(i, j, &merge_row_first, &merge_row_last, &merge_col_first, &merge_col_last);
-			if (bMerge) { // do not handle cells merged more than 1 BYTE.
-				t_gap_col = merge_col_last - merge_col_first + 1; // +1 is essential
-				p_grid->MergeCells(j, grid_row, t_gap_col, 1);
-				p_grid->MergeCells(j, grid_row + 1, t_gap_col, 1);
-				j += (t_gap_col - 1);
-			}
-		}
-		grid_row += 2;
-	}
-*/
 	
 	// fixed row, col
 	int startWidth, endWidht;

@@ -75,89 +75,6 @@ END
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\Word_Memorization.ico"
 
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
-IDD_DIALOG1 DIALOGEX 0, 0, 311, 177
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_CHILD
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    LTEXT           "Tab 1",IDC_STATIC,285,162,19,8
-END
-
-IDD_DIALOG2 DIALOGEX 0, 0, 447, 266
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_CHILD
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    CONTROL         "",IDC_LIST1,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,7,433,158
-    LTEXT           "Static",IDC_STATIC,15,188,18,8
-END
-
-IDD_DIALOG3 DIALOGEX 0, 0, 454, 263
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_CHILD
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO
-BEGIN
-    IDD_DIALOG1, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 304
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 170
-    END
-
-    IDD_DIALOG2, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 440
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 259
-    END
-
-    IDD_DIALOG3, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 447
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 256
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// AFX_DIALOG_LAYOUT
-//
-
-IDD_DIALOG1 AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_DIALOG2 AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_DIALOG3 AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
 #endif    // Korean (Korea) resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -178,9 +95,21 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_TAB1,"SysTabControl32",0x0,7,7,776,408
-    EDITTEXT        IDC_EDIT1,597,424,147,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT2,447,424,147,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT1,575,25,147,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT2,574,10,147,14,ES_AUTOHSCROLL
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME,7,37,687,398
+    PUSHBUTTON      "aDTC",IDC_BUTTON1,7,18,50,14
+    PUSHBUTTON      "aMC1",IDC_BUTTON2,71,18,50,14
+    PUSHBUTTON      "aMC2",IDC_BUTTON3,135,18,50,14
+    PUSHBUTTON      "aMCI",IDC_BUTTON4,199,18,50,14
+    PUSHBUTTON      "bMCI",IDC_BUTTON5,263,18,50,14
+    PUSHBUTTON      "bMC2",IDC_BUTTON6,327,18,50,14
+    PUSHBUTTON      "bMC1",IDC_BUTTON7,391,18,50,14
+    PUSHBUTTON      "bDTC",IDC_BUTTON8,455,18,50,14
+    PUSHBUTTON      "MyNode",IDC_BUTTON9,519,18,50,14
+    PUSHBUTTON      "HeartBit Status",IDC_BUTTON10,704,49,60,14
+    PUSHBUTTON      "MyNode",IDC_BUTTON11,707,74,50,14
+    PUSHBUTTON      "MyNode",IDC_BUTTON12,704,106,50,14
 END
 
 

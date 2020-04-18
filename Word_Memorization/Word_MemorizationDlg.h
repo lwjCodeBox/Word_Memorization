@@ -4,10 +4,6 @@
 
 #pragma once
 
-#include "CTab1.h"
-#include "CTab2.h"
-#include "CTab3.h"
-
 #include "_CExcelLib.h"
 
 #include "CSharedMemory.h"
@@ -19,15 +15,11 @@ class CWordMemorizationDlg : public CDialogEx
 {
 
 public:
-	CTab1* mp_DlgTab1;
-	CTab2* mp_DlgTab2;
-	CTab3* mp_DlgTab3;
-	
 	_CExcelLib *mp_Libxl;
 
 	// Shared Memory
-	CSharedMemory* m_sm; // For Allocating Shared Memory (Realtime Protocol)
-	TSharedMemory* m_pData; // Pointer of Shared Memory (Realtime Protocol)
+	CSharedMemory *m_sm; // For Allocating Shared Memory (Realtime Protocol)
+	TSharedMemory *m_pData; // Pointer of Shared Memory (Realtime Protocol)
 
 // Construction
 public:
@@ -61,7 +53,4 @@ public:
 	CEdit m_Edit2;
 	afx_msg void OnDestroy();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	CTabCtrl m_Tab;
-	afx_msg void OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);
-	virtual void PostNcDestroy();
 };
