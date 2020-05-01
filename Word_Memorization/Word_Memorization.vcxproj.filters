@@ -33,16 +33,19 @@
     <ClInclude Include="_CExcelLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CTab1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CTab2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CTab3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CSharedMemory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CForm_Protocol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CForm_HeartBit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CForm_DuDefault_1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DefineOfDev_J.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -60,6 +63,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CSharedMemory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CForm_Protocol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CForm_HeartBit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CForm_DuDefault_1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DefineOfDev_J.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -35,6 +35,8 @@ BEGIN_MESSAGE_MAP(CWordMemorizationDlg, CDialogEx)
 	ON_WM_CREATE()
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()
+	ON_COMMAND_RANGE(IDC_SELECTED_CAR_0, IDC_SELECTED_CAR_7, SelectedCar)
+	ON_COMMAND_RANGE(IDC_SCREEN_PROTOCOL_BTN00, IDC_SCREEN_DUDEFAULT_BTN03, ChangeScreen)
 END_MESSAGE_MAP()
 
 
@@ -52,13 +54,16 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	// TODO: Add extra initialization here
 
 	// Attach to Shared Memory
-	int memSize = sizeof(TSharedMemory) * (mp_Libxl->getTotalNode() + 1); // +1 mean is MyNode. // Original code
+	int memSize = 478;//sizeof(TSharedMemory) * (mp_Libxl->getTotalNode() + 1); // +1 mean is MyNode. // Original code
 	m_sm = new CSharedMemory(memSize);
 	m_sm->Init_SharedMemory();
 	m_sm->Attach();
 
 	m_pData = (TSharedMemory*)m_sm->GetData();
 	
+	nodeData.node = 1;
+	CreateForm();
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -129,6 +134,21 @@ void CWordMemorizationDlg::OnClose()
 void CWordMemorizationDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
+
+	if (mp_Form_Protocol != NULL)
+	{
+		mp_Form_Protocol->DestroyWindow();
+	}
+
+	if (mp_Form_HeartBit != NULL)
+	{
+		mp_Form_HeartBit->DestroyWindow();
+	}
+
+	if (mp_Form_DuDefault_1 != NULL)
+	{
+		mp_Form_DuDefault_1->DestroyWindow();
+	}
 }
 
 
@@ -143,5 +163,131 @@ BOOL CWordMemorizationDlg::PreTranslateMessage(MSG* pMsg)
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
+void CWordMemorizationDlg::ChangeScreen(UINT ID)
+{
+	CString msg = _T("");
+
+	switch (ID - IDC_SCREEN_PROTOCOL_BTN00)
+	{
+	case 0:
+		AfxMessageBox(L"Protocol");
+		mp_Form_Protocol->ShowWindow(SW_SHOW);
+		mp_Form_HeartBit->ShowWindow(SW_HIDE);
+		mp_Form_DuDefault_1->ShowWindow(SW_HIDE);
+		break;
+
+	case 1:
+		AfxMessageBox(L"Heartbit");
+		mp_Form_Protocol->ShowWindow(SW_HIDE);
+		mp_Form_HeartBit->ShowWindow(SW_SHOW);
+		mp_Form_DuDefault_1->ShowWindow(SW_HIDE);
+		break;
+
+	case 2:
+		AfxMessageBox(L"My Node");
+		break;
+
+	case 3:
+		AfxMessageBox(L"Du Default 1");
+		mp_Form_Protocol->ShowWindow(SW_HIDE);
+		mp_Form_HeartBit->ShowWindow(SW_HIDE);
+		mp_Form_DuDefault_1->ShowWindow(SW_SHOW);
+		break;
+	}
+}
+
+void CWordMemorizationDlg::SelectedCar(UINT ID)
+{
+	CString msg = _T("");
+
+	// aDTC, aMC1 이면 노드가 0인데 여기서는 myNode 계산 때문에 0이면 myNode를 의미 하고 1이면 0번 노드를 말함. (원래 노드에서 +1을 함)
+	switch (ID - IDC_SELECTED_CAR_0)
+	{
+	case 0:
+		nodeData.node = 1; 
+
+		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
+		//AfxMessageBox(msg);
+
+		memset(&(m_pData->data[0][0]), 0x0f, 1);
+		break;
+
+	case 1:
+		nodeData.node = 1;
+
+		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
+		//AfxMessageBox(msg);
+
+		memset(&(m_pData->data[0][1]), 0xaa, 1);
+		break;
+
+	case 2:
+		nodeData.node = 2;
+
+		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
+		AfxMessageBox(msg);
+		break;
+
+	case 3:
+		nodeData.node = 2;
+
+		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
+		AfxMessageBox(msg);
+		break;
+
+	case 4:
+		nodeData.node = 3;
+
+		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
+		AfxMessageBox(msg);
+		break;
+
+	case 5:
+		nodeData.node = 3;
+
+		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
+		AfxMessageBox(msg);
+		break;
+
+	case 6:
+		nodeData.node = 4;
+
+		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
+		AfxMessageBox(msg);
+		break;
+
+	case 7:
+		nodeData.node = 4;
+
+		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
+		AfxMessageBox(msg);
+		break;
+	}
+}
 
 
+void CWordMemorizationDlg::CreateForm()
+{
+	CCreateContext context;
+	ZeroMemory(&context, sizeof(context));
+
+	CRect panelArea;
+
+	GetDlgItem(IDC_STATIC_NOTEBOOKSCREEN)->GetWindowRect(&panelArea);
+	ScreenToClient(&panelArea);
+	
+	mp_Form_Protocol = new CForm_Protocol();
+	mp_Form_Protocol->Create(NULL, NULL, WS_CHILD | WS_VSCROLL | WS_HSCROLL, panelArea, this, IDC_SCREEN_PROTOCOL_BTN00, &context);
+	mp_Form_Protocol->OnInitialUpdate();
+	mp_Form_Protocol->ShowWindow(SW_SHOW);
+
+	mp_Form_HeartBit = new CForm_HeartBit();
+	mp_Form_HeartBit->Create(NULL, NULL, WS_CHILD | WS_VSCROLL | WS_HSCROLL, panelArea, this, IDC_SCREEN_HEARTBIT_BTN01, &context);
+	mp_Form_HeartBit->OnInitialUpdate();
+	mp_Form_HeartBit->ShowWindow(SW_HIDE);
+
+	mp_Form_DuDefault_1 = new CForm_DuDefault_1();
+	mp_Form_DuDefault_1->Create(NULL, NULL, WS_CHILD | WS_VSCROLL | WS_HSCROLL, panelArea, this, IDC_SCREEN_DUDEFAULT_BTN03, &context);
+	mp_Form_DuDefault_1->OnInitialUpdate();
+	mp_Form_DuDefault_1->ShowWindow(SW_HIDE);
+}
