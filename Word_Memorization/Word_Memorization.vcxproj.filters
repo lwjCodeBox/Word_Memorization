@@ -48,6 +48,9 @@
     <ClInclude Include="DefineOfDev_J.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CForm_SetMVB.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Word_Memorization.cpp">
@@ -75,6 +78,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DefineOfDev_J.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CForm_SetMVB.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

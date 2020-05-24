@@ -14,6 +14,7 @@
 #include "CForm_Protocol.h"
 #include "CForm_HeartBit.h"
 #include "CForm_DuDefault_1.h"
+#include "CForm_SetMVB.h" // 직접 MVB 값 세팅
 
 class _CExcelLib;
 
@@ -25,7 +26,9 @@ private:
 	CForm_Protocol    *mp_Form_Protocol;
 	CForm_HeartBit    *mp_Form_HeartBit;
 	CForm_DuDefault_1 *mp_Form_DuDefault_1;
+	CForm_SetMVB      *mp_Form_SetMVB;
 
+// lwj
 public:
 	_CExcelLib *mp_Libxl;
 	
@@ -65,10 +68,14 @@ private:
 	afx_msg void SelectedCar(UINT ID);
 	void CreateForm();
 
+// lwj
+public:
+	void SetMVBValue(unsigned char a_Node, unsigned char a_Port, unsigned char a_Value);
+	void SetMVBHeartBit(unsigned char a_Port, unsigned char a_Value);
+
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnClose();
-	
 	
 	CEdit m_Edit1;	
 	CEdit m_Edit2;

@@ -36,7 +36,7 @@ BEGIN_MESSAGE_MAP(CWordMemorizationDlg, CDialogEx)
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()
 	ON_COMMAND_RANGE(IDC_SELECTED_CAR_0, IDC_SELECTED_CAR_7, SelectedCar)
-	ON_COMMAND_RANGE(IDC_SCREEN_PROTOCOL_BTN00, IDC_SCREEN_DUDEFAULT_BTN03, ChangeScreen)
+	ON_COMMAND_RANGE(IDC_SCREEN_PROTOCOL_BTN00, IDC_SCREEN_SETMVB_BNT04, ChangeScreen)
 END_MESSAGE_MAP()
 
 
@@ -149,6 +149,11 @@ void CWordMemorizationDlg::OnDestroy()
 	{
 		mp_Form_DuDefault_1->DestroyWindow();
 	}
+
+	if (mp_Form_SetMVB != NULL)
+	{
+		mp_Form_SetMVB->DestroyWindow();
+	}
 }
 
 
@@ -163,6 +168,7 @@ BOOL CWordMemorizationDlg::PreTranslateMessage(MSG* pMsg)
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
+// 화면 전환
 void CWordMemorizationDlg::ChangeScreen(UINT ID)
 {
 	CString msg = _T("");
@@ -174,6 +180,7 @@ void CWordMemorizationDlg::ChangeScreen(UINT ID)
 		mp_Form_Protocol->ShowWindow(SW_SHOW);
 		mp_Form_HeartBit->ShowWindow(SW_HIDE);
 		mp_Form_DuDefault_1->ShowWindow(SW_HIDE);
+		mp_Form_SetMVB->ShowWindow(SW_HIDE);
 		break;
 
 	case 1:
@@ -181,10 +188,12 @@ void CWordMemorizationDlg::ChangeScreen(UINT ID)
 		mp_Form_Protocol->ShowWindow(SW_HIDE);
 		mp_Form_HeartBit->ShowWindow(SW_SHOW);
 		mp_Form_DuDefault_1->ShowWindow(SW_HIDE);
+		mp_Form_SetMVB->ShowWindow(SW_HIDE);
 		break;
 
 	case 2:
 		AfxMessageBox(L"My Node");
+		//SetMVBValue(0, 0, 1);
 		break;
 
 	case 3:
@@ -192,10 +201,22 @@ void CWordMemorizationDlg::ChangeScreen(UINT ID)
 		mp_Form_Protocol->ShowWindow(SW_HIDE);
 		mp_Form_HeartBit->ShowWindow(SW_HIDE);
 		mp_Form_DuDefault_1->ShowWindow(SW_SHOW);
+		mp_Form_SetMVB->ShowWindow(SW_HIDE);
+		break;
+
+	case 4:
+		AfxMessageBox(L"Set MVB");
+		mp_Form_Protocol->ShowWindow(SW_HIDE);
+		mp_Form_HeartBit->ShowWindow(SW_HIDE);
+		mp_Form_DuDefault_1->ShowWindow(SW_HIDE);
+		mp_Form_SetMVB->ShowWindow(SW_SHOW);
 		break;
 	}
+
+	
 }
 
+// 차량 선택
 void CWordMemorizationDlg::SelectedCar(UINT ID)
 {
 	CString msg = _T("");
@@ -290,4 +311,21 @@ void CWordMemorizationDlg::CreateForm()
 	mp_Form_DuDefault_1->Create(NULL, NULL, WS_CHILD | WS_VSCROLL | WS_HSCROLL, panelArea, this, IDC_SCREEN_DUDEFAULT_BTN03, &context);
 	mp_Form_DuDefault_1->OnInitialUpdate();
 	mp_Form_DuDefault_1->ShowWindow(SW_HIDE);
+
+	mp_Form_SetMVB = new CForm_SetMVB();
+	mp_Form_SetMVB->Create(NULL, NULL, WS_CHILD | WS_VSCROLL | WS_HSCROLL, panelArea, this, IDC_SCREEN_SETMVB_BNT04, &context);
+	//mp_Form_SetMVB->OnInitialUpdate();
+	mp_Form_SetMVB->ShowWindow(SW_HIDE);
+}
+
+
+void CWordMemorizationDlg::SetMVBValue(unsigned char a_Node, unsigned char a_Port, unsigned char a_Value)
+{
+	memset(&(m_pData->data[a_Node][a_Port]), a_Value, 1);
+}
+
+
+void CWordMemorizationDlg::SetMVBHeartBit(unsigned char a_Port, unsigned char a_Value)
+{
+	memset(&(m_pData->data[a_Port][0]), a_Value, 2);
 }

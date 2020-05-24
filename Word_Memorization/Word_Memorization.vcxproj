@@ -193,6 +193,7 @@
     <ClInclude Include="CForm_DuDefault_1.h" />
     <ClInclude Include="CForm_HeartBit.h" />
     <ClInclude Include="CForm_Protocol.h" />
+    <ClInclude Include="CForm_SetMVB.h" />
     <ClInclude Include="CSharedMemory.h" />
     <ClInclude Include="DefineOfDev_J.h" />
     <ClInclude Include="pch.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="CForm_DuDefault_1.cpp" />
     <ClCompile Include="CForm_HeartBit.cpp" />
     <ClCompile Include="CForm_Protocol.cpp" />
+    <ClCompile Include="CForm_SetMVB.cpp" />
     <ClCompile Include="CSharedMemory.cpp" />
     <ClCompile Include="DefineOfDev_J.cpp" />
     <ClCompile Include="pch.cpp">
