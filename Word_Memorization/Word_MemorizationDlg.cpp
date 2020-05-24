@@ -54,7 +54,7 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	// TODO: Add extra initialization here
 
 	// Attach to Shared Memory
-	int memSize = 478;//sizeof(TSharedMemory) * (mp_Libxl->getTotalNode() + 1); // +1 mean is MyNode. // Original code
+	int memSize = sizeof(TSharedMemory) * 5;// 488;//sizeof(TSharedMemory) * (mp_Libxl->getTotalNode() + 1); // +1 mean is MyNode. // Original code
 	m_sm = new CSharedMemory(memSize);
 	m_sm->Init_SharedMemory();
 	m_sm->Attach();
@@ -205,7 +205,7 @@ void CWordMemorizationDlg::ChangeScreen(UINT ID)
 		break;
 
 	case 4:
-		AfxMessageBox(L"Set MVB");
+		//AfxMessageBox(L"Set MVB");
 		mp_Form_Protocol->ShowWindow(SW_HIDE);
 		mp_Form_HeartBit->ShowWindow(SW_HIDE);
 		mp_Form_DuDefault_1->ShowWindow(SW_HIDE);
@@ -319,13 +319,13 @@ void CWordMemorizationDlg::CreateForm()
 }
 
 
-void CWordMemorizationDlg::SetMVBValue(unsigned char a_Node, unsigned char a_Port, unsigned char a_Value)
+void CWordMemorizationDlg::SetMVBValue(unsigned int a_Node, unsigned int a_Port, unsigned int a_Value)
 {
 	memset(&(m_pData->data[a_Node][a_Port]), a_Value, 1);
 }
 
 
-void CWordMemorizationDlg::SetMVBHeartBit(unsigned char a_Port, unsigned char a_Value)
+void CWordMemorizationDlg::SetMVBHeartBit(unsigned int a_Port, unsigned int a_Value)
 {
 	memset(&(m_pData->data[a_Port][0]), a_Value, 2);
 }

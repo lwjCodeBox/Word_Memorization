@@ -1,7 +1,7 @@
 #pragma once
 #include "framework.h"
 
-#define SM_DATA_MAX_COUNT	478 //100 ->  {478 = Using total port count}
+#define SM_DATA_MAX_COUNT	120 // 120Àº myNode ÃÑ°³¼ö //100 ->  {478 = Using total port count}
 #define SM_DATA_MAX_LENGTH	32  // 1432  // == MAX_DATA_COUNT_PER_PORT  (in DefStruct.h)
 
 typedef struct TSharedMemoryData {

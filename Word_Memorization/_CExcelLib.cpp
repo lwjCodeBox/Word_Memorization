@@ -93,7 +93,7 @@ bool _CExcelLib::Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data)
 
 		unsigned short FCODE[5] = {0, 4, 8, 16, 32 };
 
-		 int readFcode = 0;
+		int readFcode = 0;
 
 		unsigned char buf[10][10];
 		unsigned char arr[5] = { 1,2,3,4,5 };

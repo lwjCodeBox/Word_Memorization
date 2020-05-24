@@ -70,8 +70,8 @@ private:
 
 // lwj
 public:
-	void SetMVBValue(unsigned char a_Node, unsigned char a_Port, unsigned char a_Value);
-	void SetMVBHeartBit(unsigned char a_Port, unsigned char a_Value);
+	void SetMVBValue(unsigned int a_Node, unsigned int a_Port, unsigned int a_Value);
+	void SetMVBHeartBit(unsigned int a_Port, unsigned int a_Value);
 
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

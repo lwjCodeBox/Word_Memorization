@@ -91,7 +91,8 @@ void CForm_SetMVB::OnBnClickedButton1()
 	mp_FormMainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 
 	if(mp_FormMainDlg != NULL)
-		mp_FormMainDlg->SetMVBValue(node, port, value);
+		//mp_FormMainDlg->SetMVBValue(node, port, value);
+		memset(&(mp_FormMainDlg->m_pData->data[node][port]), value, 1);
 
 	mp_FormMainDlg = NULL;
 }
@@ -99,7 +100,7 @@ void CForm_SetMVB::OnBnClickedButton1()
 
 void CForm_SetMVB::OnTimer(UINT_PTR nIDEvent)
 {
-	unsigned char port;
+	unsigned int port;
 	mp_FormMainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 
 	switch (nIDEvent)
@@ -124,8 +125,8 @@ void CForm_SetMVB::OnTimer(UINT_PTR nIDEvent)
 		if (m_HeartBit_1 != 0xFFFF) {
 			m_HeartBit_1++;
 
-			mp_FormMainDlg->SetMVBHeartBit(port, m_HeartBit_1);
-			//memset(&(mp_FormMainDlg->m_pData->data[port][0]), m_HeartBit_1, 2);
+			//mp_FormMainDlg->SetMVBHeartBit(port, m_HeartBit_1);
+			memset(&(mp_FormMainDlg->m_pData->data[port][0]), m_HeartBit_1, 2);
 		}
 		else
 			m_HeartBit_1 = 0;
