@@ -16,7 +16,7 @@ public:
 	CString getExclSheetName(int a_Sheet);
 	int getTotalNode();
 	bool Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data); // MVB 전체 초기화
-	void _CExcelLib::Load_logical_Port_Adrs(); // MVB에서 사용하는 포트 주소를 엑셀에서 읽어옴.
+	bool _CExcelLib::Load_logical_Port_Adrs(); // MVB에서 사용하는 포트 주소를 엑셀에서 읽어옴.
 
 private:
 	Sheet* getSheetByName(Book* book, const wchar_t* name); // 사용하고 있는 Sheet의 이름을 얻어옴.
@@ -30,6 +30,7 @@ public:
 	Sheet *m_pSheet2; // logical_port_adrs Sheet
 
 	WORD mvb_Addr[120]; // myNode 총 갯수가 120개라서 배열의 크기를 120으로 잡음.
+	BYTE m_totalNodeCnt;
 	
 private:
 	CString m_ExcelList[18][9];   

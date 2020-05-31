@@ -15,9 +15,10 @@
 #define IDC_BUTTON8                     1014
 #define IDC_STATIC_NOTEBOOKSCREEN       1015
 #define IDC_BUTTON1                     1016
-#define IDC_SETMVB_NODE                 1017
+#define IDC_SETMVB_ADDR                 1017
 #define IDC_SETMVB_PORT                 1018
 #define IDC_SETMVB_WORD                 1018
+#define IDC_SETMVB_NODE                 1019
 #define IDC_SETMVB_TM_PORT0             1020
 #define IDC_SETMVB_TM_PORT1             1022
 #define IDC_SETMVB_TM_PORT2             1028

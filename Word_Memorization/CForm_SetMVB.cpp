@@ -8,6 +8,7 @@
 #include "Word_MemorizationDlg.h"
 
 #include "_CExcelLib.h"
+#include "DefineOfDev_J.h"
 
 // CForm_SetMVB
 
@@ -32,7 +33,7 @@ CForm_SetMVB::~CForm_SetMVB()
 void CForm_SetMVB::DoDataExchange(CDataExchange *pDX)
 {
 	CFormView::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_SETMVB_NODE, str_SetNode);
+	DDX_Control(pDX, IDC_SETMVB_ADDR, str_SetAddr);
 	DDX_Control(pDX, IDC_SETMVB_WORD, str_SetWord);
 	DDX_Control(pDX, IDC_SETMVB_VALUE, str_SetValue);
 }
@@ -82,39 +83,21 @@ void CForm_SetMVB::OnInitialUpdate()
 }
 
 
-//size 크기의 data배열안에서 d를 찾기
-//값이없으면 -1반환
-//값이 있으면 data배열의 index 반환
-int binarySearch(WORD *data, int size, int d)
-{
-	int s = 0; //시작
-	int e = size - 1; //끝
-	int m;
-	while (s <= e) {
-		m = (s + e) / 2;
-		if (data[m] == d) 
-			return m;
-		else if (data[m] > d) 
-			e = m - 1;
-		else 
-			s = m + 1;
-	}
-	return -1;
-}
-
-
 void CForm_SetMVB::OnBnClickedButton1()
 {
-	unsigned char node; 
-	WORD word, value;
+	WORD portAddr, word, value;
 
-	node = GetDlgItemInt(IDC_SETMVB_NODE);
-	//node -= 1;
+	CString strPortAddr;
+	GetDlgItemText(IDC_SETMVB_ADDR, strPortAddr);
+	portAddr = _tcstoul(strPortAddr, NULL, 16); // 문자열을 16진수로 변환.
 
 	word = GetDlgItemInt(IDC_SETMVB_WORD);
 	word *= 2;
 
 	value = GetDlgItemInt(IDC_SETMVB_VALUE);
+
+	BYTE node;
+	node = GetDlgItemInt(IDC_SETMVB_NODE); // 0이면 myNode를 의미함.
 
 	mp_FormMainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 
@@ -123,19 +106,19 @@ void CForm_SetMVB::OnBnClickedButton1()
 
 		BYTE l_byte, h_byte;
 
-
 		_CExcelLib *p_ExcelLib = (_CExcelLib *)mp_FormMainDlg->mp_Libxl;
 		int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
-		int ans = binarySearch(p_ExcelLib->mvb_Addr, dataSize, node);
-
-		p_ExcelLib = NULL;
-
+		int t_port = binarySearch(p_ExcelLib->mvb_Addr, dataSize, portAddr);
+		
+		t_port += p_ExcelLib->m_totalNodeCnt * node;
 
 		h_byte = ((unsigned char *)&value)[1]; // word 상위
 		l_byte = ((unsigned char *)&value)[0]; // word 하위
 
-		memset(&(mp_FormMainDlg->m_pData->data[node][word]), h_byte, 1);   // mvb 상위 바이트에 값을 넣음
-		memset(&(mp_FormMainDlg->m_pData->data[node][word+1]), l_byte, 1); // mvb 하위 바이트에 값을 넣음
+		memset(&(mp_FormMainDlg->m_pData->data[t_port][word]), h_byte, 1);   // mvb 상위 바이트에 값을 넣음
+		memset(&(mp_FormMainDlg->m_pData->data[t_port][word+1]), l_byte, 1); // mvb 하위 바이트에 값을 넣음
+
+		p_ExcelLib = NULL;
 	}
 
 	mp_FormMainDlg = NULL;

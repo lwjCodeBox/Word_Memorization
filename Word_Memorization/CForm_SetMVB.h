@@ -37,7 +37,7 @@ public:
 	virtual void OnInitialUpdate();
 
 private:
-	CEdit str_SetNode;
+	CEdit str_SetAddr;
 	CEdit str_SetWord;
 	CEdit str_SetValue;
 
