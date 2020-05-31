@@ -98,6 +98,7 @@ bool _CExcelLib::Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data)
 		unsigned char buf[10][10];
 		unsigned char arr[5] = { 1,2,3,4,5 };
 
+		
 		for (int node = 1; node < 6; node++) // 1 is myNode 
 		{		
 			for (int i = t_col_start; i < t_col_end + 1; i++)
@@ -117,3 +118,28 @@ bool _CExcelLib::Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data)
 	return false;
 }
 
+
+void _CExcelLib::Load_logical_Port_Adrs()
+{
+	libxl::Format *format = NULL;
+
+	m_pSheet2 = getSheetByName(m_Book, L"logical_port_adrs_2");
+
+	int readAddr = 0;
+	int mem_row_idx = 0;
+
+	if (m_pSheet2) {
+		int t_col_start = 4; // (열 시작 위치)
+		int t_col_end = 123;
+		int t_row_start = 4; // (행 시작 위치)
+		int t_row_end = 9;
+
+		for (int i = t_col_start; i < t_col_end + 1; i++)
+		{
+			readAddr = m_pSheet2->readNum(i, 4, &format);
+
+			mvb_Addr[mem_row_idx] = readAddr;
+			mem_row_idx++;
+		}
+	}
+}

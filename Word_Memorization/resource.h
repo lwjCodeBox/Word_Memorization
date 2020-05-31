@@ -17,7 +17,7 @@
 #define IDC_BUTTON1                     1016
 #define IDC_SETMVB_NODE                 1017
 #define IDC_SETMVB_PORT                 1018
-
+#define IDC_SETMVB_WORD                 1018
 #define IDC_SETMVB_TM_PORT0             1020
 #define IDC_SETMVB_TM_PORT1             1022
 #define IDC_SETMVB_TM_PORT2             1028
@@ -36,17 +36,15 @@
 #define IDC_SCREEN_MYNODE_BTN02         3002
 #define IDC_SCREEN_DUDEFAULT_BTN03      3003
 #define IDC_SCREEN_SETMVB_BNT04         3004
-
-// MVB Set DlG - Timer Start Button List
 #define IDC_SETMVB_TM_START_0           4000
 #define IDC_SETMVB_TM_START_1           4001
 #define IDC_SETMVB_TM_START_2           4002
 #define IDC_SETMVB_TM_START_3           4003
-// MVB Set DlG - Timer Stop Button List
 #define IDC_SETMVB_TM_STOP_0            4004
 #define IDC_SETMVB_TM_STOP_1            4005
 #define IDC_SETMVB_TM_STOP_2            4006
 #define IDC_SETMVB_TM_STOP_3            4007
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

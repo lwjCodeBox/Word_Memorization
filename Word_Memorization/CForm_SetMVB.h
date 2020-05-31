@@ -38,7 +38,7 @@ public:
 
 private:
 	CEdit str_SetNode;
-	CEdit str_SetPort;
+	CEdit str_SetWord;
 	CEdit str_SetValue;
 
 	CWordMemorizationDlg *mp_FormMainDlg;

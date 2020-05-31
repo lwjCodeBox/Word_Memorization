@@ -61,6 +61,8 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 
 	m_pData = (TSharedMemory*)m_sm->GetData();
 	
+	mp_Libxl->Load_logical_Port_Adrs();
+
 	nodeData.node = 1;
 	CreateForm();
 
