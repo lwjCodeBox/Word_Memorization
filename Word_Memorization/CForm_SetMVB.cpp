@@ -44,6 +44,7 @@ BEGIN_MESSAGE_MAP(CForm_SetMVB, CFormView)
 
 	ON_COMMAND_RANGE(IDC_SETMVB_TM_START_0, IDC_SETMVB_TM_START_3, TiemerStart)
 	ON_COMMAND_RANGE(IDC_SETMVB_TM_STOP_0, IDC_SETMVB_TM_STOP_3, TimerStop)
+	ON_BN_CLICKED(IDC_BUTTON2, &CForm_SetMVB::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -246,3 +247,31 @@ void CForm_SetMVB::TimerStop(UINT ID)
 
 }
 
+
+void CForm_SetMVB::OnBnClickedButton2()
+{ 
+	WORD portAddr, word, value;
+
+	portAddr = GetDlgItemInt(IDC_SETMVB_ADDR2);
+
+	word = GetDlgItemInt(IDC_SETMVB_WORD);
+	word *= 2;
+
+	value = GetDlgItemInt(IDC_SETMVB_VALUE);
+
+	mp_FormMainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+
+	if (mp_FormMainDlg != NULL) {
+		//mp_FormMainDlg->SetMVBValue(node, port, value);
+
+		BYTE l_byte, h_byte;
+
+		h_byte = ((unsigned char *)&value)[1]; // word 상위
+		l_byte = ((unsigned char *)&value)[0]; // word 하위
+
+		memset(&(mp_FormMainDlg->m_pData->data[portAddr][word]), h_byte, 1);   // mvb 상위 바이트에 값을 넣음
+		memset(&(mp_FormMainDlg->m_pData->data[portAddr][word + 1]), l_byte, 1); // mvb 하위 바이트에 값을 넣음
+	}
+
+	mp_FormMainDlg = NULL;
+}

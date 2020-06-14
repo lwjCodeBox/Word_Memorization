@@ -179,3 +179,21 @@ bool _CExcelLib::Load_logical_Port_Adrs()
 	}
 	return false;
 }
+
+
+bool _CExcelLib::Read_DU_Default_1()
+{
+	libxl::Format *format = NULL;
+
+	m_pSheet2 = getSheetByName(m_Book, L"du_default1");
+
+	int readAddr = 0;
+	int mem_row_idx = 0;
+
+	if (m_pDU_Default_1) {
+
+		return true;
+	}
+
+	return false;
+}

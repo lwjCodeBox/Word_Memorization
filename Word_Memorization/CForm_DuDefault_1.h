@@ -2,8 +2,10 @@
 
 
 
-// CForm_DuDefault_1 form view
 
+// CForm_DuDefault_1 form view
+class CWordMemorizationDlg;
+class _CExcelLib;
 class CForm_DuDefault_1 : public CFormView
 {
 	DECLARE_DYNCREATE(CForm_DuDefault_1)
@@ -23,6 +25,13 @@ public:
 #endif
 #endif
 
+private:
+	CEdit **mp_cedit;
+	int m_row, m_column;
+
+	CWordMemorizationDlg *mp_MainDlg;
+	_CExcelLib *mp_Excel;
+
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
@@ -30,6 +39,9 @@ protected:
 public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext = NULL);
 	virtual void OnInitialUpdate();
+	afx_msg void OnBnClickedDfsDefault1();
+	afx_msg void OnBnClickedDfsDefault2();
+	virtual BOOL DestroyWindow();
 };
 
 

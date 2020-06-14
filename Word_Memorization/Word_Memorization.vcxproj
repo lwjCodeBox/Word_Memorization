@@ -23,7 +23,7 @@
     <ProjectGuid>{97EA93E2-12D4-4AF4-BCFF-C911D4F2A278}</ProjectGuid>
     <Keyword>MFCProj</Keyword>
     <RootNamespace>WordMemorization</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
