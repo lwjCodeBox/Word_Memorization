@@ -181,17 +181,23 @@ bool _CExcelLib::Load_logical_Port_Adrs()
 }
 
 
-bool _CExcelLib::Read_DU_Default_1()
+bool _CExcelLib::Read_DU_Default(int a_select)
 {
 	libxl::Format *format = NULL;
 
-	m_pSheet2 = getSheetByName(m_Book, L"du_default1");
+	if (1 == a_select)
+		m_pDU_Default = getSheetByName(m_Book, L"du_default1");
+	else if (2 == a_select)
+		m_pDU_Default = getSheetByName(m_Book, L"du_default2");
+	else if (3 == a_select)
+		m_pDU_Default = getSheetByName(m_Book, L"du_default3");
+	else
+		return false;
 
 	int readAddr = 0;
 	int mem_row_idx = 0;
 
-	if (m_pDU_Default_1) {
-
+	if (m_pDU_Default) {
 		return true;
 	}
 

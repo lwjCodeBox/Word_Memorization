@@ -308,7 +308,7 @@ void CWordMemorizationDlg::CreateForm()
 	mp_Form_HeartBit->OnInitialUpdate();
 	mp_Form_HeartBit->ShowWindow(SW_HIDE);
 
-	mp_Form_DuDefault_1 = new CForm_DuDefault_1();
+	mp_Form_DuDefault_1 = new CForm_DuDefault_1(mp_Libxl);
 	mp_Form_DuDefault_1->Create(NULL, NULL, WS_CHILD | WS_VSCROLL | WS_HSCROLL, panelArea, this, IDC_SCREEN_DUDEFAULT_BTN03, &context);
 	mp_Form_DuDefault_1->OnInitialUpdate();
 	mp_Form_DuDefault_1->ShowWindow(SW_HIDE);

@@ -12,6 +12,7 @@ class CForm_DuDefault_1 : public CFormView
 
 public://protected:
 	CForm_DuDefault_1();           // protected constructor used by dynamic creation
+	CForm_DuDefault_1(_CExcelLib *a_Libxl);
 	virtual ~CForm_DuDefault_1();
 
 public:
@@ -27,10 +28,14 @@ public:
 
 private:
 	CEdit **mp_cedit;
-	int m_row, m_column;
+	CEdit **mp_fixedRow;
+	CEdit **mp_fixedColumn;
 
-	CWordMemorizationDlg *mp_MainDlg;
-	_CExcelLib *mp_Excel;
+	int m_row, m_column;
+	int m_fixedRowCnt, m_fixedColumnCnt;
+
+	//CWordMemorizationDlg *mp_MainDlg;
+	_CExcelLib *pExcel;
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
