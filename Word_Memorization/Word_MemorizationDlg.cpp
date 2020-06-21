@@ -201,7 +201,10 @@ void CWordMemorizationDlg::ChangeScreen(UINT ID)
 	case 3:
 		mp_Form_Protocol->ShowWindow(SW_HIDE);
 		mp_Form_HeartBit->ShowWindow(SW_HIDE);
+
 		mp_Form_DuDefault_1->ShowWindow(SW_SHOW);
+		mp_Form_DuDefault_1->OnBnClickedDfsDefault1();
+		
 		mp_Form_SetMVB->ShowWindow(SW_HIDE);
 		break;
 
