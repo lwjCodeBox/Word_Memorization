@@ -71,8 +71,6 @@ public:
 
 protected:
 	afx_msg LRESULT OnLeditdownDefault1(WPARAM wParam, LPARAM lParam); 
-public:
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
 
 

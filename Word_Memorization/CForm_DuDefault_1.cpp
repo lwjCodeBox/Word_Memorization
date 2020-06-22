@@ -219,7 +219,8 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	mh_bk_fixed_row_col = ::CreateSolidBrush(RGB(192, 192, 192));
 	
 	mh_bk_edit_row_col = ::CreateSolidBrush(RGB(128, 128, 255));
-
+	
+	
 #ifdef TEST_CODE
 	if (mh_edit_bk_brush != NULL) {
 		// 자신이 만든 Brush 객체를 제거한다.
@@ -239,7 +240,6 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 	if (m_flag == 2) return;
 
 	m_flag = 2;
-	
 }
 
 
@@ -293,13 +293,13 @@ HBRUSH CForm_DuDefault_1::OnCtlColor(CDC *pDC, CWnd *pWnd, UINT nCtlColor)
 
 	case 2: // fixed column
 		// 컨트롤의 ID가 내가 원하는 ID인지 체크한다.
-		if (control_id >= 20000 && control_id <= 20000 + m_fixedColumnCnt*2) {
+		if (control_id >= 20000 && control_id <= 20000 + m_fixedColumnCnt * 2) {
 			// 텍스트의 배경 색상을 설정한다.
 			pDC->SetBkColor(RGB(192, 192, 192));
 			// Edit 컨트롤의 배경색으로 사용할 Brush 핸들 값을 반환한다.
 			return mh_bk_fixed_row_col;
 		}
-		
+
 	case 3: // normal row, column
 		// 컨트롤의 ID가 내가 원하는 ID인지 체크한다.
 		if (control_id >= 30000 && control_id <= 30000 + (m_row * m_column)) {
@@ -311,7 +311,8 @@ HBRUSH CForm_DuDefault_1::OnCtlColor(CDC *pDC, CWnd *pWnd, UINT nCtlColor)
 			// Edit 컨트롤의 배경색으로 사용할 Brush 핸들 값을 반환한다.
 			return mh_bk_edit_row_col;
 		}
-	}
+	}	
+		
 #ifdef TEST_CODE	
 	// 갱신되는 컨트롤의 ID를 얻는다.
 	int control_id = pWnd->GetDlgCtrlID();
@@ -346,7 +347,6 @@ HBRUSH CForm_DuDefault_1::OnCtlColor(CDC *pDC, CWnd *pWnd, UINT nCtlColor)
 
 afx_msg LRESULT CForm_DuDefault_1::OnLeditdownDefault1(WPARAM wParam, LPARAM lParam)
 {
-
 	return 0;
 }
 
@@ -359,10 +359,3 @@ int control_id = GetDlgCtrlID();
 		}
 */
 
-void CForm_DuDefault_1::OnLButtonDown(UINT nFlags, CPoint point)
-{
-	// TODO: Add your message handler code here and/or call default
-	if(nFlags == 30000)
-		SetDlgItemText(30002, L"click");
-	CFormView::OnLButtonDown(nFlags, point);
-}
