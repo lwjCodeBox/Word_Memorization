@@ -148,7 +148,8 @@ BEGIN_MESSAGE_MAP(CForm_DuDefault_1, CFormView)
 	ON_BN_CLICKED(IDC_DFS_DEFAULT_2, &CForm_DuDefault_1::OnBnClickedDfsDefault2)
 	ON_WM_CTLCOLOR()
 	ON_WM_LBUTTONDOWN()
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_DFS_DEFAULT_1, &CForm_DuDefault_1::OnCustomdrawDfsDefault1)
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_LISTCONTROL, &CForm_DuDefault_1::OnCustomdrawList)
+	ON_NOTIFY(NM_CLICK, IDC_LISTCONTROL, &CForm_DuDefault_1::OnNMClickList)
 END_MESSAGE_MAP()
 
 //ON_NOTIFY(NM_CUSTOMDRAW, IDC_LIST, OnCustomdrawList)
@@ -416,7 +417,7 @@ void CForm_DuDefault_1::OnLButtonDown(UINT nFlags, CPoint point)
 
 
 
-
+/*
 void CForm_DuDefault_1::OnCustomdrawDfsDefault1(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMLVCUSTOMDRAW  lplvcd = (LPNMLVCUSTOMDRAW)pNMHDR;
@@ -488,4 +489,135 @@ void CForm_DuDefault_1::OnCustomdrawDfsDefault1(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 
 
+}
+*/
+
+//BOOL CForm_DuDefault_1::OnChildNotify(UINT message, WPARAM wParam, LPARAM lParam, LRESULT *pLResult)
+//{
+//	// TODO: Add your specialized code here and/or call the base class
+//
+//	return CFormView::OnChildNotify(message, wParam, lParam, pLResult);
+//}
+
+
+// https://lafirr.tistory.com/5
+void CForm_DuDefault_1::OnCustomdrawList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	COLORREF text_color = 0;
+	COLORREF bg_color = RGB(255, 255, 255);
+	/*
+		NMLVCUSTOMDRAW *lplvcd = reinterpret_cast<NMLVCUSTOMDRAW *>(pNMHDR);
+		*pResult = 0;
+
+		switch (lplvcd->nmcd.dwDrawStage) {
+		case CDDS_PREPAINT:
+			*pResult = CDRF_NOTIFYITEMDRAW;
+			return;
+
+			// 배경 혹은 텍스트를 수정한다.
+		case CDDS_ITEMPREPAINT:
+			// 1번째 열 빨간색, 2번째 열 녹색, 3번째 이하는 파란색의 글자색을 갖는다.
+			if (lplvcd->nmcd.dwItemSpec == 0) text_color = RGB(255, 0, 0);
+			else if (lplvcd->nmcd.dwItemSpec == 1) text_color = RGB(0, 255, 0);
+			else text_color = RGB(0, 0, 255);
+			lplvcd->clrText = text_color;
+			*pResult = CDRF_NOTIFYITEMDRAW;
+			return;
+
+			// 서브 아이템의 배경 혹은 텍스트를 수정한다.
+		case CDDS_SUBITEM | CDDS_PREPAINT | CDDS_ITEM:
+			if (lplvcd->iSubItem != 0) {
+				// 1번째 행이라면...
+				if (lplvcd->iSubItem == 1) {
+					text_color = RGB(0, 127, 127);
+					bg_color = RGB(255, 255, 255);
+				}
+				else {
+					text_color = RGB(255, 255, 255);
+					if (lplvcd->nmcd.dwItemSpec == 0) bg_color = RGB(255, 0, 102);
+					else if (lplvcd->nmcd.dwItemSpec == 1) bg_color = RGB(255, 0, 0);
+					else bg_color = RGB(0, 102 - (int)lplvcd->nmcd.dwItemSpec,
+						204 - (int)lplvcd->nmcd.dwItemSpec * 2);
+				}
+				lplvcd->clrText = text_color;
+				lplvcd->clrTextBk = bg_color;
+			}
+			*pResult = CDRF_NEWFONT;
+			return;
+		}
+	*/
+
+
+	/* 한 줄씩 다른 색으로 칠하기
+		NMLVCUSTOMDRAW *pLVCD = reinterpret_cast<NMLVCUSTOMDRAW *>(pNMHDR);
+		*pResult = 0;
+
+		if (CDDS_PREPAINT == pLVCD->nmcd.dwDrawStage)
+		{
+			*pResult = CDRF_NOTIFYITEMDRAW;
+		}
+		else if (CDDS_ITEMPREPAINT == pLVCD->nmcd.dwDrawStage)
+		{
+			if ((pLVCD->nmcd.dwItemSpec % 2) == 0)
+			{
+				pLVCD->clrText = RGB(0, 0, 0);
+				pLVCD->clrTextBk = RGB(230, 230, 230);
+			}
+			else
+			{
+				pLVCD->clrText = RGB(255, 0, 0);
+				pLVCD->clrTextBk = RGB(255, 255, 255);
+			}
+			*pResult = CDRF_DODEFAULT;
+		}
+	*/
+}
+
+void CForm_DuDefault_1::OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+
+
+	//int index = pNMItemActivate->iItem;
+	//int subItem = pNMItemActivate->iSubItem;
+
+	////int index = mp_Grid->GetSelectionMark();
+	//if (index != -1) {
+	//	CString str = L"TEST";
+	//	if (index == 1) {
+	//		mp_Grid->SetItemText(index, subItem, str);
+	//		mp_Grid->SetBkColor(RGB(200, 200, 200));
+	//	}
+	//	else if (index == 2) {
+	//		mp_Grid->SetItemText(index, subItem, str);
+	//		mp_Grid->SetBkColor(RGB(200, 200, 200));
+	//	}
+	//	
+
+	//	else if (index == 3) {
+	//		mp_Grid->SetItemText(index, subItem, str);
+	//		mp_Grid->SetBkColor(RGB(200, 200, 200));
+	//	}
+	//	
+
+	//	else {
+	//		mp_Grid->SetItemText(index, subItem, str);
+	//		mp_Grid->SetBkColor(RGB(200, 200, 200));
+	//	}
+	//	
+	//}
+
+	int selectIndex, subItem;
+	POSITION pos = mp_Grid->GetFirstSelectedItemPosition();
+	selectIndex = mp_Grid->GetNextItem(-1, LVNI_SELECTED);
+	subItem = pNMItemActivate->iSubItem;
+
+
+	//CString result = mp_Grid->GetItemText(selectIndex, 1);
+	CString temp;
+	temp.Format(L"selectIndex : %d, subItem : %d", selectIndex, subItem);
+	AfxMessageBox(temp);
+
+
+	*pResult = 0;
 }

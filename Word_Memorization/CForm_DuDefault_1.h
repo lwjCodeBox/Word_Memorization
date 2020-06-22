@@ -1,6 +1,8 @@
 #pragma once
 
 #define LEditDown_Default_1 WM_USER + 1
+#define IDC_LISTCONTROL 10000
+
 //#define TEST_CODE
 
 // CForm_DuDefault_1 form view
@@ -77,7 +79,8 @@ public:
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	
-	afx_msg void OnCustomdrawDfsDefault1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnCustomdrawList(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 
