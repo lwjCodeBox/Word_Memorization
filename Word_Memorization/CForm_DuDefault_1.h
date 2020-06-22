@@ -4,7 +4,6 @@
 //#define TEST_CODE
 
 // CForm_DuDefault_1 form view
-class CWordMemorizationDlg;
 class _CExcelLib;
 class CForm_DuDefault_1 : public CFormView
 {
@@ -36,7 +35,13 @@ private:
 
 	unsigned char *mp_setPos = NULL;
 
-	//CWordMemorizationDlg *mp_MainDlg;
+	// List Control
+	CListCtrl *mp_Grid = NULL;
+	CCtrlView *mp_ListView = NULL;
+	CFont m_hFont, *m_hOldFont;
+
+
+	// Excel
 	_CExcelLib *pExcel;
 
 	// Original Code
@@ -69,8 +74,10 @@ public:
 	virtual BOOL DestroyWindow();
 	afx_msg HBRUSH OnCtlColor(CDC *pDC, CWnd *pWnd, UINT nCtlColor);
 
-protected:
-	afx_msg LRESULT OnLeditdownDefault1(WPARAM wParam, LPARAM lParam); 
+public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	
+	afx_msg void OnCustomdrawDfsDefault1(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 
