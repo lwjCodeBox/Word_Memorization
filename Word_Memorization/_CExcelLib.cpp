@@ -5,6 +5,7 @@ _CExcelLib::_CExcelLib()
 {
 	 ExcelCertified();
 	 InitReadExcel(m_ExcelList);
+	 Read_DU_Default(m_Excel_DuDefault_1, m_Excel_DuDefault_2, m_Excel_DuDefault_3);
 }
 
 Sheet* _CExcelLib::getSheetByName(Book* book, const wchar_t* name)
@@ -181,25 +182,42 @@ bool _CExcelLib::Load_logical_Port_Adrs()
 }
 
 
-bool _CExcelLib::Read_DU_Default(int a_select)
+bool _CExcelLib::Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_Excel_DuDefault_2)[8], CString(*ap_Excel_DuDefault_3)[8])
 {
 	libxl::Format *format = NULL;
 
-	if (1 == a_select)
-		m_pDU_Default = getSheetByName(m_Book, L"du_default1");
-	else if (2 == a_select)
-		m_pDU_Default = getSheetByName(m_Book, L"du_default2");
-	else if (3 == a_select)
-		m_pDU_Default = getSheetByName(m_Book, L"du_default3");
-	else
-		return false;
+	int col_start = 2; // (열 시작 위치)
+	int col_end = 9;
+	int row_start = 5; // (행 시작 위치)
+	int row_end = 36;
 
-	int readAddr = 0;
-	int mem_row_idx = 0;
-
-	if (m_pDU_Default) {
-		return true;
+	m_pDU_Default_1 = getSheetByName(m_Book, L"du_default1");
+	if (m_pDU_Default_1) {
+		for (int i = row_start; i <= row_end; i++) {
+			for (int j = col_start; j <= col_end; j++) {
+				ap_Excel_DuDefault_1[i - 5][9 - j] = m_pDU_Default_1->readStr(i, j, &format);
+			}
+		}
 	}
 
-	return false;
+	/*m_pDU_Default_2 = getSheetByName(m_Book, L"du_default2");
+	if (m_pDU_Default_2) {
+		for (int i = row_start; i <= row_end; i++) {
+			for (int j = col_start; j <= col_end; j++) {
+				ap_Excel_DuDefault_2[i - 5][9 - j] = m_pDU_Default_2->readStr(i, j, &format);
+			}
+		}
+	}
+
+	m_pDU_Default_3 = getSheetByName(m_Book, L"du_default3");
+	if (m_pDU_Default_3) {
+		for (int i = row_start; i <= row_end; i++) {
+			for (int j = col_start; j <= col_end; j++) {
+				ap_Excel_DuDefault_3[i - 5][9 - j] = m_pDU_Default_3->readStr(i, j, &format);
+			}
+		}
+	}*/
+
+	
+	return true;
 }

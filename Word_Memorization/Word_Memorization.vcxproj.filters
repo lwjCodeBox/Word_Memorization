@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Grid_Ctrl">
+      <UniqueIdentifier>{7686c526-3a64-40eb-9983-bc2098250af7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Word_Memorization.h">
@@ -51,6 +54,9 @@
     <ClInclude Include="CForm_SetMVB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GridCtrl_src_new\MemDC.h">
+      <Filter>Grid_Ctrl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Word_Memorization.cpp">
@@ -82,6 +88,24 @@
     </ClCompile>
     <ClCompile Include="CForm_SetMVB.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GridCtrl_src_new\GridCell.cpp">
+      <Filter>Grid_Ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="GridCtrl_src_new\GridCellBase.cpp">
+      <Filter>Grid_Ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="GridCtrl_src_new\GridCtrl.cpp">
+      <Filter>Grid_Ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="GridCtrl_src_new\GridDropTarget.cpp">
+      <Filter>Grid_Ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="GridCtrl_src_new\InPlaceEdit.cpp">
+      <Filter>Grid_Ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="GridCtrl_src_new\TitleTip.cpp">
+      <Filter>Grid_Ctrl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

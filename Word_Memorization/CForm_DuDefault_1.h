@@ -1,9 +1,13 @@
 #pragma once
 
+#include "GridCtrl_src_new/GridCtrl.h"
+
 #define LEditDown_Default_1 WM_USER + 1
 #define IDC_LISTCONTROL 10000
+#define IDC_GRID		10001
 
-//#define TEST_CODE
+// 그리드 컨트롤 오픈 소스를 찾아서 주석처리한 코드는 필요가 없어짐. 교육용으로 나김.
+//#define Edit_and_ListControl_Sample_CODE 
 
 // CForm_DuDefault_1 form view
 class _CExcelLib;
@@ -28,23 +32,27 @@ public:
 #endif
 
 private:
-	CEdit **mp_cedit;
-	CEdit **mp_fixedRow;
-	CEdit **mp_fixedColumn;
+	CGridCtrl *mp_gridctrl = NULL;
 
 	int m_row, m_column;
 	int m_fixedRowCnt, m_fixedColumnCnt;
 
 	unsigned char *mp_setPos = NULL;
 
-	// List Control
-	CListCtrl *mp_Grid = NULL;
-	CCtrlView *mp_ListView = NULL;
-	CFont m_hFont, *m_hOldFont;
-
-
 	// Excel
 	_CExcelLib *pExcel;
+
+	// 0이면 클릭은 한번도 클릭을 한적이 없다는 의미.
+	int m_prev_clicked = 0; 
+ 
+	// du_default 버튼들중에서 어떤 버튼을 클릭했는지 구별하기 위한 변수 1이면 du default1, 2이면 du default2, 3이면 du default3
+	int m_flag = 0; 
+	
+#ifdef Edit_and_ListControl_Sample_CODE
+private:
+	CEdit **mp_cedit;
+	CEdit **mp_fixedRow;
+	CEdit **mp_fixedColumn;
 
 	// Original Code
 	HBRUSH mh_edit_bk_brush = NULL;
@@ -54,33 +62,28 @@ private:
 	HBRUSH mh_bk_fixed_row_col = NULL;
 	// normal row,  column color
 	HBRUSH mh_bk_edit_row_col = NULL;
-	// 0이면 클릭은 한번도 클릭을 한적이 없다는 의미.
-	int m_prev_clicked = 0; 
- 
-	// du_default 버튼들중에서 어떤 버튼을 클릭했는지 구별하기 위한 변수 1이면 du default1, 2이면 du default2, 3이면 du default3
-	int m_flag = 0; 
 
-private:
 	void Clear_EditCtrl();
 	void Create_EditCtrl(int a_Row, int a_Column);
 
+#endif
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 	DECLARE_MESSAGE_MAP()
+
+public:
+#ifdef Edit_and_ListControl_Sample_CODE
+	afx_msg HBRUSH OnCtlColor(CDC *pDC, CWnd *pWnd, UINT nCtlColor);
+	afx_msg void OnCustomdrawList(NMHDR *pNMHDR, LRESULT *pResult);
+#endif	
+
 public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext = NULL);
 	virtual void OnInitialUpdate();
 	afx_msg void OnBnClickedDfsDefault1();
 	afx_msg void OnBnClickedDfsDefault2();
 	virtual BOOL DestroyWindow();
-	afx_msg HBRUSH OnCtlColor(CDC *pDC, CWnd *pWnd, UINT nCtlColor);
-
-public:
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	
-	afx_msg void OnCustomdrawList(NMHDR *pNMHDR, LRESULT *pResult);
-	afx_msg void OnNMClickList(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 

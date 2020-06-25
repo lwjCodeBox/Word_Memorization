@@ -196,6 +196,7 @@
     <ClInclude Include="CForm_SetMVB.h" />
     <ClInclude Include="CSharedMemory.h" />
     <ClInclude Include="DefineOfDev_J.h" />
+    <ClInclude Include="GridCtrl_src_new\MemDC.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -210,6 +211,12 @@
     <ClCompile Include="CForm_SetMVB.cpp" />
     <ClCompile Include="CSharedMemory.cpp" />
     <ClCompile Include="DefineOfDev_J.cpp" />
+    <ClCompile Include="GridCtrl_src_new\GridCell.cpp" />
+    <ClCompile Include="GridCtrl_src_new\GridCellBase.cpp" />
+    <ClCompile Include="GridCtrl_src_new\GridCtrl.cpp" />
+    <ClCompile Include="GridCtrl_src_new\GridDropTarget.cpp" />
+    <ClCompile Include="GridCtrl_src_new\InPlaceEdit.cpp" />
+    <ClCompile Include="GridCtrl_src_new\TitleTip.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
