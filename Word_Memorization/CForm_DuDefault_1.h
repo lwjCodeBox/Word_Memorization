@@ -43,7 +43,7 @@ private:
 	_CExcelLib *pExcel;
 
 	// 0이면 클릭은 한번도 클릭을 한적이 없다는 의미.
-	int m_prev_clicked = 0; 
+	unsigned char clicked[32][8];
  
 	// du_default 버튼들중에서 어떤 버튼을 클릭했는지 구별하기 위한 변수 1이면 du default1, 2이면 du default2, 3이면 du default3
 	int m_flag = 0; 
@@ -69,6 +69,8 @@ private:
 #endif
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	afx_msg void OnGridClick(NMHDR *pNotifyStruct, LRESULT *);
+	afx_msg void OnGridDblClick(NMHDR *pNotifyStruct, LRESULT *);
 
 	DECLARE_MESSAGE_MAP()
 
@@ -78,12 +80,15 @@ public:
 	afx_msg void OnCustomdrawList(NMHDR *pNMHDR, LRESULT *pResult);
 #endif	
 
+private:
+	
+
 public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext = NULL);
 	virtual void OnInitialUpdate();
 	afx_msg void OnBnClickedDfsDefault1();
 	afx_msg void OnBnClickedDfsDefault2();
-	virtual BOOL DestroyWindow();
+	virtual BOOL DestroyWindow();	
 };
 
 

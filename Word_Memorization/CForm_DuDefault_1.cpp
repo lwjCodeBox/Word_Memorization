@@ -156,6 +156,9 @@ BEGIN_MESSAGE_MAP(CForm_DuDefault_1, CFormView)
 	ON_BN_CLICKED(IDC_DFS_DEFAULT_1, &CForm_DuDefault_1::OnBnClickedDfsDefault1)
 	ON_BN_CLICKED(IDC_DFS_DEFAULT_2, &CForm_DuDefault_1::OnBnClickedDfsDefault2)
 	
+	// mouse click option
+	ON_NOTIFY(NM_RCLICK, IDC_GRID, &CForm_DuDefault_1::OnGridClick)
+	ON_NOTIFY(NM_DBLCLK, IDC_GRID, &CForm_DuDefault_1::OnGridDblClick)
 END_MESSAGE_MAP()
 
 // CForm_DuDefault_1 diagnostics
@@ -205,7 +208,9 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 
 	m_flag = 1;
 
-	CRect rc(10, 60, 1019, 850);
+	//memset(clicked, 0, sizeof(clicked));
+
+	CRect rc(10, 60, 1020, 850);
 	
 	mp_gridctrl = new CGridCtrl;
 	mp_gridctrl->Create(rc, this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
@@ -218,6 +223,13 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 
 	mp_gridctrl->SetFixedBkColor(RGB(200, 200, 200));
 
+	// grid option
+	mp_gridctrl->SetGridLineColor(RGB(128, 128, 255));
+	mp_gridctrl->SetTrackFocusCell(true);
+	mp_gridctrl->SetEditable(true);
+
+	mp_gridctrl->EnableTitleTips(false);
+	
 	CString str;
 	
 	// Bit 7 ~ 0
@@ -241,54 +253,49 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 		mp_gridctrl->SetColumnWidth(col, 114);
 	}
 	
-	// read excel
-	int row_first = 0; // user define (행 시작 위치)
-	int row_last = 0;
-	int col_first = 0; // user define (열 시작 위치)
-	int col_last = 0; // user define
-
-	int mergeCount = 0;
+	// Grid Setting
 	bool bMerge = false;
-	int firstMergeCellPos = 0;
+	int mergeCol_start = 0;
+	int mergeCol_finish = 0;
 
-	for (int row = 2; row < 3; row++) {
-		for (int col = 1; col < 9; col++) {
-			mp_gridctrl->SetItemText(row, 9 - col, pExcel->GetDuDefaultValue(row - 2, col - 1, m_flag));
+	// for()문의 조건 범위 기준은 엘셀의 읽어올 위치를 기준으로 잡고 설정함
+	for (int row = 5; row < 37; row++) {	
+		for (int col = 2; col < 11; col++) {			
+			bMerge = pExcel->m_pDU_Default_1->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last			
 
-			bMerge = pExcel->m_pDU_Default_1->getMerge(row, col, &row_first, &row_last, &col_first, &col_last);
-
-			// 병합이 되어 있는 상태라면...
+			// 병합이 되었다면...
 			if (bMerge) {
-				if (firstMergeCellPos == 0)
-
-				firstMergeCellPos++;
-				mergeCount++;
-				continue;
+				if (mergeCol_finish == 0) {
+					mergeCol_start = col-1;				
+					mergeCol_finish = col-2;
+				}				
+				mergeCol_finish++;
 			}
+			// 병합이 안되어 있다면...
 			else {
-				// 병합이 안돼고 단일 비트 상태 일때.
-				if (0 == mergeCount) { 
-					
-				}
+				// 일반 비트 형식 
+				if (0 == mergeCol_finish) { }
+				// 병합된 크기 만큼 병합.
 				else {
-					//mp_gridctrl->MergeCells(CCellRange(row, col, row, col+mergeCount));
+					int t_row = row - 3;
+					mp_gridctrl->MergeCells(CCellRange(t_row, mergeCol_start, t_row, mergeCol_finish));
 
-					firstMergeCellPos = 0;
-					mergeCount = 0;
+					mergeCol_start = 0;
+					mergeCol_finish = 0;
 				}
 			}
+
 		}
 	}
-
-	mp_gridctrl->MergeCells(CCellRange(2, 1, 2, 8));
-	/*for (int row = 2; row < 34; row++) {
+	
+	// Text
+	for (int row = 2; row < 34; row++) {
 		for (int col = 1; col < 9; col++) {
-			mp_gridctrl->SetItemText(row, 9-col, pExcel->GetDuDefaultValue(row-2, col-1, m_flag));
+			mp_gridctrl->SetItemText(row, 9 - col, pExcel->GetDuDefaultValue(row - 2, col - 1, m_flag));
 		}
-	}*/
-
+	}
 	
-	
+		
 	//BYTE l_byte, h_byte;
 
 	//int dataSize = sizeof(pExcel->mvb_Addr) / sizeof(WORD);
@@ -300,6 +307,8 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 
 	//memset(&(mp_FormMainDlg->m_pData->data[t_port][word]), h_byte, 1);   // mvb 상위 바이트에 값을 넣음
 	//memset(&(mp_FormMainDlg->m_pData->data[t_port][word + 1]), l_byte, 1); // mvb 하위 바이트에 값을 넣음
+	
+	memset(clicked, 0, sizeof(clicked));	
 
 #ifdef Edit_and_ListControl_Sample_CODE
 		Clear_EditCtrl(); // 에디트 창을 한번 초기화 한다.
@@ -325,7 +334,6 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 		mh_bk_edit_row_col = ::CreateSolidBrush(RGB(128, 128, 255));
 #endif
 }
-
 
 void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 {
@@ -474,3 +482,29 @@ void CForm_DuDefault_1::OnCustomdrawList(NMHDR *pNMHDR, LRESULT *pResult)
 }
 #endif
 
+void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
+{
+	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
+	CString str;
+	str.Format(L"Clicked on row %d, col %d", pItem->iRow, pItem->iColumn);
+	//mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(0, 255, 128));
+		
+	// 클릭된 위치 저장.
+	if (0 == clicked[pItem->iRow][pItem->iColumn]) {
+		clicked[pItem->iRow][pItem->iColumn] = 1;
+		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(0, 255, 128));
+	}
+	else {
+		clicked[pItem->iRow][pItem->iColumn] = 0;
+		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(255, 255, 255));
+	}
+	mp_gridctrl->RedrawCell(pItem->iRow, pItem->iColumn);
+}
+
+
+void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
+{
+	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
+
+	mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(255, 128, 255));
+}

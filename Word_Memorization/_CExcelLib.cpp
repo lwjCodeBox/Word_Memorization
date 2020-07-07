@@ -190,7 +190,7 @@ bool _CExcelLib::Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_
 	int col_end = 9;
 	int row_start = 5; // (행 시작 위치)
 	int row_end = 36;
-
+	
 	m_pDU_Default_1 = getSheetByName(m_Book, L"du_default1");
 	if (m_pDU_Default_1) {
 		for (int i = row_start; i <= row_end; i++) {
