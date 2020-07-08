@@ -43,7 +43,7 @@ private:
 	_CExcelLib *pExcel;
 
 	// 0이면 클릭은 한번도 클릭을 한적이 없다는 의미.
-	unsigned char clicked[32][8];
+	//unsigned char m_buffer[32][8];
  
 	// du_default 버튼들중에서 어떤 버튼을 클릭했는지 구별하기 위한 변수 1이면 du default1, 2이면 du default2, 3이면 du default3
 	int m_flag = 0; 
@@ -81,7 +81,7 @@ public:
 #endif	
 
 private:
-	
+	void CellColorChange(int a_Row, int a_Column);
 
 public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext = NULL);

@@ -5,7 +5,7 @@
 #include "Word_Memorization.h"
 #include "CForm_DuDefault_1.h"
 
-//#include "Word_MemorizationDlg.h"
+#include "Word_MemorizationDlg.h"
 #include "_CExcelLib.h"
 #include "DefineOfDev_J.h"
 
@@ -198,11 +198,11 @@ void CForm_DuDefault_1::OnInitialUpdate()
 
 	// TODO: Add your specialized code here and/or call the base class
 }
-
+//--------------------------------------------------------------------------------------------
 
 void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 {
-	//mp_MainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	CWordMemorizationDlg mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 
 	if (m_flag == 1) return;
 
@@ -295,20 +295,26 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 		}
 	}
 	
-		
-	//BYTE l_byte, h_byte;
 
-	//int dataSize = sizeof(pExcel->mvb_Addr) / sizeof(WORD);
-	//int t_port = binarySearch(pExcel->mvb_Addr, dataSize, 0x1A4);
+	unsigned char t_buffer[32][8];
 
+	BYTE l_byte, h_byte;
+	int dataSize = sizeof(pExcel->mvb_Addr) / sizeof(WORD);
+	int t_port = binarySearch(pExcel->mvb_Addr, dataSize, 0x1A4);
 
+	//unsigned short value;
 	//h_byte = ((unsigned char *)&value)[1]; // word 상위
 	//l_byte = ((unsigned char *)&value)[0]; // word 하위
 
-	//memset(&(mp_FormMainDlg->m_pData->data[t_port][word]), h_byte, 1);   // mvb 상위 바이트에 값을 넣음
-	//memset(&(mp_FormMainDlg->m_pData->data[t_port][word + 1]), l_byte, 1); // mvb 하위 바이트에 값을 넣음
+	//memset(&(mainDlg.m_pData->data[t_port][0]), h_byte, 1);   // mvb 상위 바이트에 값을 넣음
+	//memset(&(mainDlg.m_pData->data[t_port][1]), l_byte, 1); // mvb 하위 바이트에 값을 넣음
 	
-	memset(clicked, 0, sizeof(clicked));	
+	//memcpy(t_buffer, &(m_pData->data[m_signal[i].mem_Row][0]), MAX_DATA_COUNT_PER_PORT);
+
+	//CellColorChange();
+	mainDlg.m_pData->data[t_port][0];
+	memset(&(t_buffer[0][0]), 0, 32);
+	memset(&(t_buffer[0][1]), 0, 32);
 
 #ifdef Edit_and_ListControl_Sample_CODE
 		Clear_EditCtrl(); // 에디트 창을 한번 초기화 한다.
@@ -334,6 +340,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 		mh_bk_edit_row_col = ::CreateSolidBrush(RGB(128, 128, 255));
 #endif
 }
+//--------------------------------------------------------------------------------------------
 
 void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 {
@@ -341,7 +348,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 
 	m_flag = 2;
 }
-
+//--------------------------------------------------------------------------------------------
 
 BOOL CForm_DuDefault_1::DestroyWindow()
 {
@@ -370,6 +377,7 @@ BOOL CForm_DuDefault_1::DestroyWindow()
 #endif
 	return CFormView::DestroyWindow();
 }
+//--------------------------------------------------------------------------------------------
 
 #ifdef Edit_and_ListControl_Sample_CODE
 HBRUSH CForm_DuDefault_1::OnCtlColor(CDC *pDC, CWnd *pWnd, UINT nCtlColor)
@@ -482,6 +490,7 @@ void CForm_DuDefault_1::OnCustomdrawList(NMHDR *pNMHDR, LRESULT *pResult)
 }
 #endif
 
+// bit format
 void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 {
 	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
@@ -492,19 +501,27 @@ void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 	// 클릭된 위치 저장.
 	if (0 == clicked[pItem->iRow][pItem->iColumn]) {
 		clicked[pItem->iRow][pItem->iColumn] = 1;
-		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(0, 255, 128));
+		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RCLICK_RGB);
 	}
 	else {
 		clicked[pItem->iRow][pItem->iColumn] = 0;
-		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(255, 255, 255));
+		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(255, 255, 255)); // 흰색
 	}
 	mp_gridctrl->RedrawCell(pItem->iRow, pItem->iColumn);
 }
+//--------------------------------------------------------------------------------------------
 
-
+// byte format
 void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 {
 	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
 
-	mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(255, 128, 255));
+	mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, LDCLICK_RGB);
+}
+//--------------------------------------------------------------------------------------------
+
+void CForm_DuDefault_1::CellColorChange(int a_Row, int a_Column)
+{
+	
+	//mp_gridctrl->SetItemBkColour(a_Row, a_Column, RCLICK_RGB);
 }
