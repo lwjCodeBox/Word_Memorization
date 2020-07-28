@@ -9,6 +9,8 @@
 #include "_CExcelLib.h"
 #include "DefineOfDev_J.h"
 
+#include "CSharedMemory.h"
+
 // CForm_DuDefault_1
 
 IMPLEMENT_DYNCREATE(CForm_DuDefault_1, CFormView)
@@ -22,7 +24,7 @@ CForm_DuDefault_1::CForm_DuDefault_1()
 CForm_DuDefault_1::CForm_DuDefault_1(_CExcelLib *a_Libxl)
 	: CFormView(IDD_FORM_DU_DEFAULT), pExcel(a_Libxl)
 {
-
+	mp_MainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 }
 
 CForm_DuDefault_1::~CForm_DuDefault_1()
@@ -202,7 +204,8 @@ void CForm_DuDefault_1::OnInitialUpdate()
 
 void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 {
-	CWordMemorizationDlg mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	//CWordMemorizationDlg mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	
 
 	if (m_flag == 1) return;
 
@@ -274,7 +277,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 			// 병합이 안되어 있다면...
 			else {
 				// 일반 비트 형식 
-				if (0 == mergeCol_finish) { }
+				if (0 == mergeCol_finish) {}
 				// 병합된 크기 만큼 병합.
 				else {
 					int t_row = row - 3;
@@ -296,8 +299,10 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	}
 	
 
-	unsigned char t_buffer[32][8];
+	//unsigned char t_buffer[32][8];
+	unsigned char t_buffer[256];
 
+/*
 	BYTE l_byte, h_byte;
 	int dataSize = sizeof(pExcel->mvb_Addr) / sizeof(WORD);
 	int t_port = binarySearch(pExcel->mvb_Addr, dataSize, 0x1A4);
@@ -311,10 +316,18 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	
 	//memcpy(t_buffer, &(m_pData->data[m_signal[i].mem_Row][0]), MAX_DATA_COUNT_PER_PORT);
 
-	//CellColorChange();
-	mainDlg.m_pData->data[t_port][0];
-	memset(&(t_buffer[0][0]), 0, 32);
-	memset(&(t_buffer[0][1]), 0, 32);
+	//CheckData();
+
+	//memset(t_buffer, 7, 32);
+	//memcpy(&(mp_MainDlg->m_pData->data[t_port][0]), &t_buffer, 2);
+*/
+	
+	bool b = false;
+	b = mp_gridctrl->IsMergedCell(2, 1, CCellRange(0, 0, 0, 0));
+	b = mp_gridctrl->IsMergedCell(10, 1, CCellRange(0, 0, 0, 0));
+	b = mp_gridctrl->IsMergedCell(11, 1, CCellRange(-1,-1,-1,-1));
+	b = mp_gridctrl->IsMergedCell(12, 1, CCellRange(0, 0, 0, 0));
+
 
 #ifdef Edit_and_ListControl_Sample_CODE
 		Clear_EditCtrl(); // 에디트 창을 한번 초기화 한다.
@@ -494,19 +507,21 @@ void CForm_DuDefault_1::OnCustomdrawList(NMHDR *pNMHDR, LRESULT *pResult)
 void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 {
 	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
-	CString str;
-	str.Format(L"Clicked on row %d, col %d", pItem->iRow, pItem->iColumn);
-	//mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(0, 255, 128));
 		
+	if (pItem->iRow == 0 || pItem->iRow == 1 || pItem->iColumn == 0) return; // fix cells
+
 	// 클릭된 위치 저장.
-	if (0 == clicked[pItem->iRow][pItem->iColumn]) {
-		clicked[pItem->iRow][pItem->iColumn] = 1;
-		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RCLICK_RGB);
-	}
-	else {
-		clicked[pItem->iRow][pItem->iColumn] = 0;
-		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(255, 255, 255)); // 흰색
-	}
+	//if (0 == clicked[pItem->iRow][pItem->iColumn]) {
+	//	clicked[pItem->iRow][pItem->iColumn] = 1;
+	//	mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RCLICK_RGB);
+	//}
+	//else {
+	//	clicked[pItem->iRow][pItem->iColumn] = 0;
+	//	mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(255, 255, 255)); // 흰색
+	//}
+	
+	mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RCLICK_RGB); // test
+	
 	mp_gridctrl->RedrawCell(pItem->iRow, pItem->iColumn);
 }
 //--------------------------------------------------------------------------------------------
@@ -515,13 +530,73 @@ void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 {
 	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
+	
+	if (pItem->iRow == 0 || pItem->iRow == 1 || pItem->iColumn == 0) return; // fix cells
 
 	mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, LDCLICK_RGB);
+	mp_gridctrl->RedrawCell(pItem->iRow, pItem->iColumn);
 }
 //--------------------------------------------------------------------------------------------
 
-void CForm_DuDefault_1::CellColorChange(int a_Row, int a_Column)
+void CForm_DuDefault_1::CheckData(int a_Row, int a_Column)
 {
 	
 	//mp_gridctrl->SetItemBkColour(a_Row, a_Column, RCLICK_RGB);
 }
+//--------------------------------------------------------------------------------------------
+
+void CForm_DuDefault_1::IsDataCheck(int a_Row, int a_Column)
+{
+	// Grid Setting
+	bool bMerge = false;
+	int mergeCol_start = 0;
+	int mergeCol_finish = 0;
+
+	// Shared Memory Data Check
+	BYTE l_byte, h_byte;
+	int dataSize = sizeof(pExcel->mvb_Addr) / sizeof(WORD);
+	int t_port = binarySearch(pExcel->mvb_Addr, dataSize, 0x1A4);
+	unsigned char data;
+
+	// for()문의 조건 범위 기준은 엘셀의 읽어올 위치를 기준으로 잡고 설정함
+	for (int row = 0; row <= a_Row; row++) {
+		for (int col = 0; col <= a_Column; col++) {
+			bMerge = pExcel->m_pDU_Default_1->getMerge(row+5, col+2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last			
+
+			// 병합이 되었다면...
+			if (bMerge) {
+				if (mergeCol_finish == 0) {
+					mergeCol_start = col - 1;
+					mergeCol_finish = col - 2;
+				}
+				mergeCol_finish++;
+			}
+			// 병합이 안되어 있다면...
+			else {
+				// 일반 비트 형식 
+				if (0 == mergeCol_finish) {
+					int pos = row - 5;
+					data = mp_MainDlg->m_pData->data[t_port][pos];
+
+					int shift = 7 % (col - 2);
+
+					if (((data >> shift) & 0x01) == 0x01)
+						mp_gridctrl->SetItemBkColour(row, col, RCLICK_RGB);
+					//else
+						//mp_gridctrl->SetItemBkColour(row, col, WHITE_RGB);
+				}
+				// 병합된 크기 만큼 병합.
+				else {
+					int t_row = row - 3;
+					mp_gridctrl->MergeCells(CCellRange(t_row, mergeCol_start, t_row, mergeCol_finish));
+
+					mp_gridctrl->SetItemBkColour(t_row, mergeCol_start, LDCLICK_RGB);
+
+					mergeCol_start = 0;
+					mergeCol_finish = 0;
+				}
+			}
+		}
+	}
+}
+//--------------------------------------------------------------------------------------------

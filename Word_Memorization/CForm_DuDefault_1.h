@@ -11,6 +11,7 @@
 
 // CForm_DuDefault_1 form view
 class _CExcelLib;
+class CWordMemorizationDlg;
 class CForm_DuDefault_1 : public CFormView
 {
 	DECLARE_DYNCREATE(CForm_DuDefault_1)
@@ -32,15 +33,20 @@ public:
 #endif
 
 private:
+	CWordMemorizationDlg *mp_MainDlg;
+
 	CGridCtrl *mp_gridctrl = NULL;
 
 	int m_row, m_column;
 	int m_fixedRowCnt, m_fixedColumnCnt;
 
-	unsigned char *mp_setPos = NULL;
+	//unsigned char *mp_setPos = NULL;
+
+	unsigned char clicked[32][8];
 
 	// Excel
 	_CExcelLib *pExcel;
+
 
 	// 0이면 클릭은 한번도 클릭을 한적이 없다는 의미.
 	//unsigned char m_buffer[32][8];
@@ -81,7 +87,8 @@ public:
 #endif	
 
 private:
-	void CellColorChange(int a_Row, int a_Column);
+	void CheckData(int a_Row, int a_Column);
+	void IsDataCheck(int a_Row, int a_Column);
 
 public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext = NULL);
