@@ -161,6 +161,7 @@ BEGIN_MESSAGE_MAP(CForm_DuDefault_1, CFormView)
 	// mouse click option
 	ON_NOTIFY(NM_RCLICK, IDC_GRID, &CForm_DuDefault_1::OnGridClick)
 	ON_NOTIFY(NM_DBLCLK, IDC_GRID, &CForm_DuDefault_1::OnGridDblClick)
+	ON_BN_CLICKED(IDC_DFS_DEFAULT_3, &CForm_DuDefault_1::OnBnClickedDfsDefault3)
 END_MESSAGE_MAP()
 
 // CForm_DuDefault_1 diagnostics
@@ -215,9 +216,11 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 
 	CRect rc(10, 60, 1020, 850);
 	
-	mp_gridctrl = new CGridCtrl;
-	mp_gridctrl->Create(rc, this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
-		
+	if (mp_gridctrl == NULL) {
+		mp_gridctrl = new CGridCtrl;
+		mp_gridctrl->Create(rc, this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
+	}
+
 	mp_gridctrl->SetRowCount(32+2);
 	mp_gridctrl->SetColumnCount(8 + 1); // 현시할 column 8개, fixed column 1개
 
@@ -232,7 +235,11 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	mp_gridctrl->SetEditable(true);
 
 	mp_gridctrl->EnableTitleTips(false);
-	
+
+	// 그리드 초기화
+	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
+	InitItemBkColor(33, 8);
+
 	CString str;
 	
 	// Bit 7 ~ 0
@@ -256,88 +263,18 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 		mp_gridctrl->SetColumnWidth(col, 114);
 	}
 	
-	// Grid Setting
-	bool bMerge = false;
-	int mergeCol_start = 0;
-	int mergeCol_finish = 0;
-	int mergeCount = 0;
+	// 매개 변수 범위는 기준은 엑셀 기준이다.
+	InitMakeGrid(5, 36, 2, 9, m_flag);
 
-	// for()문의 조건 범위 기준은 엘셀의 읽어올 위치를 기준으로 잡고 설정함
-	for (int row = 5; row < 37; row++) {	
-		for (int col = 2; col < 11; col++) {			
-			bMerge = pExcel->m_pDU_Default_1->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last			
+	// 매개 변수 범위는 기준은 엑셀 기준이다.
+	SetWordFormatCell(5, 36, 2, 9, m_flag);
 
-			// 병합이 되었다면...
-			if (bMerge) {
-				if (mergeCol_finish == 0) {
-					mergeCol_start = col-1;				
-					mergeCol_finish = col-2;
-				}				
-				mergeCol_finish++;
-				mergeCount++;
-			}
-			// 병합이 안되어 있다면...
-			else {
-				// 일반 비트 형식 
-				if (0 == mergeCol_finish) {}
-				// 병합된 크기 만큼 병합.
-				else {
-					int t_row = row - 3;
-					mp_gridctrl->MergeCells(CCellRange(t_row, mergeCol_start, t_row, mergeCol_finish));
+	// 매개 변수 범위는 그리드 컨트롤 기준이다.
+	SetTextGrid(2, 34, 1, 8, m_flag);
 
-					mergeCol_start = 0;
-					mergeCol_finish = 0;
-				}
-			}
-
-			// Word Fomat
-			if (mergeCount == 16) {
-				bool t_bWord = false;
-
-				//int t_row_first = 5, t_row_last = 6, t_col_first = 2, t_col_last = 9;
-				//t_bWord = pExcel->m_pDU_Default_1->getMerge(6, 9, &t_row_first, &t_row_last, &t_col_first, &t_col_last); // row, col, &row_first, &row_last, &col_first, &col_last
-				//
-				//t_row_first = 17;
-				//t_row_last = 18;
-				//t_bWord = pExcel->m_pDU_Default_1->getMerge(18-1, col, &t_row_first, &t_row_last, &t_col_first, &t_col_last);
-
-				int t_row = row - 3;
-				if(t_bWord) 
-					//mp_gridctrl->MergeCells(CCellRange(t_row - 1, 1, t_row, 8));
-				
-
-				
-				//mp_gridctrl->MergeCells(CCellRange(t_row-1, 1, t_row, 8));
-				mergeCount = 0;
-			}
-		}
-	}
-
-	bool t_bWord = false;
-	
-	int row_first, row_last;
-	int col_first = 2, col_last = 9;
-
-
-	row_first = 17, row_last = 18;
-	t_bWord = pExcel->m_pDU_Default_1->getMerge(NULL, NULL, &row_first, &row_last, &col_first, &col_last); // _Row, _Col, &row_first, &row_last, &col_first, &col_last		
-
-
-	row_first = 5, row_last = 6;
-	t_bWord = pExcel->m_pDU_Default_1->getMerge(0, 0, &row_first, &row_last, &col_first, &col_last);
-
-
-	//mp_gridctrl->MergeCells(CCellRange(2, 1, 3, 8)); //Word Format
-
-	// Text
-	for (int row = 2; row < 34; row++) {
-		for (int col = 1; col < 9; col++) {
-			mp_gridctrl->SetItemText(row, 9 - col, pExcel->GetDuDefaultValue(row - 2, col - 1, m_flag));
-		}
-	}
-	
 	//unsigned char t_buffer[32][8];
 	unsigned char t_buffer[256];
+
 
 /*
 	BYTE l_byte, h_byte;
@@ -393,6 +330,98 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 	if (m_flag == 2) return;
 
 	m_flag = 2;
+
+	mp_gridctrl->SetRowCount(32 + 2);
+	mp_gridctrl->SetColumnCount(8 + 1); // 현시할 column 8개, fixed column 1개
+
+	mp_gridctrl->SetFixedRowCount(2);
+	mp_gridctrl->SetFixedColumnCount(1);
+
+	mp_gridctrl->SetFixedBkColor(RGB(102, 204, 255));
+
+	// grid option
+	mp_gridctrl->SetGridLineColor(RGB(128, 128, 255));
+	mp_gridctrl->SetTrackFocusCell(true);
+	mp_gridctrl->SetEditable(true);
+
+	mp_gridctrl->EnableTitleTips(false);
+
+	// 그리드 초기화
+	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
+	InitItemBkColor(33, 8);
+
+	CString str;
+
+	// Bit 7 ~ 0
+	for (int i = 1; i < 9; i++) {
+		str.Format(L"Bit %02d", 7 - (i - 1));
+		mp_gridctrl->SetItemText(1, i, str);
+	}
+	// Bit 15 ~ 8
+	for (int i = 1; i < 9; i++) {
+		str.Format(L"Bit %02d", 16 - i);
+		mp_gridctrl->SetItemText(0, i, str);
+	}
+	// Byte
+	for (int i = 2; i < 34; i++) {
+		str.Format(L"Byte %02d", i - 2);
+		mp_gridctrl->SetItemText(i, 0, str);
+	}
+
+	// column width
+	for (int col = 1; col < 9; col++) {
+		mp_gridctrl->SetColumnWidth(col, 114);
+	}
+}
+//--------------------------------------------------------------------------------------------
+
+void CForm_DuDefault_1::OnBnClickedDfsDefault3()
+{
+	if (m_flag == 3) return;
+
+	m_flag = 3;
+
+	mp_gridctrl->SetRowCount(32 + 2);
+	mp_gridctrl->SetColumnCount(8 + 1); // 현시할 column 8개, fixed column 1개
+
+	mp_gridctrl->SetFixedRowCount(2);
+	mp_gridctrl->SetFixedColumnCount(1);
+
+	mp_gridctrl->SetFixedBkColor(RGB(51, 51, 255));
+
+	// grid option
+	mp_gridctrl->SetGridLineColor(RGB(128, 128, 255));
+	mp_gridctrl->SetTrackFocusCell(true);
+	mp_gridctrl->SetEditable(true);
+
+	mp_gridctrl->EnableTitleTips(false);
+
+	// 그리드 초기화
+	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
+	InitItemBkColor(33, 8);
+
+	CString str;
+
+	// Bit 7 ~ 0
+	for (int i = 1; i < 9; i++) {
+		str.Format(L"Bit %02d", 7 - (i - 1));
+		mp_gridctrl->SetItemText(1, i, str);
+	}
+	// Bit 15 ~ 8
+	for (int i = 1; i < 9; i++) {
+		str.Format(L"Bit %02d", 16 - i);
+		mp_gridctrl->SetItemText(0, i, str);
+	}
+	// Byte
+	for (int i = 2; i < 34; i++) {
+		str.Format(L"Byte %02d", i - 2);
+		mp_gridctrl->SetItemText(i, 0, str);
+	}
+
+	// column width
+	for (int col = 1; col < 9; col++) {
+		mp_gridctrl->SetColumnWidth(col, 114);
+	}
 }
 //--------------------------------------------------------------------------------------------
 
@@ -540,24 +569,30 @@ void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
 		
 	if (pItem->iRow == 0 || pItem->iRow == 1 || pItem->iColumn == 0) return; // fix cells
-
+	/*
 	// 클릭된 위치 저장.
-	//if (0 == clicked[pItem->iRow][pItem->iColumn]) {
-	//	clicked[pItem->iRow][pItem->iColumn] = 1;
-	//	mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RCLICK_RGB);
-	//}
-	//else {
-	//	clicked[pItem->iRow][pItem->iColumn] = 0;
-	//	mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(255, 255, 255)); // 흰색
-	//}
+	if (0 == clicked[pItem->iRow][pItem->iColumn]) {
+		clicked[pItem->iRow][pItem->iColumn] = 1;
+		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RCLICK_RGB);
+	}
+	else {
+		clicked[pItem->iRow][pItem->iColumn] = 0;
+		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(255, 255, 255)); // 흰색
+	}
 	
 
-	//UINT num = mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetMargin();
-	//mp_gridctrl->
-	//mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->
-	
+	UINT num = mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetMargin();
+	mp_gridctrl->
+	mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->
+	*/
 		
-	MergeCheck(pItem->iRow, pItem->iColumn, m_flag);
+	int data = IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag);
+	CString str;
+	str.Format(L"%d", data);
+	//AfxMessageBox(str);
+
+	//  0이 아니라면 병합된 셀을 의미 하기 떄문에 병합된 셀에서 우클릭을 할 경우 이 함수를 리턴해 버린다. 
+	if (IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag) != 0) return;
 
 	// Returns cell background color
 	if (mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != RCLICK_RGB) {
@@ -571,12 +606,15 @@ void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 }
 //--------------------------------------------------------------------------------------------
 
-// byte format
+// Merge Cell
 void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 {
 	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
 	
 	if (pItem->iRow == 0 || pItem->iRow == 1 || pItem->iColumn == 0) return; // fix cells
+	
+	//  0이라면 병합되지 않은 셀을 의미 하기 떄문에 병합되지 않은 셀을 더블 클릭하면 리턴한다. 
+	if (IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag) == 0) return;
 
 	if (mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != LDCLICK_RGB) {
 		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, LDCLICK_RGB);
@@ -588,66 +626,55 @@ void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult
 }
 //--------------------------------------------------------------------------------------------
 
-int CForm_DuDefault_1::MergeCheck(int a_Row, int a_Column, int a_flag)
+int CForm_DuDefault_1::IsMergeCheck(int a_Row, int a_Column, int a_flag)
 {
-	//bool bMerge = false;
-	//int mergeCol_start = 0;
-	//int mergeCol_finish = 0;
-	//
-	////pExcel->m_pDU_Default_1->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
-	//for (int col = 1; col < 8; col++) {
+	Sheet **ppSheet = NULL;
 
-	//	// 병합이 되었다면...
-	//	if (bMerge) {
-	//		if (mergeCol_finish == 0) {
-	//			mergeCol_start = col - 1;
-	//			mergeCol_finish = col - 2;
-	//		}
-	//		mergeCol_finish++;
-	//	}
-	//	// 병합이 안되어 있다면...
-	//	else {
-	//		// 일반 비트 형식 
-	//		if (0 == mergeCol_finish) {}
-	//		// 병합된 크기 만큼 병합.
-	//		else {
-	//			
-	//			mp_gridctrl->IsMergedCell(a_Row, 1, CCellRange(a_Row, 1, a_Row, 8));
+	if (a_flag == 1)	  ppSheet = &pExcel->m_pDU_Default_1;
+	else if (a_flag == 2) ppSheet = &pExcel->m_pDU_Default_2;
+	else if (a_flag == 3) ppSheet = &pExcel->m_pDU_Default_3;
 
-	//			mergeCol_start = 0;
-	//			mergeCol_finish = 0;
-	//		}
-	//	}
+	int row_first = 5, row_last = 36;
+	int col_first = 2, col_last = 9;
 
-	//}
+	bool bMerge = false;
+	int mergeCount = 0;
 
+	col_last++;
 
-	Sheet **pSheet = NULL;
-	if (a_flag == 1) {
-		pSheet = &pExcel->m_pDU_Default_1;
+	for (int col = a_Column+1; col <= col_last; col++) {
+		bMerge = (*ppSheet)->getMerge(a_Row+3, col, 0, 0, 0, 0);
+
+		// 병합이 되었다면...
+		if (bMerge) mergeCount++;
+		else {
+			ppSheet = NULL;
+			return mergeCount;
+		}
+
+		// Check Word Fomat
+		if (mergeCount == 8) {
+			// 짝수가 나오면 워드 단위로 읽고 홀수가 나오면 클릭한 위치의 다음 행의 병합 상태는 체크 하지 않는다.
+			// 그래야 클릭한 셀이 바이트 단위 인지 워드 단위 인지 알 수 있다.
+			unsigned char rowPos = a_Row % 2;
+
+			col_last--; // 엑셀 범위를 맞추기 위해서 다시 하나 감소시킨다. 
+
+			(*ppSheet)->getMerge(a_Row + 4, 2, &row_first, &row_last, &col_first, &col_last); // +4를 하는 이유는 클릭한 행의 아래 행에 위치한 엑셀을 읽어 오기 위함이다.
+			// 처음 행과 마지막 행을 비교하는 이유는 바이트 형식이면 두 변수(t_row_first, t_row_last)의 값이 같게 되지만 워드 형식이면 두 변수의 값이 다르다.
+			if ((row_first != row_last) && (rowPos == 0)) {
+				return 16; // 워드 포멧
+			}
+			else {
+				ppSheet = NULL;
+				return mergeCount;
+			}
+		}
 	}
 
-	bool b;
-	int cnt = 0;
-	for (int i = a_Column; i < 11; i++) {
-		// 그리드 위치에서 +3, +1하면 한 곳이 엑셀에 있는 셀 위치와 동일한 위치가 된다.
-		b = (*pSheet)->getMerge(a_Row+3, i+1, 0, 0, 0, 0); 
-		if (b)
-			cnt++;
-		else 
-			break;
-	}
-	/*b = (*pSheet)->getMerge(a_Row, 2, 0, 0, 0, 0);
-	b = (*pSheet)->getMerge(a_Row, 3, 0, 0, 0, 0);
-	b = (*pSheet)->getMerge(a_Row, 4, 0, 0, 0, 0);
-	b = (*pSheet)->getMerge(a_Row, 5, 0, 0, 0, 0);
-	b = (*pSheet)->getMerge(a_Row, 6, 0, 0, 0, 0);
-	b = (*pSheet)->getMerge(a_Row, 7, 0, 0, 0, 0);
-	b = (*pSheet)->getMerge(a_Row, 8, 0, 0, 0, 0);
-	b = (*pSheet)->getMerge(a_Row, 9, 0, 0, 0, 0);*/
-
-	return cnt;
-	
+	// 조건에 맞지 않게 동작했다면 아래 코드를 타게됨.
+	ppSheet = NULL;
+	return -1;
 }
 //--------------------------------------------------------------------------------------------
 
@@ -702,6 +729,127 @@ void CForm_DuDefault_1::IsDataCheck(int a_Row, int a_Column)
 					mergeCol_finish = 0;
 				}
 			}
+		}
+	}
+}
+//--------------------------------------------------------------------------------------------
+
+void CForm_DuDefault_1::InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag)
+{
+	Sheet **ppSheet = NULL;
+
+	if (a_flag == 1)	 ppSheet = &pExcel->m_pDU_Default_1;
+	else if (a_flag == 2) ppSheet = &pExcel->m_pDU_Default_2;
+	else if (a_flag == 3) ppSheet = &pExcel->m_pDU_Default_3;
+
+	// Grid Setting
+	bool bMerge = false;
+	int mergeCol_start = 0;
+	int mergeCol_finish = 0;
+
+	a_ColLast++;
+
+	// for()문의 조건 범위 기준은 엘셀의 읽어올 위치를 기준으로 잡고 설정함
+	for (int row = a_RowFirst; row <= a_RowLast; row++) {
+		for (int col = a_ColFirst; col <= a_ColLast; col++) {
+			bMerge = (*ppSheet)->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last			
+
+			// 병합이 되었다면...
+			if (bMerge) {
+				if (mergeCol_finish == 0) {
+					mergeCol_start = col - 1;
+					mergeCol_finish = col - 2;
+				}
+				mergeCol_finish++;
+			}
+			// 병합이 안되어 있다면...
+			else {
+				// 일반 비트 형식 
+				if (0 == mergeCol_finish) {}
+				// 병합된 크기 만큼 병합.
+				else {
+					int t_row = row - 3;
+					mp_gridctrl->MergeCells(CCellRange(t_row, mergeCol_start, t_row, mergeCol_finish));
+
+					mergeCol_start = 0;
+					mergeCol_finish = 0;
+				}
+			}
+		}
+	}
+
+	ppSheet = NULL;
+}
+//--------------------------------------------------------------------------------------------
+
+void CForm_DuDefault_1::SetWordFormatCell(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag)
+{
+	Sheet **ppSheet = NULL;
+
+	if (a_flag == 1)	 ppSheet = &pExcel->m_pDU_Default_1;
+	else if (a_flag == 2) ppSheet = &pExcel->m_pDU_Default_2;
+	else if (a_flag == 3) ppSheet = &pExcel->m_pDU_Default_3;
+
+	// Draw Word Format 
+	bool bMerge = false;
+	int mergeCount = 0;
+
+	a_ColLast++;
+
+	for (int row = a_RowFirst; row <= a_RowLast; row++) {
+		for (int col = a_ColFirst; col <= a_ColLast; col++) {
+			bMerge = (*ppSheet)->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last			
+
+			// 병합이 되었다면...
+			if (bMerge) {
+				mergeCount++;
+			}
+
+			// Check Word Fomat
+			if (mergeCount == 16) {
+				// 엑셀 범위 세팅.
+				int t_row_first = a_RowFirst, t_row_last = a_RowLast;
+				int t_col_first = a_ColFirst, t_col_last = a_ColLast-1;
+
+				(*ppSheet)->getMerge(row, 2, &t_row_first, &t_row_last, &t_col_first, &t_col_last); // _row, _col, &row_first, &row_last, &col_first, &col_last		
+				// 처음 행과 마지막 행을 비교하는 이유는 바이트 형식이면 두 변수(t_row_first, t_row_last)의 값이 같게 되지만 워드 형식이면 두 변수의 값이 다르다.
+				if (t_row_first != t_row_last) {
+					int t_row_f = t_row_first - 3;
+					int t_row_l = t_row_last - 3;
+					mp_gridctrl->MergeCells(CCellRange(t_row_f, 1, t_row_l, 8));
+				}
+				mergeCount = 0;
+			}
+		}
+	}
+
+	ppSheet = NULL;
+}
+//--------------------------------------------------------------------------------------------
+
+void CForm_DuDefault_1::SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag)
+{
+	Sheet **ppSheet = NULL;
+
+	if (a_flag == 1)	 ppSheet = &pExcel->m_pDU_Default_1;
+	else if (a_flag == 2) ppSheet = &pExcel->m_pDU_Default_2;
+	else if (a_flag == 3) ppSheet = &pExcel->m_pDU_Default_3;
+	
+	for (int row = a_RowFirst; row <= a_RowLast; row++) {
+		for (int col = a_ColFirst; col <= a_ColLast; col++) {
+			mp_gridctrl->SetItemText(row, 9 - col, pExcel->GetDuDefaultValue(row - 2, col - 1, a_flag));
+		}
+	}
+	
+	ppSheet = NULL;
+}
+//--------------------------------------------------------------------------------------------
+
+void CForm_DuDefault_1::InitItemBkColor(int a_rowLast, int a_colLast)
+{
+	for (int row = 2; row <= a_rowLast; row++) {
+		for (int col = 1; col <= a_colLast; col++) {
+			mp_gridctrl->SetItemBkColour(row, col, WHITE_RGB);
 		}
 	}
 }

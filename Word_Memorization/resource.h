@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by WordMemorization.rc
+// Microsoft Visual C++에서 생성한 포함 파일입니다.
+// WordMemorization.rc에서 사용되고 있습니다.
 //
 #define IDC_TAB1                        100
 #define IDD_WORD_MEMORIZATION_DIALOG    102

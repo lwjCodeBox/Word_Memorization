@@ -46,7 +46,7 @@ public:
 	Book* m_Book;
 	Sheet* m_pSheet1; 
 	Sheet *m_pSheet2; // logical_port_adrs Sheet
-	Sheet *m_pDU_Default_1, *m_pDU_Default_2, *m_pDU_Default_3;
+	Sheet *m_pDU_Default_1, *m_pDU_Default_2, *m_pDU_Default_3; // du_Defatul1, 2, 3 Sheet
 
 	WORD mvb_Addr[120]; // myNode 총 갯수가 120개라서 배열의 크기를 120으로 잡음.
 	BYTE m_totalNodeCnt;

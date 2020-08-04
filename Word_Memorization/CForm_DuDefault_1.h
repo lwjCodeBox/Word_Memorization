@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GridCtrl_src_new/GridCtrl.h"
+#include "libxl.h"
 
 #define LEditDown_Default_1 WM_USER + 1
 #define IDC_LISTCONTROL 10000
@@ -86,8 +87,16 @@ public:
 #endif	
 
 private:
-	int MergeCheck(int a_Row, int a_Column, int a_flag);
+	int IsMergeCheck(int a_Row, int a_Column, int a_flag);
 	void IsDataCheck(int a_Row, int a_Column);
+	void InitItemBkColor(int a_rowLast, int a_colLast);
+
+	// 매개 변수 범위는 기준은 엑셀 기준이다.
+	void InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag);
+	// 매개 변수 범위는 기준은 엑셀 기준이다.
+	void SetWordFormatCell(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag);
+	// 매개 변수 범위는 그리드 컨트롤 기준이다.
+	void SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag);
 
 public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext = NULL);
@@ -95,6 +104,7 @@ public:
 	afx_msg void OnBnClickedDfsDefault1();
 	afx_msg void OnBnClickedDfsDefault2();
 	virtual BOOL DestroyWindow();	
+	afx_msg void OnBnClickedDfsDefault3();
 };
 
 

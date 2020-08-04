@@ -200,7 +200,7 @@ bool _CExcelLib::Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_
 		}
 	}
 
-	/*m_pDU_Default_2 = getSheetByName(m_Book, L"du_default2");
+	m_pDU_Default_2 = getSheetByName(m_Book, L"du_default2");
 	if (m_pDU_Default_2) {
 		for (int i = row_start; i <= row_end; i++) {
 			for (int j = col_start; j <= col_end; j++) {
@@ -216,7 +216,7 @@ bool _CExcelLib::Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_
 				ap_Excel_DuDefault_3[i - 5][9 - j] = m_pDU_Default_3->readStr(i, j, &format);
 			}
 		}
-	}*/
+	}
 
 	
 	return true;
