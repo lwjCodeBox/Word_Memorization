@@ -47,7 +47,6 @@ private:
 	// Excel
 	_CExcelLib *pExcel;
 
-
 	// 0이면 클릭은 한번도 클릭을 한적이 없다는 의미.
 	//unsigned char m_buffer[32][8];
  
@@ -87,7 +86,7 @@ public:
 #endif	
 
 private:
-	void CheckData(int a_Row, int a_Column);
+	int MergeCheck(int a_Row, int a_Column, int a_flag);
 	void IsDataCheck(int a_Row, int a_Column);
 
 public:

@@ -260,6 +260,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	bool bMerge = false;
 	int mergeCol_start = 0;
 	int mergeCol_finish = 0;
+	int mergeCount = 0;
 
 	// for()문의 조건 범위 기준은 엘셀의 읽어올 위치를 기준으로 잡고 설정함
 	for (int row = 5; row < 37; row++) {	
@@ -273,6 +274,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 					mergeCol_finish = col-2;
 				}				
 				mergeCol_finish++;
+				mergeCount++;
 			}
 			// 병합이 안되어 있다면...
 			else {
@@ -288,9 +290,45 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 				}
 			}
 
+			// Word Fomat
+			if (mergeCount == 16) {
+				bool t_bWord = false;
+
+				//int t_row_first = 5, t_row_last = 6, t_col_first = 2, t_col_last = 9;
+				//t_bWord = pExcel->m_pDU_Default_1->getMerge(6, 9, &t_row_first, &t_row_last, &t_col_first, &t_col_last); // row, col, &row_first, &row_last, &col_first, &col_last
+				//
+				//t_row_first = 17;
+				//t_row_last = 18;
+				//t_bWord = pExcel->m_pDU_Default_1->getMerge(18-1, col, &t_row_first, &t_row_last, &t_col_first, &t_col_last);
+
+				int t_row = row - 3;
+				if(t_bWord) 
+					//mp_gridctrl->MergeCells(CCellRange(t_row - 1, 1, t_row, 8));
+				
+
+				
+				//mp_gridctrl->MergeCells(CCellRange(t_row-1, 1, t_row, 8));
+				mergeCount = 0;
+			}
 		}
 	}
+
+	bool t_bWord = false;
 	
+	int row_first, row_last;
+	int col_first = 2, col_last = 9;
+
+
+	row_first = 17, row_last = 18;
+	t_bWord = pExcel->m_pDU_Default_1->getMerge(NULL, NULL, &row_first, &row_last, &col_first, &col_last); // _Row, _Col, &row_first, &row_last, &col_first, &col_last		
+
+
+	row_first = 5, row_last = 6;
+	t_bWord = pExcel->m_pDU_Default_1->getMerge(0, 0, &row_first, &row_last, &col_first, &col_last);
+
+
+	//mp_gridctrl->MergeCells(CCellRange(2, 1, 3, 8)); //Word Format
+
 	// Text
 	for (int row = 2; row < 34; row++) {
 		for (int col = 1; col < 9; col++) {
@@ -298,7 +336,6 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 		}
 	}
 	
-
 	//unsigned char t_buffer[32][8];
 	unsigned char t_buffer[256];
 
@@ -322,11 +359,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	//memcpy(&(mp_MainDlg->m_pData->data[t_port][0]), &t_buffer, 2);
 */
 	
-	bool b = false;
-	b = mp_gridctrl->IsMergedCell(2, 1, CCellRange(0, 0, 0, 0));
-	b = mp_gridctrl->IsMergedCell(10, 1, CCellRange(0, 0, 0, 0));
-	b = mp_gridctrl->IsMergedCell(11, 1, CCellRange(-1,-1,-1,-1));
-	b = mp_gridctrl->IsMergedCell(12, 1, CCellRange(0, 0, 0, 0));
+	
 
 
 #ifdef Edit_and_ListControl_Sample_CODE
@@ -369,8 +402,6 @@ BOOL CForm_DuDefault_1::DestroyWindow()
 		delete mp_gridctrl;
 		mp_gridctrl = NULL;
 	}
-
-		
 
 
 #ifdef Edit_and_ListControl_Sample_CODE
@@ -520,7 +551,21 @@ void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 	//	mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(255, 255, 255)); // 흰색
 	//}
 	
-	mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RCLICK_RGB); // test
+
+	//UINT num = mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetMargin();
+	//mp_gridctrl->
+	//mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->
+	
+		
+	MergeCheck(pItem->iRow, pItem->iColumn, m_flag);
+
+	// Returns cell background color
+	if (mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != RCLICK_RGB) {
+		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RCLICK_RGB);
+	}
+	else
+		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, WHITE_RGB);
+
 	
 	mp_gridctrl->RedrawCell(pItem->iRow, pItem->iColumn);
 }
@@ -533,15 +578,76 @@ void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult
 	
 	if (pItem->iRow == 0 || pItem->iRow == 1 || pItem->iColumn == 0) return; // fix cells
 
-	mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, LDCLICK_RGB);
+	if (mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != LDCLICK_RGB) {
+		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, LDCLICK_RGB);
+	}
+	else 
+		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, WHITE_RGB);
+
 	mp_gridctrl->RedrawCell(pItem->iRow, pItem->iColumn);
 }
 //--------------------------------------------------------------------------------------------
 
-void CForm_DuDefault_1::CheckData(int a_Row, int a_Column)
+int CForm_DuDefault_1::MergeCheck(int a_Row, int a_Column, int a_flag)
 {
+	//bool bMerge = false;
+	//int mergeCol_start = 0;
+	//int mergeCol_finish = 0;
+	//
+	////pExcel->m_pDU_Default_1->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
+	//for (int col = 1; col < 8; col++) {
+
+	//	// 병합이 되었다면...
+	//	if (bMerge) {
+	//		if (mergeCol_finish == 0) {
+	//			mergeCol_start = col - 1;
+	//			mergeCol_finish = col - 2;
+	//		}
+	//		mergeCol_finish++;
+	//	}
+	//	// 병합이 안되어 있다면...
+	//	else {
+	//		// 일반 비트 형식 
+	//		if (0 == mergeCol_finish) {}
+	//		// 병합된 크기 만큼 병합.
+	//		else {
+	//			
+	//			mp_gridctrl->IsMergedCell(a_Row, 1, CCellRange(a_Row, 1, a_Row, 8));
+
+	//			mergeCol_start = 0;
+	//			mergeCol_finish = 0;
+	//		}
+	//	}
+
+	//}
+
+
+	Sheet **pSheet = NULL;
+	if (a_flag == 1) {
+		pSheet = &pExcel->m_pDU_Default_1;
+	}
+
+	bool b;
+	int cnt = 0;
+	for (int i = a_Column; i < 11; i++) {
+		// 그리드 위치에서 +3, +1하면 한 곳이 엑셀에 있는 셀 위치와 동일한 위치가 된다.
+		b = (*pSheet)->getMerge(a_Row+3, i+1, 0, 0, 0, 0); 
+		if (b)
+			cnt++;
+		else 
+			break;
+	}
+	/*b = (*pSheet)->getMerge(a_Row, 2, 0, 0, 0, 0);
+	b = (*pSheet)->getMerge(a_Row, 3, 0, 0, 0, 0);
+	b = (*pSheet)->getMerge(a_Row, 4, 0, 0, 0, 0);
+	b = (*pSheet)->getMerge(a_Row, 5, 0, 0, 0, 0);
+	b = (*pSheet)->getMerge(a_Row, 6, 0, 0, 0, 0);
+	b = (*pSheet)->getMerge(a_Row, 7, 0, 0, 0, 0);
+	b = (*pSheet)->getMerge(a_Row, 8, 0, 0, 0, 0);
+	b = (*pSheet)->getMerge(a_Row, 9, 0, 0, 0, 0);*/
+
+	return cnt;
 	
-	//mp_gridctrl->SetItemBkColour(a_Row, a_Column, RCLICK_RGB);
 }
 //--------------------------------------------------------------------------------------------
 
