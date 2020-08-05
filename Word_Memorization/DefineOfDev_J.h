@@ -4,6 +4,8 @@
 #define LDCLICK_RGB  RGB(255, 128, 255) 
 #define WHITE_RGB	 RGB(255, 255, 255)
 
+#define DEf_EVEN_WORD RGB(255, 255, 204)
+
 typedef struct DuNode
 {
 	unsigned char node;

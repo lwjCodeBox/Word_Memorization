@@ -207,18 +207,22 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 {
 	//CWordMemorizationDlg mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 	
-
 	if (m_flag == 1) return;
 
 	m_flag = 1;
 
 	//memset(clicked, 0, sizeof(clicked));
 
-	CRect rc(10, 60, 1020, 850);
-	
 	if (mp_gridctrl == NULL) {
 		mp_gridctrl = new CGridCtrl;
-		mp_gridctrl->Create(rc, this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
+		mp_gridctrl->Create(CRect(10, 60, 1020, 850), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
+	}
+	else {
+		delete mp_gridctrl;
+		mp_gridctrl = NULL;
+
+		mp_gridctrl = new CGridCtrl;
+		mp_gridctrl->Create(CRect(10, 60, 1020, 850), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
 	}
 
 	mp_gridctrl->SetRowCount(32+2);
@@ -270,7 +274,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	SetWordFormatCell(5, 36, 2, 9, m_flag);
 
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
-	SetTextGrid(2, 34, 1, 8, m_flag);
+	SetTextGrid(2, 33, 1, 8, m_flag);
 
 	//unsigned char t_buffer[32][8];
 	unsigned char t_buffer[256];
@@ -331,13 +335,21 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 
 	m_flag = 2;
 
+	if (mp_gridctrl != NULL) {
+		delete mp_gridctrl;
+		mp_gridctrl = NULL;
+
+		mp_gridctrl = new CGridCtrl;
+		mp_gridctrl->Create(CRect(10, 60, 1020, 850), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
+	}
+	
 	mp_gridctrl->SetRowCount(32 + 2);
 	mp_gridctrl->SetColumnCount(8 + 1); // 현시할 column 8개, fixed column 1개
 
 	mp_gridctrl->SetFixedRowCount(2);
 	mp_gridctrl->SetFixedColumnCount(1);
 
-	mp_gridctrl->SetFixedBkColor(RGB(102, 204, 255));
+	mp_gridctrl->SetFixedBkColor(RGB(200, 200, 200));
 
 	// grid option
 	mp_gridctrl->SetGridLineColor(RGB(128, 128, 255));
@@ -372,6 +384,15 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 	for (int col = 1; col < 9; col++) {
 		mp_gridctrl->SetColumnWidth(col, 114);
 	}
+
+	// 매개 변수 범위는 기준은 엑셀 기준이다.
+	InitMakeGrid(5, 36, 2, 9, m_flag);
+
+	// 매개 변수 범위는 기준은 엑셀 기준이다.
+	SetWordFormatCell(5, 36, 2, 9, m_flag);
+
+	// 매개 변수 범위는 그리드 컨트롤 기준이다.
+	SetTextGrid(2, 33, 1, 8, m_flag);
 }
 //--------------------------------------------------------------------------------------------
 
@@ -381,13 +402,21 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 
 	m_flag = 3;
 
+	if (mp_gridctrl != NULL) {
+		delete mp_gridctrl;
+		mp_gridctrl = NULL;
+
+		mp_gridctrl = new CGridCtrl;
+		mp_gridctrl->Create(CRect(10, 60, 1020, 850), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
+	}
+
 	mp_gridctrl->SetRowCount(32 + 2);
 	mp_gridctrl->SetColumnCount(8 + 1); // 현시할 column 8개, fixed column 1개
 
 	mp_gridctrl->SetFixedRowCount(2);
 	mp_gridctrl->SetFixedColumnCount(1);
 
-	mp_gridctrl->SetFixedBkColor(RGB(51, 51, 255));
+	mp_gridctrl->SetFixedBkColor(RGB(200, 200, 200));
 
 	// grid option
 	mp_gridctrl->SetGridLineColor(RGB(128, 128, 255));
@@ -422,6 +451,15 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 	for (int col = 1; col < 9; col++) {
 		mp_gridctrl->SetColumnWidth(col, 114);
 	}
+
+	// 매개 변수 범위는 기준은 엑셀 기준이다.
+	InitMakeGrid(5, 36, 2, 9, m_flag);
+
+	// 매개 변수 범위는 기준은 엑셀 기준이다.
+	SetWordFormatCell(5, 36, 2, 9, m_flag);
+
+	// 매개 변수 범위는 그리드 컨트롤 기준이다.
+	SetTextGrid(2, 33, 1, 8, m_flag);
 }
 //--------------------------------------------------------------------------------------------
 
@@ -586,17 +624,20 @@ void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 	mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->
 	*/
 		
-	int data = IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag);
-	CString str;
-	str.Format(L"%d", data);
-	//AfxMessageBox(str);
-
 	//  0이 아니라면 병합된 셀을 의미 하기 떄문에 병합된 셀에서 우클릭을 할 경우 이 함수를 리턴해 버린다. 
 	if (IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag) != 0) return;
 
 	// Returns cell background color
 	if (mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != RCLICK_RGB) {
 		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RCLICK_RGB);
+
+
+		// 여기서 부터 작업 진행...
+		CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+
+		memset(&mainDlg->m_pData->data[0][pItem->iRow], 0, 1);   // mvb 상위 바이트에 값을 넣음
+
+		mainDlg = NULL;
 	}
 	else
 		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, WHITE_RGB);
@@ -829,19 +870,11 @@ void CForm_DuDefault_1::SetWordFormatCell(int a_RowFirst, int a_RowLast, int a_C
 
 void CForm_DuDefault_1::SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag)
 {
-	Sheet **ppSheet = NULL;
-
-	if (a_flag == 1)	 ppSheet = &pExcel->m_pDU_Default_1;
-	else if (a_flag == 2) ppSheet = &pExcel->m_pDU_Default_2;
-	else if (a_flag == 3) ppSheet = &pExcel->m_pDU_Default_3;
-	
 	for (int row = a_RowFirst; row <= a_RowLast; row++) {
 		for (int col = a_ColFirst; col <= a_ColLast; col++) {
 			mp_gridctrl->SetItemText(row, 9 - col, pExcel->GetDuDefaultValue(row - 2, col - 1, a_flag));
 		}
 	}
-	
-	ppSheet = NULL;
 }
 //--------------------------------------------------------------------------------------------
 

@@ -192,32 +192,31 @@ bool _CExcelLib::Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_
 	int row_end = 36;
 	
 	m_pDU_Default_1 = getSheetByName(m_Book, L"du_default1");
-	if (m_pDU_Default_1) {
+	m_pDU_Default_2 = getSheetByName(m_Book, L"du_default2");
+	m_pDU_Default_3 = getSheetByName(m_Book, L"du_default3");
+
+	if ((m_pDU_Default_1 != NULL) && (m_pDU_Default_2 != NULL) && (m_pDU_Default_3 != NULL)) {
 		for (int i = row_start; i <= row_end; i++) {
 			for (int j = col_start; j <= col_end; j++) {
 				ap_Excel_DuDefault_1[i - 5][9 - j] = m_pDU_Default_1->readStr(i, j, &format);
 			}
 		}
-	}
 
-	m_pDU_Default_2 = getSheetByName(m_Book, L"du_default2");
-	if (m_pDU_Default_2) {
 		for (int i = row_start; i <= row_end; i++) {
 			for (int j = col_start; j <= col_end; j++) {
 				ap_Excel_DuDefault_2[i - 5][9 - j] = m_pDU_Default_2->readStr(i, j, &format);
 			}
 		}
-	}
 
-	m_pDU_Default_3 = getSheetByName(m_Book, L"du_default3");
-	if (m_pDU_Default_3) {
 		for (int i = row_start; i <= row_end; i++) {
 			for (int j = col_start; j <= col_end; j++) {
 				ap_Excel_DuDefault_3[i - 5][9 - j] = m_pDU_Default_3->readStr(i, j, &format);
 			}
 		}
+		return true;
 	}
-
-	
-	return true;
+	else {
+		AfxMessageBox(L"엑셀 sheet du_default1, du_default2, du_default3 중에 하나를 읽어오지 못했습니다.");
+		return false;
+	}
 }
