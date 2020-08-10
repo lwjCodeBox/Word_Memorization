@@ -73,6 +73,8 @@ public:
 	void SetMVBValue(unsigned int a_Node, unsigned int a_Port, unsigned int a_Value);
 	void SetMVBHeartBit(unsigned int a_Port, unsigned int a_Value);
 
+	WORD GetUDataFromSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word);
+
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnClose();

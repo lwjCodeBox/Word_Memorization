@@ -627,23 +627,44 @@ void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 	//  0이 아니라면 병합된 셀을 의미 하기 떄문에 병합된 셀에서 우클릭을 할 경우 이 함수를 리턴해 버린다. 
 	if (IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag) != 0) return;
 
+	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	_CExcelLib *p_ExcelLib = (_CExcelLib *)mainDlg->mp_Libxl;
+
+	WORD portAddr = 0;
+	switch (m_flag) {
+	case 1:
+		portAddr = 0x1A4;	break;
+	case 2:
+		portAddr = 0x1A4;	break;
+	case 3:
+		portAddr = 0x1A4;	break;
+	}
+
+	WORD t_buffer = 0;
+	// 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다.
+	// int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
+	int t_port = binarySearch(p_ExcelLib->mvb_Addr, 120, portAddr);
+
+	WORD t_WordPos = (pItem->iRow - 2) / 2;
+	memcpy(&t_buffer, &(mainDlg->m_pData->data[t_port][t_WordPos]), 2/*4*/);
+
+	CString str_buf;
+	str_buf.Format(L"[%02X], [%X]", t_buffer, mainDlg->m_pData->data[t_port][t_WordPos]);
+	AfxMessageBox(str_buf);
+
 	// Returns cell background color
 	if (mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != RCLICK_RGB) {
 		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RCLICK_RGB);
-
-
-		// 여기서 부터 작업 진행...
-		CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
-
-		memset(&mainDlg->m_pData->data[0][pItem->iRow], 0, 1);   // mvb 상위 바이트에 값을 넣음
-
-		mainDlg = NULL;
 	}
 	else
 		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, WHITE_RGB);
 
-	
 	mp_gridctrl->RedrawCell(pItem->iRow, pItem->iColumn);
+
+	memcpy(&(mainDlg->m_pData->data[t_port][t_WordPos]), &t_buffer, 2/*4*/);
+
+	p_ExcelLib = NULL;
+	mainDlg = NULL;
 }
 //--------------------------------------------------------------------------------------------
 
@@ -727,7 +748,7 @@ void CForm_DuDefault_1::IsDataCheck(int a_Row, int a_Column)
 	int mergeCol_finish = 0;
 
 	// Shared Memory Data Check
-	BYTE l_byte, h_byte;
+	//BYTE l_byte, h_byte;
 	int dataSize = sizeof(pExcel->mvb_Addr) / sizeof(WORD);
 	int t_port = binarySearch(pExcel->mvb_Addr, dataSize, 0x1A4);
 	unsigned char data;
@@ -778,10 +799,20 @@ void CForm_DuDefault_1::IsDataCheck(int a_Row, int a_Column)
 void CForm_DuDefault_1::InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag)
 {
 	Sheet **ppSheet = NULL;
+	WORD addr = 0;
 
-	if (a_flag == 1)	 ppSheet = &pExcel->m_pDU_Default_1;
-	else if (a_flag == 2) ppSheet = &pExcel->m_pDU_Default_2;
-	else if (a_flag == 3) ppSheet = &pExcel->m_pDU_Default_3;
+	if (a_flag == 1) {
+		ppSheet = &pExcel->m_pDU_Default_1;
+		addr = 0x1A4;
+	}
+	else if (a_flag == 2) {
+		ppSheet = &pExcel->m_pDU_Default_2;
+		addr = 0x1A8;
+	} 
+	else if (a_flag == 3) {
+		ppSheet = &pExcel->m_pDU_Default_3;
+		addr = 0x1AC;
+	}
 
 	// Grid Setting
 	bool bMerge = false;
@@ -790,6 +821,7 @@ void CForm_DuDefault_1::InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFir
 
 	a_ColLast++;
 
+	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 	// for()문의 조건 범위 기준은 엘셀의 읽어올 위치를 기준으로 잡고 설정함
 	for (int row = a_RowFirst; row <= a_RowLast; row++) {
 		for (int col = a_ColFirst; col <= a_ColLast; col++) {
@@ -806,7 +838,19 @@ void CForm_DuDefault_1::InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFir
 			// 병합이 안되어 있다면...
 			else {
 				// 일반 비트 형식 
-				if (0 == mergeCol_finish) {}
+				if (0 == mergeCol_finish) {
+					WORD t_buffer;
+					WORD smData = mainDlg->GetUDataFromSM(addr, 0, row / 2);
+					memcpy(&t_buffer, &smData, 2);
+
+					BYTE t_pos = a_ColFirst;
+					bool test = IsBitCheck16(t_buffer, t_pos);
+					if (test) {
+						mp_gridctrl->SetItemBkColour(row-3, col-1, RCLICK_RGB);
+					}
+
+
+				}
 				// 병합된 크기 만큼 병합.
 				else {
 					int t_row = row - 3;
@@ -819,6 +863,7 @@ void CForm_DuDefault_1::InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFir
 		}
 	}
 
+	mainDlg = NULL;
 	ppSheet = NULL;
 }
 //--------------------------------------------------------------------------------------------

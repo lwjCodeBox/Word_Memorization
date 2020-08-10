@@ -108,6 +108,9 @@ void CForm_SetMVB::OnBnClickedButton1()
 		BYTE l_byte, h_byte;
 
 		_CExcelLib *p_ExcelLib = (_CExcelLib *)mp_FormMainDlg->mp_Libxl;
+		
+		// 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다.
+		// int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
 		int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
 		int t_port = binarySearch(p_ExcelLib->mvb_Addr, dataSize, portAddr);
 		

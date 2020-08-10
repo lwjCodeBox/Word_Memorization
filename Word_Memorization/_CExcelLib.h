@@ -31,6 +31,7 @@ public:
 		case 3:
 			return m_Excel_DuDefault_3[a_Row][a_Col];
 		}
+		return L"err";
 	}
 private:
 	Sheet* getSheetByName(Book* book, const wchar_t* name); // 사용하고 있는 Sheet의 이름을 얻어옴.

@@ -333,3 +333,15 @@ void CWordMemorizationDlg::SetMVBHeartBit(unsigned int a_Port, unsigned int a_Va
 {
 	memset(&(m_pData->data[a_Port][0]), a_Value, 2);
 }
+
+WORD CWordMemorizationDlg::GetUDataFromSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
+{
+	WORD data = 0;
+
+	int t_port = binarySearch(mp_Libxl->mvb_Addr, 120, a_PortAddr); // 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다. // int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
+	t_port += mp_Libxl->m_totalNodeCnt * a_Node;
+	memcpy(&data, &(m_pData->data[t_port][a_Word]), 2/*4*/);
+
+	return data;
+}
+//--------------------------------------------------------------------------------------------

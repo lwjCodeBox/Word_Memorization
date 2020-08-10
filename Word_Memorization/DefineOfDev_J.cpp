@@ -22,3 +22,11 @@ int binarySearch(WORD *data, int size, WORD d)
 	}
 	return -1;
 }
+//--------------------------------------------------------------------------------------------
+
+bool IsBitCheck16(WORD a_Target, WORD a_BitPos)
+{
+	if ((a_Target >> a_BitPos) & 0x01) return true;
+	else return false;
+}
+//--------------------------------------------------------------------------------------------
