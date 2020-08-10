@@ -840,13 +840,17 @@ void CForm_DuDefault_1::InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFir
 				// 일반 비트 형식 
 				if (0 == mergeCol_finish) {
 					WORD t_buffer;
-					WORD smData = mainDlg->GetUDataFromSM(addr, 0, row / 2);
+					WORD smData = mainDlg->GetUDataFromSM(addr, 0, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
 					memcpy(&t_buffer, &smData, 2);
 
-					BYTE t_pos = a_ColFirst;
+					BYTE t_pos = col - 1;
+					if (row % 2 == 0) t_pos += 8;
+					
 					bool test = IsBitCheck16(t_buffer, t_pos);
 					if (test) {
-						mp_gridctrl->SetItemBkColour(row-3, col-1, RCLICK_RGB);
+						BYTE t_col = col - 1;
+						if (t_col == 9) t_col = 8;
+						mp_gridctrl->SetItemBkColour(row-3, t_col, RCLICK_RGB);
 					}
 
 
