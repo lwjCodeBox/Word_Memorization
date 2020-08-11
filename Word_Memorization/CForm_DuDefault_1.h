@@ -97,6 +97,8 @@ private:
 	void SetWordFormatCell(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag);
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
 	void SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag);
+	// 매개 변수 범위는 기준은 엑셀 기준이다.
+	void SetDataCheck(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag);
 
 public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext = NULL);

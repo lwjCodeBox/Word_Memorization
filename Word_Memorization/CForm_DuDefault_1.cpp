@@ -267,14 +267,11 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 		mp_gridctrl->SetColumnWidth(col, 114);
 	}
 	
-	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	InitMakeGrid(5, 36, 2, 9, m_flag);
-
-	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	SetWordFormatCell(5, 36, 2, 9, m_flag);
-
-	// 매개 변수 범위는 그리드 컨트롤 기준이다.
-	SetTextGrid(2, 33, 1, 8, m_flag);
+	
+	InitMakeGrid(5, 36, 2, 9, m_flag);      // 매개 변수 범위는 기준은 엑셀 기준이다.
+	SetWordFormatCell(5, 36, 2, 9, m_flag); // 매개 변수 범위는 기준은 엑셀 기준이다.
+	SetDataCheck(5, 36, 2, 9, m_flag);      // 매개 변수 범위는 기준은 엑셀 기준이다.
+	SetTextGrid(2, 33, 1, 8, m_flag);       // 매개 변수 범위는 그리드 컨트롤 기준이다.
 
 	//unsigned char t_buffer[32][8];
 	unsigned char t_buffer[256];
@@ -385,14 +382,10 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 		mp_gridctrl->SetColumnWidth(col, 114);
 	}
 
-	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	InitMakeGrid(5, 36, 2, 9, m_flag);
-
-	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	SetWordFormatCell(5, 36, 2, 9, m_flag);
-
-	// 매개 변수 범위는 그리드 컨트롤 기준이다.
-	SetTextGrid(2, 33, 1, 8, m_flag);
+	InitMakeGrid(5, 36, 2, 9, m_flag);      // 매개 변수 범위는 기준은 엑셀 기준이다.
+	SetWordFormatCell(5, 36, 2, 9, m_flag); // 매개 변수 범위는 기준은 엑셀 기준이다.
+	SetDataCheck(5, 36, 2, 9, m_flag);      // 매개 변수 범위는 기준은 엑셀 기준이다.
+	SetTextGrid(2, 33, 1, 8, m_flag);       // 매개 변수 범위는 그리드 컨트롤 기준이다.
 }
 //--------------------------------------------------------------------------------------------
 
@@ -452,14 +445,10 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 		mp_gridctrl->SetColumnWidth(col, 114);
 	}
 
-	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	InitMakeGrid(5, 36, 2, 9, m_flag);
-
-	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	SetWordFormatCell(5, 36, 2, 9, m_flag);
-
-	// 매개 변수 범위는 그리드 컨트롤 기준이다.
-	SetTextGrid(2, 33, 1, 8, m_flag);
+	InitMakeGrid(5, 36, 2, 9, m_flag);      // 매개 변수 범위는 기준은 엑셀 기준이다.
+	SetWordFormatCell(5, 36, 2, 9, m_flag); // 매개 변수 범위는 기준은 엑셀 기준이다.
+	SetDataCheck(5, 36, 2, 9, m_flag);      // 매개 변수 범위는 기준은 엑셀 기준이다.
+	SetTextGrid(2, 33, 1, 8, m_flag);       // 매개 변수 범위는 그리드 컨트롤 기준이다.
 }
 //--------------------------------------------------------------------------------------------
 
@@ -607,22 +596,6 @@ void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
 		
 	if (pItem->iRow == 0 || pItem->iRow == 1 || pItem->iColumn == 0) return; // fix cells
-	/*
-	// 클릭된 위치 저장.
-	if (0 == clicked[pItem->iRow][pItem->iColumn]) {
-		clicked[pItem->iRow][pItem->iColumn] = 1;
-		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RCLICK_RGB);
-	}
-	else {
-		clicked[pItem->iRow][pItem->iColumn] = 0;
-		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RGB(255, 255, 255)); // 흰색
-	}
-	
-
-	UINT num = mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetMargin();
-	mp_gridctrl->
-	mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->
-	*/
 		
 	//  0이 아니라면 병합된 셀을 의미 하기 떄문에 병합된 셀에서 우클릭을 할 경우 이 함수를 리턴해 버린다. 
 	if (IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag) != 0) return;
@@ -635,22 +608,21 @@ void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 	case 1:
 		portAddr = 0x1A4;	break;
 	case 2:
-		portAddr = 0x1A4;	break;
+		portAddr = 0x1A8;	break;
 	case 3:
-		portAddr = 0x1A4;	break;
+		portAddr = 0x1AC;	break;
 	}
-
-	WORD t_buffer = 0;
+	
 	// 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다.
 	// int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
 	int t_port = binarySearch(p_ExcelLib->mvb_Addr, 120, portAddr);
-
 	WORD t_WordPos = (pItem->iRow - 2) / 2;
-	memcpy(&t_buffer, &(mainDlg->m_pData->data[t_port][t_WordPos]), 2/*4*/);
+	WORD smData = mainDlg->GetDataFromSM(portAddr, 0, t_WordPos); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
+	
+	BYTE colPos = 7 - (pItem->iColumn - 1);
+	if (pItem->iRow % 2 == 0) colPos += 8;
 
-	CString str_buf;
-	str_buf.Format(L"[%02X], [%X]", t_buffer, mainDlg->m_pData->data[t_port][t_WordPos]);
-	AfxMessageBox(str_buf);
+	mainDlg->SetBitDataToSM(portAddr, 0, t_WordPos, colPos, smData);
 
 	// Returns cell background color
 	if (mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != RCLICK_RGB) {
@@ -660,8 +632,6 @@ void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, WHITE_RGB);
 
 	mp_gridctrl->RedrawCell(pItem->iRow, pItem->iColumn);
-
-	memcpy(&(mainDlg->m_pData->data[t_port][t_WordPos]), &t_buffer, 2/*4*/);
 
 	p_ExcelLib = NULL;
 	mainDlg = NULL;
@@ -799,19 +769,15 @@ void CForm_DuDefault_1::IsDataCheck(int a_Row, int a_Column)
 void CForm_DuDefault_1::InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag)
 {
 	Sheet **ppSheet = NULL;
-	WORD addr = 0;
 
 	if (a_flag == 1) {
 		ppSheet = &pExcel->m_pDU_Default_1;
-		addr = 0x1A4;
 	}
 	else if (a_flag == 2) {
 		ppSheet = &pExcel->m_pDU_Default_2;
-		addr = 0x1A8;
-	} 
+	}
 	else if (a_flag == 3) {
 		ppSheet = &pExcel->m_pDU_Default_3;
-		addr = 0x1AC;
 	}
 
 	// Grid Setting
@@ -823,7 +789,7 @@ void CForm_DuDefault_1::InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFir
 
 	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 	// for()문의 조건 범위 기준은 엘셀의 읽어올 위치를 기준으로 잡고 설정함
-	for (int row = a_RowFirst; row <= a_RowLast; row++) {
+	for (int row = a_RowFirst; row <= a_RowLast; row++) {		
 		for (int col = a_ColFirst; col <= a_ColLast; col++) {
 			bMerge = (*ppSheet)->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last			
 
@@ -838,23 +804,7 @@ void CForm_DuDefault_1::InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFir
 			// 병합이 안되어 있다면...
 			else {
 				// 일반 비트 형식 
-				if (0 == mergeCol_finish) {
-					WORD t_buffer;
-					WORD smData = mainDlg->GetUDataFromSM(addr, 0, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
-					memcpy(&t_buffer, &smData, 2);
-
-					BYTE t_pos = col - 1;
-					if (row % 2 == 0) t_pos += 8;
-					
-					bool test = IsBitCheck16(t_buffer, t_pos);
-					if (test) {
-						BYTE t_col = col - 1;
-						if (t_col == 9) t_col = 8;
-						mp_gridctrl->SetItemBkColour(row-3, t_col, RCLICK_RGB);
-					}
-
-
-				}
+				if (0 == mergeCol_finish) {	}
 				// 병합된 크기 만큼 병합.
 				else {
 					int t_row = row - 3;
@@ -866,8 +816,7 @@ void CForm_DuDefault_1::InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFir
 			}
 		}
 	}
-
-	mainDlg = NULL;
+	
 	ppSheet = NULL;
 }
 //--------------------------------------------------------------------------------------------
@@ -913,6 +862,63 @@ void CForm_DuDefault_1::SetWordFormatCell(int a_RowFirst, int a_RowLast, int a_C
 		}
 	}
 
+	ppSheet = NULL;
+}
+//--------------------------------------------------------------------------------------------
+
+void CForm_DuDefault_1::SetDataCheck(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag)
+{
+	Sheet **ppSheet = NULL;
+	WORD addr = 0;
+
+	if (a_flag == 1) {
+		ppSheet = &pExcel->m_pDU_Default_1;
+		addr = 0x1A4;
+	}
+	else if (a_flag == 2) {
+		ppSheet = &pExcel->m_pDU_Default_2;
+		addr = 0x1A8;
+	}
+	else if (a_flag == 3) {
+		ppSheet = &pExcel->m_pDU_Default_3;
+		addr = 0x1AC;
+	}
+
+	// Grid Setting
+	bool bMerge = false;
+
+	a_ColLast++;
+
+	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	// for()문의 조건 범위 기준은 엘셀의 읽어올 위치를 기준으로 잡고 설정함
+	for (int row = a_RowFirst; row <= a_RowLast; row++) {		
+		WORD smData = mainDlg->GetDataFromSM(addr, 0, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
+		
+		for (int col = a_ColFirst; col <= a_ColLast; col++) {
+			bMerge = (*ppSheet)->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last			
+			
+			// 병합이 안되어 있다면...
+			if (!bMerge && col < 10) {				
+				// 비트 체크.
+				BYTE bitPos = 7 - (col - 2); // 2 ~ 10
+				
+				BYTE rowPos = row - 3; // 5 ~ 36
+				if (rowPos % 2 == 0) bitPos += 8;
+
+				BYTE colPos = col - 1;
+
+				// 그리드에 색상 적용.
+				if (IsBitCheck16(smData, bitPos)) {									
+					mp_gridctrl->SetItemBkColour(rowPos, colPos, RCLICK_RGB);
+				}
+				/*else {
+					mp_gridctrl->SetItemBkColour(rowPos, colPos, DEf_EVEN_WORD);
+				}*/
+			}			
+		}
+	}
+
+	mainDlg = NULL;
 	ppSheet = NULL;
 }
 //--------------------------------------------------------------------------------------------

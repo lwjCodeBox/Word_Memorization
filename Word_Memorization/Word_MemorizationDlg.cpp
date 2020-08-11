@@ -321,27 +321,50 @@ void CWordMemorizationDlg::CreateForm()
 	//mp_Form_SetMVB->OnInitialUpdate();
 	mp_Form_SetMVB->ShowWindow(SW_HIDE);
 }
-
+//--------------------------------------------------------------------------------------------
 
 void CWordMemorizationDlg::SetMVBValue(unsigned int a_Node, unsigned int a_Port, unsigned int a_Value)
 {
 	memset(&(m_pData->data[a_Node][a_Port]), a_Value, 1);
 }
-
+//--------------------------------------------------------------------------------------------
 
 void CWordMemorizationDlg::SetMVBHeartBit(unsigned int a_Port, unsigned int a_Value)
 {
 	memset(&(m_pData->data[a_Port][0]), a_Value, 2);
 }
+//--------------------------------------------------------------------------------------------
 
-WORD CWordMemorizationDlg::GetUDataFromSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
+WORD CWordMemorizationDlg::GetDataFromSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
 {
 	WORD data = 0;
 
-	int t_port = binarySearch(mp_Libxl->mvb_Addr, 120, a_PortAddr); // 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다. // int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
-	t_port += mp_Libxl->m_totalNodeCnt * a_Node;
-	memcpy(&data, &(m_pData->data[t_port][a_Word*2]), 2/*4*/);
+	int port = binarySearch(mp_Libxl->mvb_Addr, 120, a_PortAddr); // 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다. // int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
+	port += mp_Libxl->m_totalNodeCnt * a_Node;
+	memcpy(&data, &(m_pData->data[port][a_Word * 2]), 2);
 
-	return data;
+	WORD result;
+	((unsigned char *)&result)[0] = data >> 8;
+	((unsigned char *)&result)[1] = data & 0xFF;
+	
+	return result;
+}
+//--------------------------------------------------------------------------------------------
+
+void CWordMemorizationDlg::SetBitDataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word, BYTE a_ColPos, WORD a_Data)
+{
+	int port = binarySearch(mp_Libxl->mvb_Addr, 120, a_PortAddr); // 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다. // int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
+	port += mp_Libxl->m_totalNodeCnt * a_Node;
+
+	WORD lsh = 0x01 << a_ColPos;
+	WORD data = a_Data;
+	data = data ^ lsh;
+
+	m_pData->data[port][a_Word * 2    ] = data >> 8;   // 상위
+	m_pData->data[port][a_Word * 2 + 1] = data & 0xFF; // 하위
+
+	//WORD result;
+	//((unsigned char *)&result)[1] = m_pData->data[port][a_Word * 2];     // 상위
+	//((unsigned char *)&result)[0] = m_pData->data[port][a_Word * 2 + 1]; // 하위
 }
 //--------------------------------------------------------------------------------------------
