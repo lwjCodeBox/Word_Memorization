@@ -291,7 +291,7 @@ void CForm_SetMVB::OnBnClickedButton3()
 	BYTE node;
 	node = GetDlgItemInt(IDC_SETMVB_GRID_NODE); // 0이면 myNode를 의미함.
 
-	if (strPortAddr == L"")
+	if (strPortAddr == L"" || node >= 4)
 		return;
 
 	
@@ -377,7 +377,7 @@ void CForm_SetMVB::On_GFG_GridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 	BYTE node;
 	node = GetDlgItemInt(IDC_SETMVB_GRID_NODE); // 0이면 myNode를 의미함.
 
-	if (strPortAddr == L"")
+	if (strPortAddr == L"" || node >= 4)
 		return;
 
 	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
@@ -387,7 +387,7 @@ void CForm_SetMVB::On_GFG_GridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 	// int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
 	int t_port = binarySearch(p_ExcelLib->mvb_Addr, 120, portAddr);
 	WORD t_WordPos = (pItem->iRow - 2) / 2;
-	WORD smData = mainDlg->GetDataFromSM(portAddr, 0, t_WordPos); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
+	WORD smData = mainDlg->GetDataFromSM(portAddr, node, t_WordPos); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
 
 	BYTE colPos = 7 - (pItem->iColumn - 1);
 	if (pItem->iRow % 2 == 0) colPos += 8;
