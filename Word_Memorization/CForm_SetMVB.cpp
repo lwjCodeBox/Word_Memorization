@@ -291,7 +291,7 @@ void CForm_SetMVB::OnBnClickedButton3()
 	BYTE node;
 	node = GetDlgItemInt(IDC_SETMVB_GRID_NODE); // 0이면 myNode를 의미함.
 
-	if (strPortAddr == L"" || node >= 4)
+	if (strPortAddr == L"" || node >= 5)
 		return;
 
 	
@@ -377,7 +377,7 @@ void CForm_SetMVB::On_GFG_GridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 	BYTE node;
 	node = GetDlgItemInt(IDC_SETMVB_GRID_NODE); // 0이면 myNode를 의미함.
 
-	if (strPortAddr == L"" || node >= 4)
+	if (strPortAddr == L"" || node >= 5)
 		return;
 
 	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
@@ -392,7 +392,7 @@ void CForm_SetMVB::On_GFG_GridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 	BYTE colPos = 7 - (pItem->iColumn - 1);
 	if (pItem->iRow % 2 == 0) colPos += 8;
 
-	mainDlg->SetBitDataToSM(portAddr, 0, t_WordPos, colPos, smData);
+	mainDlg->SetBitDataToSM(portAddr, node, t_WordPos, colPos, smData);
 
 	// Returns cell background color
 	if (mp_ScrSetMVB_Grid->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != RCLICK_RGB) {
