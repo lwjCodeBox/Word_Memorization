@@ -57,6 +57,9 @@
     <ClInclude Include="GridCtrl_src_new\MemDC.h">
       <Filter>Grid_Ctrl</Filter>
     </ClInclude>
+    <ClInclude Include="Grid_Func_Group.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Word_Memorization.cpp">
@@ -106,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="GridCtrl_src_new\TitleTip.cpp">
       <Filter>Grid_Ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid_Func_Group.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -240,10 +240,6 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 
 	mp_gridctrl->EnableTitleTips(false);
 
-	// 그리드 초기화
-	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
-	InitItemBkColor(33, 8);
-
 	CString str;
 	
 	// Bit 7 ~ 0
@@ -258,7 +254,8 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	}
 	// Byte
 	for (int i = 2; i < 34; i++) {
-		str.Format(L"Byte %02d", i - 2);
+		int word = (i - 2) / 2;
+		str.Format(L"Byte %02d (W %02d)", i - 2, word);
 		mp_gridctrl->SetItemText(i, 0, str);
 	}
 	
@@ -267,6 +264,9 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 		mp_gridctrl->SetColumnWidth(col, 114);
 	}
 	
+	// 그리드 초기화
+	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
+	InitItemBkColor(33, 8);
 	
 	InitMakeGrid(5, 36, 2, 9, m_flag);      // 매개 변수 범위는 기준은 엑셀 기준이다.
 	SetWordFormatCell(5, 36, 2, 9, m_flag); // 매개 변수 범위는 기준은 엑셀 기준이다.
@@ -355,10 +355,6 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 
 	mp_gridctrl->EnableTitleTips(false);
 
-	// 그리드 초기화
-	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
-	InitItemBkColor(33, 8);
-
 	CString str;
 
 	// Bit 7 ~ 0
@@ -373,7 +369,8 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 	}
 	// Byte
 	for (int i = 2; i < 34; i++) {
-		str.Format(L"Byte %02d", i - 2);
+		int word = (i - 2) / 2;
+		str.Format(L"Byte %02d (W %02d)", i - 2, word);
 		mp_gridctrl->SetItemText(i, 0, str);
 	}
 
@@ -381,6 +378,10 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 	for (int col = 1; col < 9; col++) {
 		mp_gridctrl->SetColumnWidth(col, 114);
 	}
+
+	// 그리드 초기화
+	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
+	InitItemBkColor(33, 8);
 
 	InitMakeGrid(5, 36, 2, 9, m_flag);      // 매개 변수 범위는 기준은 엑셀 기준이다.
 	SetWordFormatCell(5, 36, 2, 9, m_flag); // 매개 변수 범위는 기준은 엑셀 기준이다.
@@ -418,10 +419,6 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 
 	mp_gridctrl->EnableTitleTips(false);
 
-	// 그리드 초기화
-	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
-	InitItemBkColor(33, 8);
-
 	CString str;
 
 	// Bit 7 ~ 0
@@ -436,7 +433,8 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 	}
 	// Byte
 	for (int i = 2; i < 34; i++) {
-		str.Format(L"Byte %02d", i - 2);
+		int word = (i - 2) / 2;
+		str.Format(L"Byte %02d (W %02d)", i - 2, word);
 		mp_gridctrl->SetItemText(i, 0, str);
 	}
 
@@ -444,6 +442,10 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 	for (int col = 1; col < 9; col++) {
 		mp_gridctrl->SetColumnWidth(col, 114);
 	}
+
+	// 그리드 초기화
+	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
+	InitItemBkColor(33, 8);
 
 	InitMakeGrid(5, 36, 2, 9, m_flag);      // 매개 변수 범위는 기준은 엑셀 기준이다.
 	SetWordFormatCell(5, 36, 2, 9, m_flag); // 매개 변수 범위는 기준은 엑셀 기준이다.
@@ -787,7 +789,6 @@ void CForm_DuDefault_1::InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFir
 
 	a_ColLast++;
 
-	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 	// for()문의 조건 범위 기준은 엘셀의 읽어올 위치를 기준으로 잡고 설정함
 	for (int row = a_RowFirst; row <= a_RowLast; row++) {		
 		for (int col = a_ColFirst; col <= a_ColLast; col++) {

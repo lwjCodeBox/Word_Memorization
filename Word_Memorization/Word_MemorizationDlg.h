@@ -9,6 +9,7 @@
 #include "CSharedMemory.h"
 
 #include "DefineOfDev_J.h"
+#include "Grid_Func_Group.h"
 
 // 화면 전환.
 #include "CForm_Protocol.h"

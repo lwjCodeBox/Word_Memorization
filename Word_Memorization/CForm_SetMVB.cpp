@@ -42,9 +42,13 @@ BEGIN_MESSAGE_MAP(CForm_SetMVB, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON1, &CForm_SetMVB::OnBnClickedButton1)
 	ON_WM_TIMER()
 
+	// mouse click option
+	ON_NOTIFY(NM_RCLICK, IDC_GFG_GRID, &CForm_SetMVB::On_GFG_GridClick)
+
 	ON_COMMAND_RANGE(IDC_SETMVB_TM_START_0, IDC_SETMVB_TM_START_3, TiemerStart)
 	ON_COMMAND_RANGE(IDC_SETMVB_TM_STOP_0, IDC_SETMVB_TM_STOP_3, TimerStop)
 	ON_BN_CLICKED(IDC_BUTTON2, &CForm_SetMVB::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &CForm_SetMVB::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -69,9 +73,7 @@ void CForm_SetMVB::Dump(CDumpContext &dc) const
 
 
 BOOL CForm_SetMVB::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext)
-{
-	// TODO: Add your specialized code here and/or call the base class
-
+{		
 	return CFormView::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
 }
 
@@ -249,7 +251,7 @@ void CForm_SetMVB::TimerStop(UINT ID)
 	}
 
 }
-
+//--------------------------------------------------------------------------------------------
 
 void CForm_SetMVB::OnBnClickedButton2()
 { 
@@ -278,3 +280,130 @@ void CForm_SetMVB::OnBnClickedButton2()
 
 	mp_FormMainDlg = NULL;
 }
+//--------------------------------------------------------------------------------------------
+
+void CForm_SetMVB::OnBnClickedButton3()
+{
+	CString strPortAddr;
+	GetDlgItemText(IDC_SETMVB_GRID_ADDR, strPortAddr);
+	WORD portAddr = _tcstoul(strPortAddr, NULL, 16); // 문자열을 16진수로 변환.
+
+	BYTE node;
+	node = GetDlgItemInt(IDC_SETMVB_GRID_NODE); // 0이면 myNode를 의미함.
+
+	if (strPortAddr == L"")
+		return;
+
+	
+	if (mp_ScrSetMVB_Grid == NULL) {
+		mp_ScrSetMVB_Grid = new CGridCtrl;
+		mp_ScrSetMVB_Grid->Create(CRect(10, 310, 1020, 1065), this, IDC_GFG_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
+	
+		mp_ScrSetMVB_Grid->SetRowCount(32 + 2);
+		mp_ScrSetMVB_Grid->SetColumnCount(8 + 1); // 현시할 column 8개, fixed column 1개
+
+		mp_ScrSetMVB_Grid->SetFixedRowCount(2);
+		mp_ScrSetMVB_Grid->SetFixedColumnCount(1);
+
+		mp_ScrSetMVB_Grid->SetFixedBkColor(RGB(200, 200, 200));
+
+		// grid option
+		mp_ScrSetMVB_Grid->SetGridLineColor(RGB(128, 128, 255));
+		mp_ScrSetMVB_Grid->SetTrackFocusCell(true);
+		mp_ScrSetMVB_Grid->SetEditable(true);
+
+		mp_ScrSetMVB_Grid->EnableTitleTips(false);
+	
+		CString str;
+
+		// Bit 7 ~ 0
+		for (int i = 1; i < 9; i++) {
+			str.Format(L"Bit %02d", 7 - (i - 1));
+			mp_ScrSetMVB_Grid->SetItemText(1, i, str);
+		}
+		// Bit 15 ~ 8
+		for (int i = 1; i < 9; i++) {
+			str.Format(L"Bit %02d", 16 - i);
+			mp_ScrSetMVB_Grid->SetItemText(0, i, str);
+		}
+		// Byte
+		for (int i = 2; i < 34; i++) {
+			int word = (i - 2) / 2;
+			str.Format(L"Byte %02d (W %02d)", i - 2, word);
+			mp_ScrSetMVB_Grid->SetItemText(i, 0, str);
+		}
+
+		// column width
+		for (int col = 1; col < 9; col++) {
+			mp_ScrSetMVB_Grid->SetColumnWidth(col, 114);
+		}
+	}
+
+	// 그리드 초기화
+	mp_ScrSetMVB_Grid->ClearCells(CCellRange(2, 1, 33, 8));
+	_GFG_InitItemBkColor(33, 8, mp_ScrSetMVB_Grid);
+
+	//_GFG_InitMakeGrid(5, 36, 2, 9, mp_ScrSetMVB_Grid);
+	//_GFG_SetWordFormatCell(5, 36, 2, 9, mp_ScrSetMVB_Grid);
+	_GFG_SetDataCheck(5, 36, 2, 9, portAddr, node, mp_ScrSetMVB_Grid);
+}
+//--------------------------------------------------------------------------------------------
+
+BOOL CForm_SetMVB::DestroyWindow()
+{
+	if (NULL != mp_ScrSetMVB_Grid) {
+		delete mp_ScrSetMVB_Grid;
+		mp_ScrSetMVB_Grid = NULL;
+	}
+
+	return CFormView::DestroyWindow();
+}
+//--------------------------------------------------------------------------------------------
+
+// bit format
+void CForm_SetMVB::On_GFG_GridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
+{
+	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
+
+	if (pItem->iRow == 0 || pItem->iRow == 1 || pItem->iColumn == 0) return; // fix cells
+
+	//  0이 아니라면 병합된 셀을 의미 하기 떄문에 병합된 셀에서 우클릭을 할 경우 이 함수를 리턴해 버린다. 
+	//if (IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag) != 0) return;
+
+	CString strPortAddr;
+	GetDlgItemText(IDC_SETMVB_GRID_ADDR, strPortAddr);
+	WORD portAddr = _tcstoul(strPortAddr, NULL, 16); // 문자열을 16진수로 변환.
+
+	BYTE node;
+	node = GetDlgItemInt(IDC_SETMVB_GRID_NODE); // 0이면 myNode를 의미함.
+
+	if (strPortAddr == L"")
+		return;
+
+	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	_CExcelLib *p_ExcelLib = (_CExcelLib *)mainDlg->mp_Libxl;
+
+	// 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다.
+	// int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
+	int t_port = binarySearch(p_ExcelLib->mvb_Addr, 120, portAddr);
+	WORD t_WordPos = (pItem->iRow - 2) / 2;
+	WORD smData = mainDlg->GetDataFromSM(portAddr, 0, t_WordPos); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
+
+	BYTE colPos = 7 - (pItem->iColumn - 1);
+	if (pItem->iRow % 2 == 0) colPos += 8;
+
+	mainDlg->SetBitDataToSM(portAddr, 0, t_WordPos, colPos, smData);
+
+	// Returns cell background color
+	if (mp_ScrSetMVB_Grid->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != RCLICK_RGB) {
+		mp_ScrSetMVB_Grid->SetItemBkColour(pItem->iRow, pItem->iColumn, RCLICK_RGB);
+	}
+	else
+		mp_ScrSetMVB_Grid->SetItemBkColour(pItem->iRow, pItem->iColumn, WHITE_RGB);
+
+	mp_ScrSetMVB_Grid->RedrawCell(pItem->iRow, pItem->iColumn);
+
+	p_ExcelLib = NULL;
+	mainDlg = NULL;
+}
+//--------------------------------------------------------------------------------------------

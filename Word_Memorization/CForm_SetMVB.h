@@ -1,11 +1,15 @@
 #pragma once
 
+#include "GridCtrl_src_new/GridCtrl.h"
+
 // ********* Timer **********
 #define USER_TIMER_0 30000
 #define USER_TIMER_1 30001
 #define USER_TIMER_2 30002
 #define USER_TIMER_3 30003
 // **************************
+
+#define IDC_GFG_GRID 10002
 
 // CForm_SetMVB form view
 class CWordMemorizationDlg;
@@ -30,6 +34,7 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	afx_msg void On_GFG_GridClick(NMHDR *pNotifyStruct, LRESULT *);
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -43,6 +48,8 @@ private:
 
 	CWordMemorizationDlg *mp_FormMainDlg;
 
+	CGridCtrl *mp_ScrSetMVB_Grid = NULL;
+
 	unsigned short m_HeartBit_0, m_HeartBit_1, m_HeartBit_2, m_HeartBit_3;
 
 private:
@@ -55,6 +62,8 @@ public:
 
 
 	afx_msg void OnBnClickedButton2();
+	afx_msg void OnBnClickedButton3();
+	virtual BOOL DestroyWindow();
 };
 
 

@@ -36,7 +36,7 @@ BEGIN_MESSAGE_MAP(CWordMemorizationDlg, CDialogEx)
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()
 	ON_COMMAND_RANGE(IDC_SELECTED_CAR_0, IDC_SELECTED_CAR_7, SelectedCar)
-	ON_COMMAND_RANGE(IDC_SCREEN_PROTOCOL_BTN00, IDC_SCREEN_SETMVB_BNT04, ChangeScreen)
+	ON_COMMAND_RANGE(IDC_SCREEN_PROTOCOL_BTN00, IDC_SCREEN_SETMVB_BNT04, ChangeScreen)	
 END_MESSAGE_MAP()
 
 
@@ -368,3 +368,5 @@ void CWordMemorizationDlg::SetBitDataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_W
 	//((unsigned char *)&result)[0] = m_pData->data[port][a_Word * 2 + 1]; // гою╖
 }
 //--------------------------------------------------------------------------------------------
+
+

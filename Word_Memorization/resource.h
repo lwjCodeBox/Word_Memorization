@@ -26,8 +26,12 @@
 #define IDC_SETMVB_ADDR2                1021
 #define IDC_SETMVB_TM_PORT1             1022
 #define IDC_BUTTON2                     1023
+#define IDC_BUTTON3                     1024
 #define IDC_SETMVB_TM_PORT2             1028
 #define IDC_SETMVB_TM_PORT3             1030
+#define IDC_SETMVB_GRID_NODE            1031
+#define IDC_SETMVB_ADDR_GRID            1032
+#define IDC_SETMVB_GRID_ADDR            1032
 #define IDC_BUTTON10                    1035
 #define IDC_SELECTED_CAR_0              2000
 #define IDC_SELECTED_CAR_1              2001
