@@ -650,7 +650,22 @@ void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult
 	//  0이라면 병합되지 않은 셀을 의미 하기 떄문에 병합되지 않은 셀을 더블 클릭하면 리턴한다. 
 	if (IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag) == 0) return;
 
+	
+	CString text;
+
 	if (mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != LDCLICK_RGB) {
+		/*wchar_t *wtext = mp_gridctrl->GetItemText(pItem->iRow, pItem->iColumn).GetBuffer();
+		int len = mp_gridctrl->GetItemText(pItem->iRow, pItem->iColumn).GetLength();
+		wchar_t *p_textbuf = new wchar_t[len+1];
+		for (int i = 0; i < len; i++) {
+			p_textbuf[i] = *(wtext + i);
+		}
+		p_textbuf[len + 1] = NULL;*/
+
+		mp_gridctrl->SetItemText(pItem->iRow, pItem->iColumn, mp_gridctrl->GetItemText(pItem->iRow, pItem->iColumn) + L"lwj");
+		mp_gridctrl->SetItemText(pItem->iRow, pItem->iColumn, L"text Lwj");
+		text = mp_gridctrl->GetItemText(pItem->iRow, pItem->iColumn);
+
 		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, LDCLICK_RGB);
 	}
 	else 
