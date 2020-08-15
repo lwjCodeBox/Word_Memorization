@@ -30,3 +30,9 @@ bool IsBitCheck16(WORD a_Target, WORD a_BitPos)
 	else return false;
 }
 //--------------------------------------------------------------------------------------------
+
+CString GetTextFormExcel(int a_Row, int a_Col, libxl::Sheet *ap_Excel/*CGridCtrl *ap_GridCtrl*/){
+	// [±×¸®µå 2, 1] -> [¿¢¼¿ Æ÷¸ä 5, 2]
+	return ap_Excel->readStr(a_Row + 3, a_Col + 1, NULL);
+}
+//--------------------------------------------------------------------------------------------

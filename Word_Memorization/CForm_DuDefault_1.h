@@ -41,15 +41,8 @@ private:
 	int m_row, m_column;
 	int m_fixedRowCnt, m_fixedColumnCnt;
 
-	//unsigned char *mp_setPos = NULL;
-
-	unsigned char clicked[32][8];
-
 	// Excel
 	_CExcelLib *pExcel;
-
-	// 0이면 클릭은 한번도 클릭을 한적이 없다는 의미.
-	//unsigned char m_buffer[32][8];
  
 	// du_default 버튼들중에서 어떤 버튼을 클릭했는지 구별하기 위한 변수 1이면 du default1, 2이면 du default2, 3이면 du default3
 	int m_flag = 0; 

@@ -207,7 +207,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 {
 	//CWordMemorizationDlg mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 	
-	if (m_flag == 1) return;
+	//if (m_flag == 1) return;
 
 	m_flag = 1;
 
@@ -273,32 +273,6 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	SetDataCheck(5, 36, 2, 9, m_flag);      // 매개 변수 범위는 기준은 엑셀 기준이다.
 	SetTextGrid(2, 33, 1, 8, m_flag);       // 매개 변수 범위는 그리드 컨트롤 기준이다.
 
-	//unsigned char t_buffer[32][8];
-	unsigned char t_buffer[256];
-
-
-/*
-	BYTE l_byte, h_byte;
-	int dataSize = sizeof(pExcel->mvb_Addr) / sizeof(WORD);
-	int t_port = binarySearch(pExcel->mvb_Addr, dataSize, 0x1A4);
-
-	//unsigned short value;
-	//h_byte = ((unsigned char *)&value)[1]; // word 상위
-	//l_byte = ((unsigned char *)&value)[0]; // word 하위
-
-	//memset(&(mainDlg.m_pData->data[t_port][0]), h_byte, 1);   // mvb 상위 바이트에 값을 넣음
-	//memset(&(mainDlg.m_pData->data[t_port][1]), l_byte, 1); // mvb 하위 바이트에 값을 넣음
-	
-	//memcpy(t_buffer, &(m_pData->data[m_signal[i].mem_Row][0]), MAX_DATA_COUNT_PER_PORT);
-
-	//CheckData();
-
-	//memset(t_buffer, 7, 32);
-	//memcpy(&(mp_MainDlg->m_pData->data[t_port][0]), &t_buffer, 2);
-*/
-	
-	
-
 
 #ifdef Edit_and_ListControl_Sample_CODE
 		Clear_EditCtrl(); // 에디트 창을 한번 초기화 한다.
@@ -328,7 +302,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 
 void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 {
-	if (m_flag == 2) return;
+	//if (m_flag == 2) return;
 
 	m_flag = 2;
 
@@ -392,7 +366,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 
 void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 {
-	if (m_flag == 3) return;
+	//if (m_flag == 3) return;
 
 	m_flag = 3;
 
@@ -650,28 +624,19 @@ void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult
 	//  0이라면 병합되지 않은 셀을 의미 하기 떄문에 병합되지 않은 셀을 더블 클릭하면 리턴한다. 
 	if (IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag) == 0) return;
 
-	
-	CString text;
-
 	if (mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != LDCLICK_RGB) {
-		/*wchar_t *wtext = mp_gridctrl->GetItemText(pItem->iRow, pItem->iColumn).GetBuffer();
-		int len = mp_gridctrl->GetItemText(pItem->iRow, pItem->iColumn).GetLength();
-		wchar_t *p_textbuf = new wchar_t[len+1];
-		for (int i = 0; i < len; i++) {
-			p_textbuf[i] = *(wtext + i);
-		}
-		p_textbuf[len + 1] = NULL;*/
-
-		mp_gridctrl->SetItemText(pItem->iRow, pItem->iColumn, mp_gridctrl->GetItemText(pItem->iRow, pItem->iColumn) + L"lwj");
-		mp_gridctrl->SetItemText(pItem->iRow, pItem->iColumn, L"text Lwj");
-		text = mp_gridctrl->GetItemText(pItem->iRow, pItem->iColumn);
-
+		
+		/*CString cStr = GetTextFormExcel(pItem->iRow, pItem->iColumn, *ppSheet);
+		wchar_t *wtext = cStr.GetBuffer(cStr.GetLength()); */
+		
 		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, LDCLICK_RGB);
 	}
-	else 
+	else {
 		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, WHITE_RGB);
+	}
 
 	mp_gridctrl->RedrawCell(pItem->iRow, pItem->iColumn);
+	
 }
 //--------------------------------------------------------------------------------------------
 
@@ -764,8 +729,6 @@ void CForm_DuDefault_1::IsDataCheck(int a_Row, int a_Column)
 
 					if (((data >> shift) & 0x01) == 0x01)
 						mp_gridctrl->SetItemBkColour(row, col, RCLICK_RGB);
-					//else
-						//mp_gridctrl->SetItemBkColour(row, col, WHITE_RGB);
 				}
 				// 병합된 크기 만큼 병합.
 				else {
@@ -864,7 +827,7 @@ void CForm_DuDefault_1::SetWordFormatCell(int a_RowFirst, int a_RowLast, int a_C
 			if (mergeCount == 16) {
 				// 엑셀 범위 세팅.
 				int t_row_first = a_RowFirst, t_row_last = a_RowLast;
-				int t_col_first = a_ColFirst, t_col_last = a_ColLast-1;
+				int t_col_first = a_ColFirst, t_col_last = a_ColLast - 1;
 
 				(*ppSheet)->getMerge(row, 2, &t_row_first, &t_row_last, &t_col_first, &t_col_last); // _row, _col, &row_first, &row_last, &col_first, &col_last		
 				// 처음 행과 마지막 행을 비교하는 이유는 바이트 형식이면 두 변수(t_row_first, t_row_last)의 값이 같게 되지만 워드 형식이면 두 변수의 값이 다르다.
@@ -907,30 +870,27 @@ void CForm_DuDefault_1::SetDataCheck(int a_RowFirst, int a_RowLast, int a_ColFir
 
 	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 	// for()문의 조건 범위 기준은 엘셀의 읽어올 위치를 기준으로 잡고 설정함
-	for (int row = a_RowFirst; row <= a_RowLast; row++) {		
+	for (int row = a_RowFirst; row <= a_RowLast; row++) {
 		WORD smData = mainDlg->GetDataFromSM(addr, 0, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
-		
+
 		for (int col = a_ColFirst; col <= a_ColLast; col++) {
 			bMerge = (*ppSheet)->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last			
-			
+
 			// 병합이 안되어 있다면...
-			if (!bMerge && col < 10) {				
+			if (!bMerge && col < 10) {
 				// 비트 체크.
 				BYTE bitPos = 7 - (col - 2); // 2 ~ 10
-				
+
 				BYTE rowPos = row - 3; // 5 ~ 36
 				if (rowPos % 2 == 0) bitPos += 8;
 
 				BYTE colPos = col - 1;
 
 				// 그리드에 색상 적용.
-				if (IsBitCheck16(smData, bitPos)) {									
+				if (IsBitCheck16(smData, bitPos)) {
 					mp_gridctrl->SetItemBkColour(rowPos, colPos, RCLICK_RGB);
 				}
-				/*else {
-					mp_gridctrl->SetItemBkColour(rowPos, colPos, DEf_EVEN_WORD);
-				}*/
-			}			
+			}
 		}
 	}
 
