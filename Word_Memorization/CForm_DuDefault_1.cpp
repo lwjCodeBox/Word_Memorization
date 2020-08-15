@@ -628,7 +628,21 @@ void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult
 		
 		/*CString cStr = GetTextFormExcel(pItem->iRow, pItem->iColumn, *ppSheet);
 		wchar_t *wtext = cStr.GetBuffer(cStr.GetLength()); */
-		
+
+		/*Sheet **ppSheet = NULL;
+
+		if (m_flag == 1) {
+			ppSheet = &pExcel->m_pDU_Default_1;
+		}
+		else if (m_flag == 2) {
+			ppSheet = &pExcel->m_pDU_Default_2;
+		}
+		else if (m_flag == 3) {
+			ppSheet = &pExcel->m_pDU_Default_3;
+		}
+		mp_gridctrl->SetItemText(2, 1, GetTextFormExcel(pItem->iRow, pItem->iColumn, *ppSheet) + L"asflkj");*/
+
+
 		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, LDCLICK_RGB);
 	}
 	else {
