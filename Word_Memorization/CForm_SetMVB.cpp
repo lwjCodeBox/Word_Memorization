@@ -341,11 +341,11 @@ void CForm_SetMVB::OnBnClickedButton3()
 
 	// 그리드 초기화
 	mp_ScrSetMVB_Grid->ClearCells(CCellRange(2, 1, 33, 8));
-	_GFG_InitItemBkColor(33, 8, mp_ScrSetMVB_Grid);
+	_GFG::_GFG_InitItemBkColor(33, 8, mp_ScrSetMVB_Grid);
 
-	//_GFG_InitMakeGrid(5, 36, 2, 9, mp_ScrSetMVB_Grid);
-	//_GFG_SetWordFormatCell(5, 36, 2, 9, mp_ScrSetMVB_Grid);
-	_GFG_SetDataCheck(5, 36, 2, 9, portAddr, node, mp_ScrSetMVB_Grid);
+	//_GFG::_GFG_InitMakeGrid(5, 36, 2, 9, mp_ScrSetMVB_Grid);
+	//_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, mp_ScrSetMVB_Grid);
+	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, portAddr, node, mp_ScrSetMVB_Grid);
 }
 //--------------------------------------------------------------------------------------------
 

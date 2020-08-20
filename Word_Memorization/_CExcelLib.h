@@ -33,6 +33,24 @@ public:
 		}
 		return L"err";
 	}
+
+	Sheet *GetSheet(WORD a_Addr) 
+	{
+		Sheet *p = NULL;
+		if (a_Addr == 0x1A4) {
+			p = m_pDU_Default_1;
+		}
+		else if (a_Addr == 0x1A8) {
+			p = m_pDU_Default_2;
+		}
+		else if (a_Addr == 0x1AC) {
+			p = m_pDU_Default_3;
+		}
+		else return 0;
+
+		return p;
+		//else return NULL;
+	}
 private:
 	Sheet* getSheetByName(Book* book, const wchar_t* name); // 사용하고 있는 Sheet의 이름을 얻어옴.
 
