@@ -220,3 +220,24 @@ bool _CExcelLib::Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_
 		return false;
 	}
 }
+//--------------------------------------------------------------------------------------------
+/*
+Sheet* _CExcelLib::GetSheet(WORD a_Addr)
+{
+	Sheet *p = NULL;
+	if (a_Addr == 0x1A4) {
+		p = _CExcelLib::m_pDU_Default_1;
+	}
+	else if (a_Addr == 0x1A8) {
+		p = m_pDU_Default_2;
+	}
+	else if (a_Addr == 0x1AC) {
+		p = m_pDU_Default_3;
+	}
+	else return 0;
+
+	return p;
+	//else return NULL;
+}
+//--------------------------------------------------------------------------------------------
+*/

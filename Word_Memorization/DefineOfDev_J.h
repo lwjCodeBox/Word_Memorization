@@ -9,7 +9,7 @@
 #define DEf_EVEN_WORD RGB(255, 255, 204)
 
 #define DEf_HIG_WORD RGB(255, 255, 204)
-#define DEf_LOW_WORD RGB(0, 255, 204)
+#define AQUA_COLOR RGB(0, 255, 255)
 
 //--------------------------------------------------------------------------------------------
 typedef struct DuNode

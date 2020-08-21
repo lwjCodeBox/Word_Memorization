@@ -34,23 +34,14 @@ public:
 		return L"err";
 	}
 
-	Sheet *GetSheet(WORD a_Addr) 
+	Sheet *GetSheet(WORD a_Addr)
 	{
-		Sheet *p = NULL;
-		if (a_Addr == 0x1A4) {
-			p = m_pDU_Default_1;
-		}
-		else if (a_Addr == 0x1A8) {
-			p = m_pDU_Default_2;
-		}
-		else if (a_Addr == 0x1AC) {
-			p = m_pDU_Default_3;
-		}
+		if (a_Addr == 0x1A4)		return m_pDU_Default_1;
+		else if (a_Addr == 0x1A8)	return m_pDU_Default_2;
+		else if (a_Addr == 0x1AC)	return m_pDU_Default_3;
 		else return 0;
-
-		return p;
-		//else return NULL;
 	}
+	
 private:
 	Sheet* getSheetByName(Book* book, const wchar_t* name); // 사용하고 있는 Sheet의 이름을 얻어옴.
 
@@ -59,11 +50,9 @@ private:
 	// Read DU Defautl1, 2, 3
 	bool Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_Excel_DuDefault_2)[8], CString(*ap_Excel_DuDefault_3)[8]);
 
-
-
 public:
-	Book* m_Book;
-	Sheet* m_pSheet1; 
+	Book *m_Book;
+	Sheet *m_pSheet1;
 	Sheet *m_pSheet2; // logical_port_adrs Sheet
 	Sheet *m_pDU_Default_1, *m_pDU_Default_2, *m_pDU_Default_3; // du_Defatul1, 2, 3 Sheet
 

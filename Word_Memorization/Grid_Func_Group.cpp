@@ -162,10 +162,10 @@ void _GFG::_GFG_SetDataCheck(int a_RowFirst, int a_RowLast, int a_ColFirst, int 
 
 void _GFG::_GFG_MoreThanTwoBitsOfData(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid)
 {
-	_CExcelLib *plib = NULL;
-	Sheet *pSheet = NULL;
+	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 
-	pSheet = plib->GetSheet(a_portAddr);
+	Sheet *pSheet = NULL;
+	pSheet = mainDlg->mp_Libxl->GetSheet(a_portAddr);
 
 //if (!bMerge && col < 10)
 // 
@@ -178,7 +178,6 @@ void _GFG::_GFG_MoreThanTwoBitsOfData(int a_RowFirst, int a_RowLast, int a_ColFi
 
 	a_ColLast++;
 
-	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 	for (int row = a_RowFirst; row <= a_RowLast; row++) {
 		for (int col = a_ColFirst; col <= a_ColLast; col++) {
 			bMerge = pSheet->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last			
@@ -194,7 +193,7 @@ void _GFG::_GFG_MoreThanTwoBitsOfData(int a_RowFirst, int a_RowLast, int a_ColFi
 			}
 
 			// Check Word Fomat
-			if (mergeCount == 16) {
+			if (mergeCount == 2) {
 				// 엑셀 범위 세팅.
 				int t_row_first = a_RowFirst, t_row_last = a_RowLast;
 				int t_col_first = a_ColFirst, t_col_last = a_ColLast - 1;
@@ -202,8 +201,11 @@ void _GFG::_GFG_MoreThanTwoBitsOfData(int a_RowFirst, int a_RowLast, int a_ColFi
 				pSheet->getMerge(row, 2, &t_row_first, &t_row_last, &t_col_first, &t_col_last); // _row, _col, &row_first, &row_last, &col_first, &col_last		
 				// 처음 행과 마지막 행을 비교하는 이유는 바이트 형식이면 두 변수(t_row_first, t_row_last)의 값이 같게 되지만 워드 형식이면 두 변수의 값이 다르다.
 				if (t_row_first != t_row_last) {
-					ap_grid->SetItemBkColour(startRow, startCol, DEf_HIG_WORD);
+					ap_grid->SetItemBkColour(startRow, startCol, AQUA_COLOR);
 				}
+				startRow = 0;
+				startCol = 0;
+
 				mergeCount = 0;
 			}
 			else if (mergeCount == 8) {
@@ -214,13 +216,31 @@ void _GFG::_GFG_MoreThanTwoBitsOfData(int a_RowFirst, int a_RowLast, int a_ColFi
 				pSheet->getMerge(row, 2, &t_row_first, &t_row_last, &t_col_first, &t_col_last); // _row, _col, &row_first, &row_last, &col_first, &col_last		
 				// 처음 행과 마지막 행을 비교하는 이유는 바이트 형식이면 두 변수(t_row_first, t_row_last)의 값이 같게 되지만 워드 형식이면 두 변수의 값이 다르다.
 				if (t_row_first != t_row_last) {
-					ap_grid->SetItemBkColour(startRow, startCol, DEf_LOW_WORD);
+					ap_grid->SetItemBkColour(startRow, startCol, DEf_EVEN_WORD);
 				}
+				startRow = 0;
+				startCol = 0;
+
 				mergeCount = 0;
 			}
+			else if (mergeCount == 16) {
+				// 엑셀 범위 세팅.
+				int t_row_first = a_RowFirst, t_row_last = a_RowLast;
+				int t_col_first = a_ColFirst, t_col_last = a_ColLast - 1;
+
+				pSheet->getMerge(row, 2, &t_row_first, &t_row_last, &t_col_first, &t_col_last); // _row, _col, &row_first, &row_last, &col_first, &col_last		
+				// 처음 행과 마지막 행을 비교하는 이유는 바이트 형식이면 두 변수(t_row_first, t_row_last)의 값이 같게 되지만 워드 형식이면 두 변수의 값이 다르다.
+				if (t_row_first != t_row_last) {
+					ap_grid->SetItemBkColour(startRow, startCol, DEf_HIG_WORD);
+				}
+				startRow = 0;
+				startCol = 0;
+
+				mergeCount = 0;
+			}
+			
 		}
 	}
-
 
 	mainDlg = NULL;
 	pSheet = NULL;
