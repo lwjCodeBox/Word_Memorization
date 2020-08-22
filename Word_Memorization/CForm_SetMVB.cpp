@@ -343,9 +343,14 @@ void CForm_SetMVB::OnBnClickedButton3()
 	mp_ScrSetMVB_Grid->ClearCells(CCellRange(2, 1, 33, 8));
 	_GFG::_GFG_InitItemBkColor(33, 8, mp_ScrSetMVB_Grid);
 
-	//_GFG::_GFG_InitMakeGrid(5, 36, 2, 9, mp_ScrSetMVB_Grid);
-	//_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, mp_ScrSetMVB_Grid);
-	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, portAddr, node, mp_ScrSetMVB_Grid);
+	// 매개 변수 범위는 기준은 엑셀 기준이다.
+	//_GFG::_GFG_InitMakeGrid(5, 36, 2, 9, portAddr, mp_ScrSetMVB_Grid); // 비트 형식인지 병합한 형식인지 체크.
+	//_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, portAddr, mp_ScrSetMVB_Grid); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
+
+	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, portAddr, node, mp_ScrSetMVB_Grid); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
+	//_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1A4, 0, mp_ScrSetMVB_Grid); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
+
+	//_GFG::_GFG_SetTextGrid();
 }
 //--------------------------------------------------------------------------------------------
 

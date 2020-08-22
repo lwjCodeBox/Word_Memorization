@@ -39,7 +39,7 @@ public:
 		if (a_Addr == 0x1A4)		return m_pDU_Default_1;
 		else if (a_Addr == 0x1A8)	return m_pDU_Default_2;
 		else if (a_Addr == 0x1AC)	return m_pDU_Default_3;
-		else return 0;
+		else return NULL;
 	}
 	
 private:

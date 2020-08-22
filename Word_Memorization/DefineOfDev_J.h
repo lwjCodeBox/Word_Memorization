@@ -2,14 +2,13 @@
 
 #include "libxl.h"
 
-#define RCLICK_RGB   RGB(0, 255, 128)
-#define LDCLICK_RGB  RGB(255, 128, 255) 
-#define WHITE_RGB	 RGB(255, 255, 255)
+#define RCLICK_RGB		RGB(0, 255, 128)
+#define LDCLICK_RGB		RGB(255, 255, 204)
+#define WHITE_RGB		RGB(255, 255, 255)
 
-#define DEf_EVEN_WORD RGB(255, 255, 204)
-
-#define DEf_HIG_WORD RGB(255, 255, 204)
-#define AQUA_COLOR RGB(0, 255, 255)
+#define LIGHTYELLOW_COLOR		RGB(255, 255, 204)
+#define AQUA_COLOR				RGB(0, 255, 255)
+#define PINK_COLOR				RGB(255, 210, 230)
 
 //--------------------------------------------------------------------------------------------
 typedef struct DuNode

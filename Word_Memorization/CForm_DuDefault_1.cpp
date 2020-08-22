@@ -266,14 +266,14 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	
 	// 그리드 초기화
 	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
-	InitItemBkColor(33, 8);
+	_GFG::_GFG_InitItemBkColor(33, 8, mp_gridctrl);
 	
 	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	InitMakeGrid(5, 36, 2, 9, m_flag);      // 비트 형식인지 병합한 형식인지 체크.                
-	SetWordFormatCell(5, 36, 2, 9, m_flag); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
+	_GFG::_GFG_InitMakeGrid(5, 36, 2, 9, 0x1A4, mp_gridctrl); // 비트 형식인지 병합한 형식인지 체크.
+	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, 0x1A4, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 	
-	SetDataCheck(5, 36, 2, 9, m_flag);      // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경. 워드 형식은 아직 안함.
-	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl);
+	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
+	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
 
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
 	SetTextGrid(2, 33, 1, 8, m_flag);       // 그리드에 엑셀에 있는 텍스트 넣기. 
@@ -359,14 +359,14 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 
 	// 그리드 초기화
 	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
-	InitItemBkColor(33, 8);
+	_GFG::_GFG_InitItemBkColor(33, 8, mp_gridctrl);
 
 	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	InitMakeGrid(5, 36, 2, 9, m_flag);      // 비트 형식인지 병합한 형식인지 체크.                
-	SetWordFormatCell(5, 36, 2, 9, m_flag); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
+	_GFG::_GFG_InitMakeGrid(5, 36, 2, 9, 0x1A8, mp_gridctrl); // 비트 형식인지 병합한 형식인지 체크.             
+	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, 0x1A8, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 
-	SetDataCheck(5, 36, 2, 9, m_flag);      // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경. 워드 형식은 아직 안함.
-	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl);
+	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
+	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
 
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
 	SetTextGrid(2, 33, 1, 8, m_flag);       // 그리드에 엑셀에 있는 텍스트 넣기. 
@@ -428,14 +428,14 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 
 	// 그리드 초기화
 	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
-	InitItemBkColor(33, 8);
+	_GFG::_GFG_InitItemBkColor(33, 8, mp_gridctrl);
 
 	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	InitMakeGrid(5, 36, 2, 9, m_flag);      // 비트 형식인지 병합한 형식인지 체크.                
-	SetWordFormatCell(5, 36, 2, 9, m_flag); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
+	_GFG::_GFG_InitMakeGrid(5, 36, 2, 9, 0x1AC, mp_gridctrl); // 비트 형식인지 병합한 형식인지 체크.                    
+	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, 0x1AC, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 
-	SetDataCheck(5, 36, 2, 9, m_flag);      // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경. 워드 형식은 아직 안함.
-	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl);
+	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
+	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
 
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
 	SetTextGrid(2, 33, 1, 8, m_flag);       // 그리드에 엑셀에 있는 텍스트 넣기. 
@@ -771,159 +771,6 @@ void CForm_DuDefault_1::IsDataCheck(int a_Row, int a_Column)
 			}
 		}
 	}
-}
-//--------------------------------------------------------------------------------------------
-
-void CForm_DuDefault_1::InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag)
-{
-	Sheet **ppSheet = NULL;
-
-	if (a_flag == 1) {
-		ppSheet = &pExcel->m_pDU_Default_1;
-	}
-	else if (a_flag == 2) {
-		ppSheet = &pExcel->m_pDU_Default_2;
-	}
-	else if (a_flag == 3) {
-		ppSheet = &pExcel->m_pDU_Default_3;
-	}
-
-	// Grid Setting
-	bool bMerge = false;
-	int mergeCol_start = 0;
-	int mergeCol_finish = 0;
-
-	a_ColLast++;
-
-	// for()문의 조건 범위 기준은 엘셀의 읽어올 위치를 기준으로 잡고 설정함
-	for (int row = a_RowFirst; row <= a_RowLast; row++) {		
-		for (int col = a_ColFirst; col <= a_ColLast; col++) {
-			bMerge = (*ppSheet)->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last			
-
-			// 병합이 되었다면...
-			if (bMerge) {
-				if (mergeCol_finish == 0) {
-					mergeCol_start = col - 1;
-					mergeCol_finish = col - 2;
-				}
-				mergeCol_finish++;
-			}
-			// 병합이 안되어 있다면...
-			else {
-				// 일반 비트 형식 
-				if (0 == mergeCol_finish) {	}
-				// 병합된 크기 만큼 병합.
-				else {
-					int t_row = row - 3;
-					mp_gridctrl->MergeCells(CCellRange(t_row, mergeCol_start, t_row, mergeCol_finish));
-
-					mergeCol_start = 0;
-					mergeCol_finish = 0;
-				}
-			}
-		}
-	}
-	
-	ppSheet = NULL;
-}
-//--------------------------------------------------------------------------------------------
-
-void CForm_DuDefault_1::SetWordFormatCell(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag)
-{
-	Sheet **ppSheet = NULL;
-
-	if (a_flag == 1)	 ppSheet = &pExcel->m_pDU_Default_1;
-	else if (a_flag == 2) ppSheet = &pExcel->m_pDU_Default_2;
-	else if (a_flag == 3) ppSheet = &pExcel->m_pDU_Default_3;
-
-	// Draw Word Format 
-	bool bMerge = false;
-	int mergeCount = 0;
-
-	a_ColLast++;
-
-	for (int row = a_RowFirst; row <= a_RowLast; row++) {
-		for (int col = a_ColFirst; col <= a_ColLast; col++) {
-			bMerge = (*ppSheet)->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last			
-
-			// 병합이 되었다면...
-			if (bMerge) {
-				mergeCount++;
-			}
-
-			// Check Word Fomat
-			if (mergeCount == 16) {
-				// 엑셀 범위 세팅.
-				int t_row_first = a_RowFirst, t_row_last = a_RowLast;
-				int t_col_first = a_ColFirst, t_col_last = a_ColLast - 1;
-
-				(*ppSheet)->getMerge(row, 2, &t_row_first, &t_row_last, &t_col_first, &t_col_last); // _row, _col, &row_first, &row_last, &col_first, &col_last		
-				// 처음 행과 마지막 행을 비교하는 이유는 바이트 형식이면 두 변수(t_row_first, t_row_last)의 값이 같게 되지만 워드 형식이면 두 변수의 값이 다르다.
-				if (t_row_first != t_row_last) {
-					int t_row_f = t_row_first - 3;
-					int t_row_l = t_row_last - 3;
-					mp_gridctrl->MergeCells(CCellRange(t_row_f, 1, t_row_l, 8));
-				}
-				mergeCount = 0;
-			}
-		}
-	}
-
-	ppSheet = NULL;
-}
-//--------------------------------------------------------------------------------------------
-
-void CForm_DuDefault_1::SetDataCheck(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag)
-{
-	Sheet **ppSheet = NULL;
-	WORD addr = 0;
-
-	if (a_flag == 1) {
-		ppSheet = &pExcel->m_pDU_Default_1;
-		addr = 0x1A4;
-	}
-	else if (a_flag == 2) {
-		ppSheet = &pExcel->m_pDU_Default_2;
-		addr = 0x1A8;
-	}
-	else if (a_flag == 3) {
-		ppSheet = &pExcel->m_pDU_Default_3;
-		addr = 0x1AC;
-	}
-
-	// Grid Setting
-	bool bMerge = false;
-
-	a_ColLast++;
-
-	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
-	// for()문의 조건 범위 기준은 엘셀의 읽어올 위치를 기준으로 잡고 설정함
-	for (int row = a_RowFirst; row <= a_RowLast; row++) {
-		WORD smData = mainDlg->GetDataFromSM(addr, 0, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
-
-		for (int col = a_ColFirst; col <= a_ColLast; col++) {
-			bMerge = (*ppSheet)->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last			
-
-			// 병합이 안되어 있다면...
-			if (!bMerge && col < 10) {
-				// 비트 체크.
-				BYTE bitPos = 7 - (col - 2); // 2 ~ 10
-
-				BYTE rowPos = row - 3; // 5 ~ 36
-				if (rowPos % 2 == 0) bitPos += 8;
-
-				BYTE colPos = col - 1;
-
-				// 그리드에 색상 적용.
-				if (IsBitCheck16(smData, bitPos)) {
-					mp_gridctrl->SetItemBkColour(rowPos, colPos, RCLICK_RGB);
-				}
-			}
-		}
-	}
-
-	mainDlg = NULL;
-	ppSheet = NULL;
 }
 //--------------------------------------------------------------------------------------------
 
