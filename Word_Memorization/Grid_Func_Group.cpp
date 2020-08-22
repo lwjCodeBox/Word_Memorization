@@ -194,6 +194,13 @@ void _GFG::_GFG_MoreThanTwoBitsOfData(int a_RowFirst, int a_RowLast, int a_ColFi
 
 			// Check Word Fomat
 			if (mergeCount == 2) {
+				ap_grid->SetItemBkColour(startRow, startCol, AQUA_COLOR);
+				startRow = 0;
+				startCol = 0;
+
+				mergeCount = 0;
+			}
+			else if (mergeCount == 8) {
 				// ¿¢¼¿ ¹üÀ§ ¼¼ÆÃ.
 				int t_row_first = a_RowFirst, t_row_last = a_RowLast;
 				int t_col_first = a_ColFirst, t_col_last = a_ColLast - 1;
@@ -208,6 +215,7 @@ void _GFG::_GFG_MoreThanTwoBitsOfData(int a_RowFirst, int a_RowLast, int a_ColFi
 
 				mergeCount = 0;
 			}
+			/*
 			else if (mergeCount == 8) {
 				// ¿¢¼¿ ¹üÀ§ ¼¼ÆÃ.
 				int t_row_first = a_RowFirst, t_row_last = a_RowLast;
@@ -238,7 +246,7 @@ void _GFG::_GFG_MoreThanTwoBitsOfData(int a_RowFirst, int a_RowLast, int a_ColFi
 
 				mergeCount = 0;
 			}
-			
+			*/
 		}
 	}
 
