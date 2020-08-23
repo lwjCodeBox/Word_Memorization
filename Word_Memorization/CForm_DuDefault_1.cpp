@@ -272,11 +272,11 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	_GFG::_GFG_InitMakeGrid(5, 36, 2, 9, 0x1A4, mp_gridctrl); // 비트 형식인지 병합한 형식인지 체크.
 	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, 0x1A4, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 	
-	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
-	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
-
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
 	SetTextGrid(2, 33, 1, 8, m_flag);       // 그리드에 엑셀에 있는 텍스트 넣기. 
+
+	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
+	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
 
 #ifdef Edit_and_ListControl_Sample_CODE
 		Clear_EditCtrl(); // 에디트 창을 한번 초기화 한다.
@@ -365,11 +365,11 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 	_GFG::_GFG_InitMakeGrid(5, 36, 2, 9, 0x1A8, mp_gridctrl); // 비트 형식인지 병합한 형식인지 체크.             
 	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, 0x1A8, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 
-	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
-	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
-
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
 	SetTextGrid(2, 33, 1, 8, m_flag);       // 그리드에 엑셀에 있는 텍스트 넣기. 
+
+	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
+	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
 }
 //--------------------------------------------------------------------------------------------
 
@@ -434,11 +434,11 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 	_GFG::_GFG_InitMakeGrid(5, 36, 2, 9, 0x1AC, mp_gridctrl); // 비트 형식인지 병합한 형식인지 체크.                    
 	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, 0x1AC, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 
-	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
-	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
-
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
 	SetTextGrid(2, 33, 1, 8, m_flag);       // 그리드에 엑셀에 있는 텍스트 넣기. 
+
+	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
+	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
 }
 //--------------------------------------------------------------------------------------------
 
@@ -638,30 +638,29 @@ void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult
 	//  0이라면 병합되지 않은 셀을 의미 하기 떄문에 병합되지 않은 셀을 더블 클릭하면 리턴한다. 
 	if (IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag) == 0) return;
 
-	if (mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != LDCLICK_RGB) {
+	/*if (mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != LDCLICK_RGB) {
 		
-		/*CString cStr = GetTextFormExcel(pItem->iRow, pItem->iColumn, *ppSheet);
-		wchar_t *wtext = cStr.GetBuffer(cStr.GetLength()); */
-
-		/*Sheet **ppSheet = NULL;
-
-		if (m_flag == 1) {
-			ppSheet = &pExcel->m_pDU_Default_1;
-		}
-		else if (m_flag == 2) {
-			ppSheet = &pExcel->m_pDU_Default_2;
-		}
-		else if (m_flag == 3) {
-			ppSheet = &pExcel->m_pDU_Default_3;
-		}
-		mp_gridctrl->SetItemText(2, 1, GetTextFormExcel(pItem->iRow, pItem->iColumn, *ppSheet) + L"asflkj");*/
-
+		CString cStr = GetTextFormExcel(pItem->iRow, pItem->iColumn, *ppSheet);
+		wchar_t *wtext = cStr.GetBuffer(cStr.GetLength()); 
 
 		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, LDCLICK_RGB);
 	}
 	else {
 		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, WHITE_RGB);
+	}*/
+	//5, 36, 2, 9, 0x1A4, mp_gridctrl
+
+	WORD portAddr = 0;
+	switch (m_flag) {
+	case 1:
+		portAddr = 0x1A4;	break;
+	case 2:
+		portAddr = 0x1A8;	break;
+	case 3:
+		portAddr = 0x1AC;	break;
 	}
+
+	//_GFG::_GFG_MoreThanTwoBitsOfData(pItem->iRow + 3, pItem->iRow + 1, 2, 9, portAddr, 0, mp_gridctrl);
 
 	mp_gridctrl->RedrawCell(pItem->iRow, pItem->iColumn);
 	

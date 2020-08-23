@@ -6,6 +6,8 @@
 #include "Word_MemorizationDlg.h"
 #include "_CExcelLib.h"
 
+#include <math.h>
+
 //--------------------------------------------------------------------------------------------
 
 void _GFG::_GFG_InitItemBkColor(int a_rowLast, int a_colLast, CGridCtrl *ap_grid)
@@ -122,6 +124,16 @@ void _GFG::_GFG_SetWordFormatCell(int a_RowFirst, int a_RowLast, int a_ColFirst,
 }
 //--------------------------------------------------------------------------------------------
 
+void _GFG::_GFG_SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, CGridCtrl *ap_grid)
+{
+	/*for (int row = a_RowFirst; row <= a_RowLast; row++) {
+		for (int col = a_ColFirst; col <= a_ColLast; col++) {
+			ap_grid->SetItemText(row, 9 - col, pExcel->GetDuDefaultValue(row - 2, col - 1, a_flag));
+		}
+	}*/
+}
+//--------------------------------------------------------------------------------------------
+
 void _GFG::_GFG_SetDataCheck(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid)
 {
 	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
@@ -134,7 +146,6 @@ void _GFG::_GFG_SetDataCheck(int a_RowFirst, int a_RowLast, int a_ColFirst, int 
 	Sheet *pSheet = NULL;
 	pSheet = mainDlg->mp_Libxl->GetSheet(a_portAddr);
 
-	WORD addr = 0;
 	bool bMerge = false;
 
 	a_ColLast++;
@@ -143,8 +154,8 @@ void _GFG::_GFG_SetDataCheck(int a_RowFirst, int a_RowLast, int a_ColFirst, int 
 		WORD smData = mainDlg->GetDataFromSM(a_portAddr, a_node, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
 
 		for (int col = a_ColFirst; col <= a_ColLast; col++) {
-			if(pSheet != NULL) // 모든 프로토콜이 완성되지 않아서 잠시 이 조건을 걸어 줌.
-				bMerge = pSheet->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last			
+			if (pSheet != NULL) // 모든 프로토콜이 완성되지 않아서 잠시 이 조건을 걸어 줌.
+				bMerge = pSheet->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last	
 
 			// 병합이 안되어 있다면...
 			if (!bMerge && col < 10) {
@@ -176,16 +187,16 @@ void _GFG::_GFG_MoreThanTwoBitsOfData(int a_RowFirst, int a_RowLast, int a_ColFi
 	Sheet *pSheet = NULL;
 	pSheet = mainDlg->mp_Libxl->GetSheet(a_portAddr);
 
-//WORD smData = mainDlg->GetDataFromSM(a_portAddr, a_node, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
-	
 	bool bMerge = false;
 	bool oldMerge = false;
+
 	int mergeCount = 0;
 	int startRow = 0, startCol = 0;
-
 	int row = a_RowFirst;
 
 	while (row <= a_RowLast) {
+		WORD smData = mainDlg->GetDataFromSM(a_portAddr, a_node, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
+
 		for (int col = a_ColFirst; col <= a_ColLast + 1; col++) {
 			bMerge = pSheet->getMerge(row, col, 0, 0, 0, 0); 	
 
@@ -201,6 +212,8 @@ void _GFG::_GFG_MoreThanTwoBitsOfData(int a_RowFirst, int a_RowLast, int a_ColFi
 			}
 
 			if (oldMerge && !bMerge) {
+				CString gridText;
+
 				if (mergeCount == 16) {
 					// 엑셀 범위 세팅.
 					int t_row_first = a_RowFirst, t_row_last = a_RowLast;
@@ -210,18 +223,44 @@ void _GFG::_GFG_MoreThanTwoBitsOfData(int a_RowFirst, int a_RowLast, int a_ColFi
 					// 처음 행과 마지막 행을 비교하는 이유는 바이트 형식이면 두 변수(t_row_first, t_row_last)의 값이 같게 되지만 워드 형식이면 두 변수의 값이 다르다.
 					if (t_row_first != t_row_last) {
 						// 워드
-						ap_grid->SetItemBkColour(startRow, startCol, AQUA_COLOR);
+						if (0 != smData) {
+							ap_grid->SetItemBkColour(startRow, startCol, PINK_COLOR);
+						}
+						gridText.Format(L"%s >> [%04X] [%d]", GetTextFormExcel(startRow, startCol, pSheet), smData, smData);
+						ap_grid->SetItemText(startRow, startCol, gridText);
 					}
 					else {
 						// 바이트
-						ap_grid->SetItemBkColour(startRow, startCol, LIGHTYELLOW_COLOR);
-						ap_grid->SetItemBkColour(startRow+1, startCol, LIGHTYELLOW_COLOR);
+						unsigned char t_HByte = smData >> 8;
+						unsigned char t_LByte = smData & 0xFF;
+
+						if (0 != t_HByte)
+							ap_grid->SetItemBkColour(startRow, startCol, LIGHTYELLOW_COLOR);
+						if (0 != t_LByte)
+							ap_grid->SetItemBkColour(startRow + 1, startCol, LIGHTYELLOW_COLOR);
+
+						gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(startRow, startCol, pSheet), t_HByte, t_HByte);
+						ap_grid->SetItemText(startRow, startCol, gridText);
+						
+						gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(startRow + 1, startCol, pSheet), t_LByte, t_LByte);
+						ap_grid->SetItemText(startRow + 1, startCol, gridText);
 					}
+
 					oldMerge = false;
 					mergeCount = 0;
 				}
 				else if (mergeCount >= 2 && mergeCount <= 7){
-					ap_grid->SetItemBkColour(startRow, startCol, PINK_COLOR);
+					BYTE t_smData = mainDlg->GetByteDataFromSM(a_portAddr, a_node, row - 5);
+					char t_bitPos = 8 - startCol;
+					int move = t_bitPos - mergeCount + 1;
+					int t_dataCheck = ((int)pow(2, mergeCount)-1) & (t_smData >> move);
+					
+					if(0 != t_dataCheck)
+						ap_grid->SetItemBkColour(startRow, startCol, AQUA_COLOR);
+
+					gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(startRow, startCol, pSheet), t_dataCheck, t_dataCheck);
+					ap_grid->SetItemText(startRow, startCol, gridText);
+
 					oldMerge = false;
 					mergeCount = 0;
 				}
@@ -235,13 +274,139 @@ void _GFG::_GFG_MoreThanTwoBitsOfData(int a_RowFirst, int a_RowLast, int a_ColFi
 }
 //--------------------------------------------------------------------------------------------
 
-void _GFG::_GFG_SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, CGridCtrl *ap_grid)
+// 나중에 삭제 할 코드임.
+void _GFG::_GFG_SetDataCheckTest(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid)
 {
-	/*for (int row = a_RowFirst; row <= a_RowLast; row++) {
+	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+
+	/* 2중 포인터로 할 경우...
+		Sheet **ppSheet = NULL;
+		ppSheet = &pExcel->m_pDU_Default_1;
+		(*ppSheet)->getMerge(5, 2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
+	*/
+	Sheet *pSheet = NULL;
+	pSheet = mainDlg->mp_Libxl->GetSheet(a_portAddr);
+
+	bool bMerge = false;
+
+	a_ColLast++;
+
+	for (int row = a_RowFirst; row <= a_RowLast; row++) {
+		WORD smData = mainDlg->GetDataFromSM(a_portAddr, a_node, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
+
 		for (int col = a_ColFirst; col <= a_ColLast; col++) {
-			ap_grid->SetItemText(row, 9 - col, pExcel->GetDuDefaultValue(row - 2, col - 1, a_flag));
+
+			// 병합이 안되어 있다면...
+			if (!bMerge && col < 10) {
+				// 비트 체크.
+				BYTE bitPos = 7 - (col - 2); // 2 ~ 10
+
+				BYTE rowPos = row - 3; // 5 ~ 36
+				if (rowPos % 2 == 0) bitPos += 8;
+
+				BYTE colPos = col - 1;
+
+				// 그리드에 색상 적용.
+				if (IsBitCheck16(smData, bitPos)) {
+					ap_grid->SetItemBkColour(rowPos, colPos, RCLICK_RGB);
+				}
+			}
 		}
-	}*/
+	}
+
+	pSheet = NULL;
+	mainDlg = NULL;
+}
+//--------------------------------------------------------------------------------------------
+
+WORD _GFG::_GFG_SetMergeData(int a_Row, int a_Column, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid)
+{
+	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+
+	Sheet *pSheet = NULL;
+	pSheet = mainDlg->mp_Libxl->GetSheet(a_portAddr);
+
+	bool bMerge = false;
+	bool oldMerge = false;
+
+	int mergeCount = 0;
+	int startCol = 0;
+	
+	WORD smData = mainDlg->GetDataFromSM(a_portAddr, a_node, (a_Row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
+
+	for (int col = a_Column + 1; col <= 10; col++) {
+		bMerge = pSheet->getMerge(a_Row + 3, col, 0, 0, 0, 0);
+
+		// 병합이 되었다면...
+		if (bMerge) {
+			oldMerge = true;
+			mergeCount++;
+
+			if (mergeCount == 1) 
+				startCol = col - 1;
+		}
+
+		if (oldMerge && !bMerge) {
+			CString gridText;
+
+			/*if (mergeCount == 16) {
+				// 엑셀 범위 세팅.
+				int t_row_first = a_Row + 3, t_row_last = a_RowLast;
+				int t_col_first = a_ColFirst, t_col_last = a_ColLast - 1;
+
+				pSheet->getMerge(row, 2, &t_row_first, &t_row_last, &t_col_first, &t_col_last); // _row, _col, &row_first, &row_last, &col_first, &col_last		
+				// 처음 행과 마지막 행을 비교하는 이유는 바이트 형식이면 두 변수(t_row_first, t_row_last)의 값이 같게 되지만 워드 형식이면 두 변수의 값이 다르다.
+				if (t_row_first != t_row_last) {
+					// 워드
+					if (0 != smData) {
+						ap_grid->SetItemBkColour(startRow, startCol, PINK_COLOR);
+					}
+					gridText.Format(L"%s >> [%04X] [%d]", GetTextFormExcel(startRow, startCol, pSheet), smData, smData);
+					ap_grid->SetItemText(startRow, startCol, gridText);
+				}
+				else {
+					// 바이트
+					unsigned char t_HByte = smData >> 8;
+					unsigned char t_LByte = smData & 0xFF;
+
+					if (0 != t_HByte)
+						ap_grid->SetItemBkColour(startRow, startCol, LIGHTYELLOW_COLOR);
+					if (0 != t_LByte)
+						ap_grid->SetItemBkColour(startRow + 1, startCol, LIGHTYELLOW_COLOR);
+
+					gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(startRow, startCol, pSheet), t_HByte, t_HByte);
+					ap_grid->SetItemText(startRow, startCol, gridText);
+
+					gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(startRow + 1, startCol, pSheet), t_LByte, t_LByte);
+					ap_grid->SetItemText(startRow + 1, startCol, gridText);
+				}
+
+				oldMerge = false;
+				mergeCount = 0;
+			}
+			else */if (mergeCount >= 2 && mergeCount <= 7) {
+				BYTE t_smData = mainDlg->GetByteDataFromSM(a_portAddr, a_node, a_Row);
+				char t_bitPos = 8 - startCol;
+				int move = t_bitPos - mergeCount + 1;
+				int t_dataCheck = ((int)pow(2, mergeCount) - 1) & (t_smData >> move);
+
+				if (0 != t_dataCheck)
+					ap_grid->SetItemBkColour(a_Row, startCol, AQUA_COLOR);
+
+				gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(a_Row, startCol, pSheet), t_dataCheck, t_dataCheck);
+				ap_grid->SetItemText(a_Row, startCol, gridText);
+
+				oldMerge = false;
+				mergeCount = 0;
+			}
+		}
+	}
+		
+
+	pSheet = NULL;
+	mainDlg = NULL;
+
+	return 7;
 }
 //--------------------------------------------------------------------------------------------
 

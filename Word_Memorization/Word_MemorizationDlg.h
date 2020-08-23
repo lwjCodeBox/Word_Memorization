@@ -75,6 +75,7 @@ public:
 	void SetMVBHeartBit(unsigned int a_Port, unsigned int a_Value);
 
 	WORD GetDataFromSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word);
+	BYTE GetByteDataFromSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Byte);
 	void SetBitDataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word, BYTE a_ColPos, WORD a_Data);
 
 public:
