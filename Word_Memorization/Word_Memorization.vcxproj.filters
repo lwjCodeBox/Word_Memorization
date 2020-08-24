@@ -60,6 +60,9 @@
     <ClInclude Include="Grid_Func_Group.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CSetDataPopUp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Word_Memorization.cpp">
@@ -111,6 +114,9 @@
       <Filter>Grid_Ctrl</Filter>
     </ClCompile>
     <ClCompile Include="Grid_Func_Group.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSetDataPopUp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

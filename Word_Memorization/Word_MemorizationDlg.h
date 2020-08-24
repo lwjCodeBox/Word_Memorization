@@ -77,6 +77,8 @@ public:
 	WORD GetDataFromSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word);
 	BYTE GetByteDataFromSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Byte);
 	void SetBitDataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word, BYTE a_ColPos, WORD a_Data);
+	void Set16DataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word, WORD a_Data);
+	void Set08DataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word, BYTE a_Data);
 
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

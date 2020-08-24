@@ -2,6 +2,7 @@
 // Microsoft Visual C++에서 생성한 포함 파일입니다.
 // WordMemorization.rc에서 사용되고 있습니다.
 //
+#define IDD_SETDATA_POPUP               8
 #define IDC_TAB1                        100
 #define IDD_WORD_MEMORIZATION_DIALOG    102
 #define IDR_MAINFRAME                   128
@@ -23,14 +24,15 @@
 #define IDC_SETMVB_NODE                 1019
 #define IDC_DFS_DEFAULT_1               1019
 #define IDC_SETMVB_TM_PORT0             1020
+#define IDC_POPUP_CANCEL                1020
 #define IDC_SETMVB_ADDR2                1021
+#define IDC_POPUP_EDIT                  1021
 #define IDC_SETMVB_TM_PORT1             1022
 #define IDC_BUTTON2                     1023
 #define IDC_BUTTON3                     1024
 #define IDC_SETMVB_TM_PORT2             1028
 #define IDC_SETMVB_TM_PORT3             1030
 #define IDC_SETMVB_GRID_NODE            1031
-#define IDC_SETMVB_ADDR_GRID            1032
 #define IDC_SETMVB_GRID_ADDR            1032
 #define IDC_BUTTON10                    1035
 #define IDC_SELECTED_CAR_0              2000
@@ -59,9 +61,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        152
+#define _APS_NEXT_RESOURCE_VALUE        154
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1020
+#define _APS_NEXT_CONTROL_VALUE         1022
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -10,6 +10,7 @@
 #include "DefineOfDev_J.h"
 
 #include "CSharedMemory.h"
+#include "CSetDataPopUp.h"
 
 // CForm_DuDefault_1
 
@@ -157,11 +158,11 @@ BEGIN_MESSAGE_MAP(CForm_DuDefault_1, CFormView)
 #endif
 	ON_BN_CLICKED(IDC_DFS_DEFAULT_1, &CForm_DuDefault_1::OnBnClickedDfsDefault1)
 	ON_BN_CLICKED(IDC_DFS_DEFAULT_2, &CForm_DuDefault_1::OnBnClickedDfsDefault2)
+	ON_BN_CLICKED(IDC_DFS_DEFAULT_3, &CForm_DuDefault_1::OnBnClickedDfsDefault3)
 	
 	// mouse click option
 	ON_NOTIFY(NM_RCLICK, IDC_GRID, &CForm_DuDefault_1::OnGridClick)
 	ON_NOTIFY(NM_DBLCLK, IDC_GRID, &CForm_DuDefault_1::OnGridDblClick)
-	ON_BN_CLICKED(IDC_DFS_DEFAULT_3, &CForm_DuDefault_1::OnBnClickedDfsDefault3)
 END_MESSAGE_MAP()
 
 // CForm_DuDefault_1 diagnostics
@@ -275,8 +276,12 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
 	SetTextGrid(2, 33, 1, 8, m_flag);       // 그리드에 엑셀에 있는 텍스트 넣기. 
 
-	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
-	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
+	_GFG::_GFG_GetBitDataFormSM(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
+	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
+
+	//mp_gridctrl->SetFocusCell(3, 1);
+	mp_gridctrl->SetEditable(false);
+	//mp_gridctrl->set(true);
 
 #ifdef Edit_and_ListControl_Sample_CODE
 		Clear_EditCtrl(); // 에디트 창을 한번 초기화 한다.
@@ -368,8 +373,8 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
 	SetTextGrid(2, 33, 1, 8, m_flag);       // 그리드에 엑셀에 있는 텍스트 넣기. 
 
-	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
-	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
+	_GFG::_GFG_GetBitDataFormSM(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
+	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
 }
 //--------------------------------------------------------------------------------------------
 
@@ -437,8 +442,8 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
 	SetTextGrid(2, 33, 1, 8, m_flag);       // 그리드에 엑셀에 있는 텍스트 넣기. 
 
-	_GFG::_GFG_SetDataCheck(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
-	_GFG::_GFG_MoreThanTwoBitsOfData(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
+	_GFG::_GFG_GetBitDataFormSM(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
+	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
 }
 //--------------------------------------------------------------------------------------------
 
@@ -660,10 +665,14 @@ void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult
 		portAddr = 0x1AC;	break;
 	}
 
-	//_GFG::_GFG_MoreThanTwoBitsOfData(pItem->iRow + 3, pItem->iRow + 1, 2, 9, portAddr, 0, mp_gridctrl);
-
-	mp_gridctrl->RedrawCell(pItem->iRow, pItem->iColumn);
+	//_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(pItem->iRow + 3, pItem->iRow + 1, 2, 9, portAddr, 0, mp_gridctrl);
 	
+	CSetDataPopUp *pDataPopUp;
+	pDataPopUp = new CSetDataPopUp(pItem->iRow, pItem->iColumn, portAddr, 0, mp_gridctrl);
+	pDataPopUp->Create(IDD_SETDATA_POPUP);
+	pDataPopUp->ShowWindow(5); // 5 is SH_SHOWS
+
+	//mp_gridctrl->RedrawCell(pItem->iRow, pItem->iColumn);
 }
 //--------------------------------------------------------------------------------------------
 

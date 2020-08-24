@@ -18,12 +18,14 @@ namespace _GFG {
 	void _GFG_SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, CGridCtrl *ap_grid);
 
 	// 매개 변수 범위는 기준은 엑셀 기준이다. (O)
-	void _GFG_SetDataCheck(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid); 
-	void _GFG_MoreThanTwoBitsOfData(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid);
+	void _GFG_GetBitDataFormSM(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid); 
+	void _GFG_GetMoreThanTwoBitsOfDataFormSM(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid);
 	
-	void _GFG_SetDataCheckTest(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid);
+	WORD _GFG_SetMergeData(int a_Row, int a_Column, WORD a_SetData, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid);
 
-	WORD _GFG_SetMergeData(int a_Row, int a_Column, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid);
+	// 나중에 삭제할거임.
+	void _GFG_GetBitDataFormSMTest(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid);
+
 }
 
 

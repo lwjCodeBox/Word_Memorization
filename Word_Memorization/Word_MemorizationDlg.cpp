@@ -381,4 +381,26 @@ void CWordMemorizationDlg::SetBitDataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_W
 }
 //--------------------------------------------------------------------------------------------
 
+void CWordMemorizationDlg::Set16DataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word, WORD a_Data)
+{
+	int port = binarySearch(mp_Libxl->mvb_Addr, 120, a_PortAddr); // 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다. // int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
+	port += mp_Libxl->m_totalNodeCnt * a_Node;
+
+	m_pData->data[port][a_Word * 2] = a_Data >> 8;   // 상위
+	m_pData->data[port][a_Word * 2 + 1] = a_Data & 0xFF; // 하위
+}
+//--------------------------------------------------------------------------------------------
+
+void CWordMemorizationDlg::Set08DataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word, BYTE a_Data)
+{
+	int port = binarySearch(mp_Libxl->mvb_Addr, 120, a_PortAddr); // 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다. // int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
+	port += mp_Libxl->m_totalNodeCnt * a_Node;
+
+	// 짝수면 상위 바이트, 홀수면 하위바이트
+	if (a_Word % 2 == 0)
+		m_pData->data[port][a_Word * 2] = a_Data;
+	else
+		m_pData->data[port][a_Word * 2 + 1] = a_Data;
+}
+//--------------------------------------------------------------------------------------------
 

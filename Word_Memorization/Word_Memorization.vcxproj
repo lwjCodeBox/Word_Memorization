@@ -194,6 +194,7 @@
     <ClInclude Include="CForm_HeartBit.h" />
     <ClInclude Include="CForm_Protocol.h" />
     <ClInclude Include="CForm_SetMVB.h" />
+    <ClInclude Include="CSetDataPopUp.h" />
     <ClInclude Include="CSharedMemory.h" />
     <ClInclude Include="DefineOfDev_J.h" />
     <ClInclude Include="GridCtrl_src_new\MemDC.h" />
@@ -210,6 +211,7 @@
     <ClCompile Include="CForm_HeartBit.cpp" />
     <ClCompile Include="CForm_Protocol.cpp" />
     <ClCompile Include="CForm_SetMVB.cpp" />
+    <ClCompile Include="CSetDataPopUp.cpp" />
     <ClCompile Include="CSharedMemory.cpp" />
     <ClCompile Include="DefineOfDev_J.cpp" />
     <ClCompile Include="GridCtrl_src_new\GridCell.cpp" />
