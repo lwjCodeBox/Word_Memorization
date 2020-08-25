@@ -393,7 +393,7 @@ void CForm_SetMVB::On_GFG_GridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 	// int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
 	int t_port = binarySearch(p_ExcelLib->mvb_Addr, 120, portAddr);
 	WORD t_WordPos = (pItem->iRow - 2) / 2;
-	WORD smData = mainDlg->GetDataFromSM(portAddr, node, t_WordPos); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
+	WORD smData = mainDlg->GetWordDataFromSM(portAddr, node, t_WordPos); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
 
 	BYTE colPos = 7 - (pItem->iColumn - 1);
 	if (pItem->iRow % 2 == 0) colPos += 8;

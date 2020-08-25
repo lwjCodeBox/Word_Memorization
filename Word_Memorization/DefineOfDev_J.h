@@ -7,6 +7,7 @@
 #define WHITE_RGB		RGB(255, 255, 255)
 
 #define LIGHTYELLOW_COLOR		RGB(255, 255, 204)
+#define ORANGE_COLOR			RGB(255, 200, 100)
 #define AQUA_COLOR				RGB(0, 255, 255)
 #define PINK_COLOR				RGB(255, 210, 230)
 

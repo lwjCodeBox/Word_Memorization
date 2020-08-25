@@ -21,7 +21,8 @@ namespace _GFG {
 	void _GFG_GetBitDataFormSM(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid); 
 	void _GFG_GetMoreThanTwoBitsOfDataFormSM(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid);
 	
-	WORD _GFG_SetMergeData(int a_Row, int a_Column, WORD a_SetData, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid);
+	void _GFG_SetMergeData(int a_GridRow, int a_GridColumn, WORD a_SetData, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid);
+	WORD _GFG_GetMergeCheck(int a_GridRow, int a_GridColumn, WORD a_portAddr);
 
 	// 나중에 삭제할거임.
 	void _GFG_GetBitDataFormSMTest(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid);
