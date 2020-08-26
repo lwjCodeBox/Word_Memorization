@@ -252,13 +252,14 @@ void _GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(int a_RowFirst, int a_RowLast, in
 				else if (mergeCount >= 2 && mergeCount <= 7){
 					BYTE t_smData = mainDlg->GetByteDataFromSM(a_portAddr, a_node, row - 5);
 					char t_bitPos = 8 - startCol;
-					int move = t_bitPos - mergeCount + 1;
-					int t_dataCheck = ((int)pow(2, mergeCount)-1) & (t_smData >> move);
 					
-					if(0 != t_dataCheck)
+					int move = t_bitPos - mergeCount + 1;
+					int t_datacheck = ((int)pow(2, mergeCount)-1) & (t_smData >> move);
+					
+					if(0 != t_datacheck)
 						ap_grid->SetItemBkColour(startRow, startCol, AQUA_COLOR);
 
-					gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(startRow, startCol, pSheet), t_dataCheck, t_dataCheck);
+					gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(startRow, startCol, pSheet), t_datacheck, t_datacheck);
 					ap_grid->SetItemText(startRow, startCol, gridText);
 
 					oldMerge = false;
@@ -360,23 +361,34 @@ void _GFG::_GFG_SetMergeData(int a_GridRow, int a_GridColumn, WORD a_SetData, WO
 		ap_grid->SetItemText(a_GridRow, a_GridColumn, gridText);				
 	}
 	else if (mergeCount >= 2 && mergeCount <= 7) {
+		WORD smData = mainDlg->GetByteDataFromSM(a_portAddr, a_node, a_GridRow - 2);
 		unsigned char data = (unsigned char)a_SetData;
-		bool checkUpDonw = a_GridRow % 2; // 0이면 상위 1이면 하위
 
+		if (mergeCount == 2 && data >= 4) {
+			data = 3;
+		}
+				
+		bool checkUpDonw = a_GridRow % 2; // 0이면 상위 1이면 하위
+		char colPos = 8 - a_GridColumn;
+
+		unsigned char move = colPos - mergeCount + 1;
+
+		unsigned char headData = smData >> colPos + move;
+		unsigned char bodyData = data;
+		unsigned char tailData = smData & ((int)pow(2, move) - 1);
+
+		smData = (headData << colPos + move) | (bodyData << move) | tailData;
+		
 		if (0 != data)
 			ap_grid->SetItemBkColour(a_GridRow, a_GridColumn, AQUA_COLOR);
 		else
 			ap_grid->SetItemBkColour(a_GridRow, a_GridColumn, WHITE_RGB);
 
-		mainDlg->Set08DataToSM(a_portAddr, a_node, wordPos, checkUpDonw, data);
+		mainDlg->Set08DataToSM(a_portAddr, a_node, wordPos, checkUpDonw, smData);
 
 		gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(a_GridRow, a_GridColumn, pSheet), data, data);
 		ap_grid->SetItemText(a_GridRow, a_GridColumn, gridText);
 
-		/*BYTE t_smData = mainDlg->GetByteDataFromSM(a_portAddr, a_node, a_GridRow);
-		char t_bitPos = 8 - a_GridColumn;
-		int move = t_bitPos - mergeCount + 1;
-		int t_dataCheck = ((int)pow(2, mergeCount) - 1) & (t_smData >> move);*/
 	}
 
 	ap_grid->RedrawCell(a_GridRow, a_GridColumn);
