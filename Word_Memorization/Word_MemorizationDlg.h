@@ -61,6 +61,7 @@ protected:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	virtual BOOL OnCommand(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 
 // lwj
@@ -88,4 +89,5 @@ public:
 	CEdit m_Edit2;
 	afx_msg void OnDestroy();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
 };

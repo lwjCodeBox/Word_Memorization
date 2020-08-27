@@ -37,6 +37,7 @@ BEGIN_MESSAGE_MAP(CWordMemorizationDlg, CDialogEx)
 	ON_WM_DESTROY()
 	ON_COMMAND_RANGE(IDC_SELECTED_CAR_0, IDC_SELECTED_CAR_7, SelectedCar)
 	ON_COMMAND_RANGE(IDC_SCREEN_PROTOCOL_BTN00, IDC_SCREEN_SETMVB_BNT04, ChangeScreen)	
+	ON_WM_DRAWITEM()
 END_MESSAGE_MAP()
 
 
@@ -98,11 +99,61 @@ void CWordMemorizationDlg::OnPaint()
 	}
 }
 
+
 // The system calls this function to obtain the cursor to display while the user drags
 //  the minimized window.
 HCURSOR CWordMemorizationDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
+}
+
+
+BOOL CWordMemorizationDlg::OnCommand(WPARAM wParam, LPARAM lParam)
+{
+	/*if(wParam >= 2000 && wParam < 2000 + m_arrButton.GetSize())
+		{
+			for(int i = 0; i < m_arrButton.GetSize(); i++)
+			{ 
+				if(2000 + i == wParam)
+				{
+					CString strTmp;
+					strTmp.Format("%d번 버튼", i + 1);
+					MessageBox(strTmp);
+				}
+			}
+		}*/
+
+		// https://moguwai.tistory.com/entry/ONCOMMAND-%EC%99%80-ONMESSAGE-%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90
+
+	HWND h_hwnd = ::GetDlgItem(m_hWnd, wParam);
+	HDC h_dc = ::GetDC(h_hwnd);
+
+	CDC dc;
+	dc.Attach(h_dc); //버튼의 dc구하기
+
+	RECT rect;
+	::GetClientRect(h_hwnd, &rect); //버튼영역 구하기
+		
+	if (wParam == IDC_SCREEN_PROTOCOL_BTN00 || wParam == IDC_SCREEN_HEARTBIT_BTN01 || wParam == IDC_SCREEN_DUDEFAULT_BTN03 ||
+		wParam == IDC_SCREEN_MYNODE_BTN02   || wParam == IDC_SCREEN_SETMVB_BNT04)
+	{		
+		dc.DrawEdge(&rect, EDGE_RAISED, BF_RECT);
+		dc.FillSolidRect(&rect, RGB(255, 0, 255)); //버튼색상
+		dc.Draw3dRect(&rect, RGB(0, 255, 255), RGB(0, 255, 255));  //버튼의 외각선 그리기	
+
+
+		//dc.SetBkColor(RGB(51, 51, 51)); //text의 백그라운드 색상
+		dc.SetTextColor(RGB(0, 0, 0));    //texttort
+		dc.SetBkMode(TRANSPARENT);
+		
+		CString _str;
+		GetDlgItemText(wParam, _str);
+		dc.DrawText(_str, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE); //버튼의 text넣기
+	}
+
+	::ReleaseDC(h_hwnd, h_dc);
+
+	return CDialog::OnCommand(wParam, lParam);
 }
 
 int CWordMemorizationDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -403,3 +454,50 @@ void CWordMemorizationDlg::Set08DataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Wo
 }
 //--------------------------------------------------------------------------------------------
 
+
+void CWordMemorizationDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
+{
+	// nIDCtl = IDC값 https://mutaont.tistory.com/entry/MFC-%EB%B2%84%ED%8A%BC-%EC%83%89%EC%83%81-%EB%B3%80%EA%B2%BD
+	
+	/* 동적으로 직접 버튼을 생성할 경우는 이 부분이 꼭 필요하다.
+	UINT uStyle = DFCS_BUTTONPUSH;
+
+	if (lpDrawItemStruct->itemState & ODS_SELECTED)
+		uStyle |= DFCS_PUSHED;
+
+	::DrawFrameControl(lpDrawItemStruct->hDC, &lpDrawItemStruct->rcItem, DFC_BUTTON, uStyle);
+	*/
+
+	CDC dc;
+	dc.Attach(lpDrawItemStruct->hDC);
+
+	RECT rect;
+	rect = lpDrawItemStruct->rcItem;
+	
+	UINT state = lpDrawItemStruct->itemState;         //버튼상태구하기
+	
+	if ((state & ODS_SELECTED)) // 마우스 클릭 중....
+	{
+		dc.DrawEdge(&rect, EDGE_SUNKEN, BF_RECT);
+		dc.FillSolidRect(&rect, RGB(0, 255, 0)); // LIME Color
+		dc.Draw3dRect(&rect, RGB(0, 0, 0), RGB(0, 65, 65));  //버튼의 외각선 그리기					
+	}
+	else // 기본 상태...
+	{
+		dc.DrawEdge(&rect, EDGE_RAISED, BF_RECT);
+		dc.FillSolidRect(&rect, RGB(79, 157, 157));
+		dc.Draw3dRect(&rect, RGB(10, 10, 10), RGB(10, 10, 10));  //버튼의 외각선 그리기
+	}
+		
+	//dc.SetBkColor(RGB(51, 51, 51)); //text의 백그라운드 색상
+	dc.SetTextColor(RGB(0, 0, 0));    //texttort
+	dc.SetBkMode(TRANSPARENT);
+	
+	CString _str;
+	GetDlgItemText(nIDCtl, _str);
+	dc.DrawText(_str, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE); //버튼의 text넣기
+
+	dc.Detach();
+		
+	//CDialogEx::OnDrawItem(nIDCtl, lpDrawItemStruct);
+}

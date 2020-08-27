@@ -367,6 +367,21 @@ void _GFG::_GFG_SetMergeData(int a_GridRow, int a_GridColumn, WORD a_SetData, WO
 		if (mergeCount == 2 && data >= 4) {
 			data = 3;
 		}
+		else if (mergeCount == 3 && data >= 8) {
+			data = 7;
+		}
+		else if (mergeCount == 4 && data >= 16) {
+			data = 15;
+		}
+		else if (mergeCount == 5 && data >= 32) {
+			data = 31;
+		}
+		else if (mergeCount == 6 && data >= 64) {
+			data = 63;
+		}
+		else if (mergeCount == 7 && data >= 128) {
+			data = 127;
+		}
 				
 		bool checkUpDonw = a_GridRow % 2; // 0이면 상위 1이면 하위
 		char colPos = 8 - a_GridColumn;
