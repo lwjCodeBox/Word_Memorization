@@ -129,14 +129,33 @@ BOOL CWordMemorizationDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 	HDC h_dc = ::GetDC(h_hwnd);
 
 	CDC dc;
-	dc.Attach(h_dc); //버튼의 dc구하기
+	dc.Attach(h_dc); //1. 버튼의 dc구하기
 
 	RECT rect;
 	::GetClientRect(h_hwnd, &rect); //버튼영역 구하기
-		
+	
 	if (wParam == IDC_SCREEN_PROTOCOL_BTN00 || wParam == IDC_SCREEN_HEARTBIT_BTN01 || wParam == IDC_SCREEN_DUDEFAULT_BTN03 ||
 		wParam == IDC_SCREEN_MYNODE_BTN02   || wParam == IDC_SCREEN_SETMVB_BNT04)
 	{		
+		// 2. CFont 선언
+		CFont          cFont;
+		cFont.CreateFont(
+			14,                     // 글자높이
+			0,                     // 글자너비
+			0,                      // 출력각도
+			0,                      // 기준 선에서의각도
+			FW_BOLD,              // 글자굵기
+			FALSE,                  // Italic 적용여부
+			FALSE,                  // 밑줄적용여부
+			false,                  // 취소선적용여부
+			DEFAULT_CHARSET,       // 문자셋종류
+			OUT_DEFAULT_PRECIS,    // 출력정밀도
+			CLIP_DEFAULT_PRECIS,   // 클리핑정밀도
+			DEFAULT_QUALITY,       // 출력문자품질
+			DEFAULT_PITCH,         // 글꼴Pitch
+			_T("Microsoft Sans Serif")
+		);
+
 		dc.DrawEdge(&rect, EDGE_RAISED, BF_RECT);
 		dc.FillSolidRect(&rect, RGB(255, 0, 255)); //버튼색상
 		dc.Draw3dRect(&rect, RGB(0, 255, 255), RGB(0, 255, 255));  //버튼의 외각선 그리기	
@@ -148,10 +167,19 @@ BOOL CWordMemorizationDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		
 		CString _str;
 		GetDlgItemText(wParam, _str);
-		dc.DrawText(_str, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE); //버튼의 text넣기
+		
+		// 4. DC에CFont Object 설정
+        dc.SelectObject(cFont);
+		
+		// 5. 버튼의 text넣기
+		dc.DrawText(_str, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE); 
+
+		// 6. CFont Object 제거
+		cFont.DeleteObject();
 	}
 
-	::ReleaseDC(h_hwnd, h_dc);
+	dc.Detach();
+	::ReleaseDC(h_hwnd, h_dc);	
 
 	return CDialog::OnCommand(wParam, lParam);
 }
@@ -496,8 +524,27 @@ void CWordMemorizationDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStr
 	CString _str;
 	GetDlgItemText(nIDCtl, _str);
 	dc.DrawText(_str, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE); //버튼의 text넣기
-
-	dc.Detach();
 		
+	dc.Detach();
+	ReleaseDC(&dc);
+
 	//CDialogEx::OnDrawItem(nIDCtl, lpDrawItemStruct);
 }
+/*
+// Button
+pDC->DrawFrameControl(m_oldRect, DFC_BUTTON, DFCS_BUTTONPUSH);
+// CheckBox
+pDC->DrawFrameControl(m_oldRect, DFC_BUTTON, DFCS_BUTTONCHECK);
+// RadioButton
+pDC->DrawFrameControl(m_oldRect, DFC_BUTTON, DFCS_BUTTONRADIO);
+// EditBox
+그냥 사각형으로 ?
+// ComboBox
+사각형 + pDC->DrawFrameControl(m_oldRect, DFC_SCROLL, DFCS_SCROLLCOMBOBOX);
+
+버튼 위에 글쓸때 투명하게...
+pDC->SetBkMode(TRANSPARENT);
+
+
+출처: https://elkeipy.tistory.com/entry/DrawFrameControl [케이피's 불량블로그!]
+*/
