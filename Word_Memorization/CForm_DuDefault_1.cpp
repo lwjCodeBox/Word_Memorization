@@ -216,14 +216,14 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 
 	if (mp_gridctrl == NULL) {
 		mp_gridctrl = new CGridCtrl;
-		mp_gridctrl->Create(CRect(10, 60, 1020, 850), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
+		mp_gridctrl->Create(CRect(10, 45, 1020, 800), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
 	}
 	else {
 		delete mp_gridctrl;
 		mp_gridctrl = NULL;
 
 		mp_gridctrl = new CGridCtrl;
-		mp_gridctrl->Create(CRect(10, 60, 1020, 850), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
+		mp_gridctrl->Create(CRect(10, 45, 1020, 835), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
 	}
 
 	mp_gridctrl->SetRowCount(32+2);

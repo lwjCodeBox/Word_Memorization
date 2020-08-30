@@ -108,82 +108,6 @@ HCURSOR CWordMemorizationDlg::OnQueryDragIcon()
 }
 
 
-BOOL CWordMemorizationDlg::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	/*if(wParam >= 2000 && wParam < 2000 + m_arrButton.GetSize())
-		{
-			for(int i = 0; i < m_arrButton.GetSize(); i++)
-			{ 
-				if(2000 + i == wParam)
-				{
-					CString strTmp;
-					strTmp.Format("%d번 버튼", i + 1);
-					MessageBox(strTmp);
-				}
-			}
-		}*/
-
-		// https://moguwai.tistory.com/entry/ONCOMMAND-%EC%99%80-ONMESSAGE-%EC%9D%98-%EC%B0%A8%EC%9D%B4%EC%A0%90
-
-	HWND h_hwnd = ::GetDlgItem(m_hWnd, wParam);
-	HDC h_dc = ::GetDC(h_hwnd);
-
-	CDC dc;
-	dc.Attach(h_dc); //1. 버튼의 dc구하기
-
-	RECT rect;
-	::GetClientRect(h_hwnd, &rect); //버튼영역 구하기
-	
-	if (wParam == IDC_SCREEN_PROTOCOL_BTN00 || wParam == IDC_SCREEN_HEARTBIT_BTN01 || wParam == IDC_SCREEN_DUDEFAULT_BTN03 ||
-		wParam == IDC_SCREEN_MYNODE_BTN02   || wParam == IDC_SCREEN_SETMVB_BNT04)
-	{		
-		// 2. CFont 선언
-		CFont          cFont;
-		cFont.CreateFont(
-			14,                     // 글자높이
-			0,                     // 글자너비
-			0,                      // 출력각도
-			0,                      // 기준 선에서의각도
-			FW_BOLD,              // 글자굵기
-			FALSE,                  // Italic 적용여부
-			FALSE,                  // 밑줄적용여부
-			false,                  // 취소선적용여부
-			DEFAULT_CHARSET,       // 문자셋종류
-			OUT_DEFAULT_PRECIS,    // 출력정밀도
-			CLIP_DEFAULT_PRECIS,   // 클리핑정밀도
-			DEFAULT_QUALITY,       // 출력문자품질
-			DEFAULT_PITCH,         // 글꼴Pitch
-			_T("Microsoft Sans Serif")
-		);
-
-		dc.DrawEdge(&rect, EDGE_RAISED, BF_RECT);
-		dc.FillSolidRect(&rect, RGB(255, 0, 255)); //버튼색상
-		dc.Draw3dRect(&rect, RGB(0, 255, 255), RGB(0, 255, 255));  //버튼의 외각선 그리기	
-
-
-		//dc.SetBkColor(RGB(51, 51, 51)); //text의 백그라운드 색상
-		dc.SetTextColor(RGB(0, 0, 0));    //texttort
-		dc.SetBkMode(TRANSPARENT);
-		
-		CString _str;
-		GetDlgItemText(wParam, _str);
-		
-		// 4. DC에CFont Object 설정
-        dc.SelectObject(cFont);
-		
-		// 5. 버튼의 text넣기
-		dc.DrawText(_str, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE); 
-
-		// 6. CFont Object 제거
-		cFont.DeleteObject();
-	}
-
-	dc.Detach();
-	::ReleaseDC(h_hwnd, h_dc);	
-
-	return CDialog::OnCommand(wParam, lParam);
-}
-
 int CWordMemorizationDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	if (CDialogEx::OnCreate(lpCreateStruct) == -1)
@@ -485,51 +409,162 @@ void CWordMemorizationDlg::Set08DataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Wo
 
 void CWordMemorizationDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
-	// nIDCtl = IDC값 https://mutaont.tistory.com/entry/MFC-%EB%B2%84%ED%8A%BC-%EC%83%89%EC%83%81-%EB%B3%80%EA%B2%BD
-	
-	/* 동적으로 직접 버튼을 생성할 경우는 이 부분이 꼭 필요하다.
-	UINT uStyle = DFCS_BUTTONPUSH;
+	// http://www.tipssoft.com/bulletin/board.php?bo_table=FAQ&wr_id=645
+	// WM_DrawItem 메세지를 발생시킨 컨트롤인 경우
+	if (nIDCtl == IDC_SCREEN_PROTOCOL_BTN00 || nIDCtl == IDC_SCREEN_HEARTBIT_BTN01 || nIDCtl == IDC_SCREEN_MYNODE_BTN02 ||
+		nIDCtl == IDC_SCREEN_DUDEFAULT_BTN03 || nIDCtl == IDC_SCREEN_SETMVB_BNT04) {
 
-	if (lpDrawItemStruct->itemState & ODS_SELECTED)
-		uStyle |= DFCS_PUSHED;
+		// DRAWITEMSTRUCT 구조체의 정보중에서 HDC 형식의 핸들값을 CDC 객체로 변환한다.
+		CDC *p_dc = CDC::FromHandle(lpDrawItemStruct->hDC);
 
-	::DrawFrameControl(lpDrawItemStruct->hDC, &lpDrawItemStruct->rcItem, DFC_BUTTON, uStyle);
-	*/
+		// RECT 형식의 구조체값을 이용하여 CRect 객체를 생성한다.
+		CRect r(lpDrawItemStruct->rcItem);
 
-	CDC dc;
-	dc.Attach(lpDrawItemStruct->hDC);
+		CString str;
+		// 버튼의 캡션을 얻는다.
+		GetDlgItemText(nIDCtl, str);
 
-	RECT rect;
-	rect = lpDrawItemStruct->rcItem;
-	
-	UINT state = lpDrawItemStruct->itemState;         //버튼상태구하기
-	
-	if ((state & ODS_SELECTED)) // 마우스 클릭 중....
-	{
-		dc.DrawEdge(&rect, EDGE_SUNKEN, BF_RECT);
-		dc.FillSolidRect(&rect, RGB(0, 255, 0)); // LIME Color
-		dc.Draw3dRect(&rect, RGB(0, 0, 0), RGB(0, 65, 65));  //버튼의 외각선 그리기					
+		// 글자를 출력할 때 적용할 배경을 투명으로 설정한다.
+		int old_mode = p_dc->SetBkMode(TRANSPARENT);
+
+		// 버튼을 사용할 수 없는 상태일 경우
+		if (lpDrawItemStruct->itemState & ODS_DISABLED) {
+			// 버튼 영역을 회색으로 채운다.
+			p_dc->FillSolidRect(r, RGB(192, 192, 192));
+
+			// 진한 회색으로 글자색을 설정한다.
+			p_dc->SetTextColor(RGB(128, 128, 128));
+			// 버튼의 캡션을 출력한다.
+			p_dc->DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		}
+		else {
+			// 영역을 한픽셀씩 내부 방향으로 줄인다.
+			r.left++;
+			r.top++;
+			r.right--;
+			r.bottom--;
+
+			if (lpDrawItemStruct->itemState & ODS_SELECTED) {
+				// 버튼 영역을 아쿠아색으로 채운다. (클릭 중.)
+				p_dc->FillSolidRect(r, RGB(0, 128, 128));
+
+				// 회색으로 테두리를 그리고, 글자색을 흰색으로 설정한다.
+				p_dc->Draw3dRect(r, RGB(0, 0, 0), RGB(192, 192, 192));
+				p_dc->SetTextColor(RGB(255, 255, 255));
+
+				// 버튼의 캡션을 오른쪽 아래 방향으로 한픽셀씩 이동시켜 출력한다.
+				p_dc->DrawText(str, r + CPoint(1, 1), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			}
+			// 버튼이 포커스를 얻은 경우 (클릭 됨.)
+			else if (lpDrawItemStruct->itemState & ODS_FOCUS) {
+				// 버튼 영역을 하늘색으로 채운다.
+				p_dc->FillSolidRect(r, RGB(100, 205, 255));
+
+				// 분홍색으로 테두리를 그리고, 글자색도 분홍색으로 설정한다.
+				p_dc->Draw3dRect(r, RGB(192, 192, 192), RGB(0, 0, 0));
+				p_dc->SetTextColor(RGB(0, 0, 0));
+
+				// 버튼의 캡션을 출력한다.
+				p_dc->DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			}
+			else {
+				// 버튼 영역을 회색으로 채운다.
+				p_dc->FillSolidRect(r, RGB(128, 128, 128));
+
+				// 회색으로 테두리를 그리고, 글자색을 흰색으로 설정한다.
+				p_dc->Draw3dRect(r, RGB(192, 192, 192), RGB(0, 0, 0));
+				p_dc->SetTextColor(RGB(255, 255, 255));
+
+				// 버튼의 캡션을 출력한다.
+				p_dc->DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			}
+		}
+		// 배경을 이전 모드로 설정한다.
+		p_dc->SetBkMode(old_mode);
 	}
-	else // 기본 상태...
-	{
-		dc.DrawEdge(&rect, EDGE_RAISED, BF_RECT);
-		dc.FillSolidRect(&rect, RGB(79, 157, 157));
-		dc.Draw3dRect(&rect, RGB(10, 10, 10), RGB(10, 10, 10));  //버튼의 외각선 그리기
-	}
-		
-	//dc.SetBkColor(RGB(51, 51, 51)); //text의 백그라운드 색상
-	dc.SetTextColor(RGB(0, 0, 0));    //texttort
-	dc.SetBkMode(TRANSPARENT);
 	
-	CString _str;
-	GetDlgItemText(nIDCtl, _str);
-	dc.DrawText(_str, &rect, DT_CENTER | DT_VCENTER | DT_SINGLELINE); //버튼의 text넣기
-		
-	dc.Detach();
-	ReleaseDC(&dc);
+	// 위에 열차 버튼
+	if (nIDCtl == IDC_SELECTED_CAR_0 || nIDCtl == IDC_SELECTED_CAR_1 || nIDCtl == IDC_SELECTED_CAR_2 || nIDCtl == IDC_SELECTED_CAR_3 ||
+		nIDCtl == IDC_SELECTED_CAR_4 || nIDCtl == IDC_SELECTED_CAR_5 || nIDCtl == IDC_SELECTED_CAR_6 || nIDCtl == IDC_SELECTED_CAR_7) {
 
-	//CDialogEx::OnDrawItem(nIDCtl, lpDrawItemStruct);
+		// DRAWITEMSTRUCT 구조체의 정보중에서 HDC 형식의 핸들값을 CDC 객체로 변환한다.
+		CDC *p_dc = CDC::FromHandle(lpDrawItemStruct->hDC);
+
+		// RECT 형식의 구조체값을 이용하여 CRect 객체를 생성한다.
+		CRect r(lpDrawItemStruct->rcItem);
+
+		CString str;
+		// 버튼의 캡션을 얻는다.
+		GetDlgItemText(nIDCtl, str);
+
+		// 글자를 출력할 때 적용할 배경을 투명으로 설정한다.
+		int old_mode = p_dc->SetBkMode(TRANSPARENT);
+
+		// 버튼을 사용할 수 없는 상태일 경우
+		if (lpDrawItemStruct->itemState & ODS_DISABLED) {
+			// 버튼 영역을 회색으로 채운다.
+			p_dc->FillSolidRect(r, RGB(192, 192, 192));
+
+			// 진한 회색으로 글자색을 설정한다.
+			p_dc->SetTextColor(RGB(128, 128, 128));
+			// 버튼의 캡션을 출력한다.
+			p_dc->DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		}
+		else {
+			// 영역을 한픽셀씩 내부 방향으로 줄인다.
+			r.left++;
+			r.top++;
+			r.right--;
+			r.bottom--;
+
+			if (lpDrawItemStruct->itemState & ODS_SELECTED) {
+				// 버튼 영역을 아쿠아색으로 채운다. (클릭 중.)
+				p_dc->FillSolidRect(r, RGB(0, 128, 128));
+
+				// 회색으로 테두리를 그리고, 글자색을 흰색으로 설정한다.
+				p_dc->Draw3dRect(r, RGB(0, 0, 0), RGB(192, 192, 192));
+				p_dc->SetTextColor(RGB(255, 255, 255));
+
+				// 버튼의 캡션을 오른쪽 아래 방향으로 한픽셀씩 이동시켜 출력한다.
+				p_dc->DrawText(str, r + CPoint(1, 1), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			}
+			// 버튼이 포커스를 얻은 경우 (클릭 됨.)
+			else if (lpDrawItemStruct->itemState & ODS_FOCUS) {
+				// 버튼 영역을 하늘색으로 채운다.
+				p_dc->FillSolidRect(r, RGB(100, 205, 255));
+
+				// 분홍색으로 테두리를 그리고, 글자색도 분홍색으로 설정한다.
+				p_dc->Draw3dRect(r, RGB(192, 192, 192), RGB(0, 0, 0));
+				p_dc->SetTextColor(RGB(0, 0, 0));
+
+				// 버튼의 캡션을 출력한다.
+				p_dc->DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			}
+			else {
+				// 버튼 영역을 회색으로 채운다.
+				p_dc->FillSolidRect(r, RGB(128, 128, 128));
+
+				// 회색으로 테두리를 그리고, 글자색을 흰색으로 설정한다.
+				p_dc->Draw3dRect(r, RGB(192, 192, 192), RGB(0, 0, 0));
+				p_dc->SetTextColor(RGB(255, 255, 255));
+
+				// 버튼의 캡션을 출력한다.
+				p_dc->DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			}
+		}
+		// 배경을 이전 모드로 설정한다.
+		p_dc->SetBkMode(old_mode);
+	}
+
+	CDialogEx::OnDrawItem(nIDCtl, lpDrawItemStruct);
 }
+
+/* 동적으로 직접 버튼을 생성할 경우는 이 부분이 꼭 필요하다.
+		https://mutaont.tistory.com/entry/MFC-%EB%B2%84%ED%8A%BC-%EC%83%89%EC%83%81-%EB%B3%80%EA%B2%BD
+	UINT uStyle = DFCS_BUTTONPUSH;
+	if (lpDrawItemStruct->itemState & ODS_SELECTED)	uStyle |= DFCS_PUSHED;
+	::DrawFrameControl(lpDrawItemStruct->hDC, &lpDrawItemStruct->rcItem, DFC_BUTTON, uStyle);*/
+
 /*
 // Button
 pDC->DrawFrameControl(m_oldRect, DFC_BUTTON, DFCS_BUTTONPUSH);
