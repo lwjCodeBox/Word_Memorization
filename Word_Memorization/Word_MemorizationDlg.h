@@ -29,6 +29,21 @@ private:
 	CForm_DuDefault_1 *mp_Form_DuDefault_1;
 	CForm_SetMVB      *mp_Form_SetMVB;
 
+	unsigned int m_CarButtonRange_StartX;
+	unsigned int m_CarButtonRange_EndX;
+	unsigned int m_CarButtonRange_StartY;
+	unsigned int m_CarButtonRange_EndY;
+
+	unsigned int m_ScreenButtonRange_StartX;
+	unsigned int m_ScreenButtonRange_EndX;
+	unsigned int m_ScreenButtonRange_StartY;
+	unsigned int m_ScreenButtonRange_EndY;
+
+	unsigned char m_ClickedCarPos[8];
+	unsigned char m_ClickedScreenPos[5];
+
+	unsigned int m_point_X, m_Point_Y;
+
 // lwj
 public:
 	_CExcelLib *mp_Libxl;
@@ -39,6 +54,9 @@ public:
 	// Shared Memory
 	CSharedMemory *m_sm; // For Allocating Shared Memory (Realtime Protocol)
 	TSharedMemory *m_pData; // Pointer of Shared Memory (Realtime Protocol)
+
+	TButtonRect m_trainBTN;
+	TButtonRect m_scrBTN;
 
 // Construction
 public:
@@ -66,8 +84,10 @@ protected:
 // lwj
 private:
 	afx_msg void ChangeScreen(UINT ID);
-	afx_msg void SelectedCar(UINT ID);
 	void CreateForm();
+
+	void OnDrawTrainButton(CDC *p_DC, CRect *p_R);
+	void OnDrawScreenButton(CDC *p_DC, CRect *p_R);
 
 // lwj
 public:
@@ -89,4 +109,5 @@ public:
 	afx_msg void OnDestroy();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 	afx_msg void OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };

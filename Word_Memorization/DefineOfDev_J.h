@@ -16,6 +16,19 @@ typedef struct DuNode
 {
 	unsigned char node;
 }DuNode;
+
+typedef struct TButtonRect
+{
+	int xPos;     // x ½ÃÀÛ ÁÂÇ¥    //int xPos = 20;     // x ½ÃÀÛ ÁÂÇ¥
+	int width;    // Æø »çÀÌÁî	   //int width = 100;   // Æø »çÀÌÁî
+	int spacing_W;// x ÁÂÇ¥ °£°Ý	   //int spacing_W = 5; // x ÁÂÇ¥ °£°Ý
+	int rowCount; // row °¹¼ö
+
+	int yPos;     // y ½ÃÀÛ ÁÂÇ¥	   //int yPos = 20;    // y ½ÃÀÛ ÁÂÇ¥
+	int height;   // ³ôÀÌ		   //int Height = 20; // ³ôÀÌ
+	int spacing_H;// y ÁÂÇ¥ °£°Ý    //int spacing_H = 10;   // y ÁÂÇ¥ °£°Ý
+	int colCount; // col °¹¼ö
+}TButtonRect;
 //--------------------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------------------
@@ -25,4 +38,8 @@ bool IsBitCheck16(WORD a_Target, WORD a_BitPos);
 
 //--------------------------------------------------------------------------------------------
 CString GetTextFormExcel(int a_Row, int a_Col, libxl::Sheet *ap_Excel);
+//--------------------------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------------------
+void TrainButtonPos(int a_StartPos, int a_RowCount, int a_ColCount);
 //--------------------------------------------------------------------------------------------

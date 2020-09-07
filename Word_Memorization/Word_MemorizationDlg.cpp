@@ -35,9 +35,9 @@ BEGIN_MESSAGE_MAP(CWordMemorizationDlg, CDialogEx)
 	ON_WM_CREATE()
 	ON_WM_CLOSE()
 	ON_WM_DESTROY()
-	ON_COMMAND_RANGE(IDC_SELECTED_CAR_0, IDC_SELECTED_CAR_7, SelectedCar)
 	ON_COMMAND_RANGE(IDC_SCREEN_PROTOCOL_BTN00, IDC_SCREEN_SETMVB_BNT04, ChangeScreen)	
 	ON_WM_DRAWITEM()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -67,8 +67,36 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	nodeData.node = 1;
 	CreateForm();
 
+	memset(m_ClickedCarPos, 0, sizeof(m_ClickedCarPos));
+	memset(m_ClickedScreenPos, 0, sizeof(m_ClickedScreenPos));
+
+	m_point_X = 0;
+	m_Point_Y = 0;
+
+
+	// Init Train Button Pos;
+	m_trainBTN.xPos = 20;     // x 시작 좌표	
+	m_trainBTN.width = 100;   // 폭 사이즈
+	m_trainBTN.spacing_W = 5; // x 좌표 간격
+	m_trainBTN.rowCount = 8;
+
+	m_trainBTN.yPos = 20;    // y 시작 좌표	
+	m_trainBTN.height = 25; // 높이
+	m_trainBTN.spacing_H = 10;   // y 좌표 간격
+	m_trainBTN.colCount = 1;
+
+	// Init Screen Button Pos;
+	//m_scrBTN.xPos = 0;     // x 시작 좌표	
+	//m_scrBTN.width = 0;   // 폭 사이즈
+	//m_scrBTN.spacing_W = 5; // x 좌표 간격
+
+	//m_scrBTN.yPos = 0;    // y 시작 좌표	
+	//m_scrBTN.Height = 0; // 높이
+	//m_scrBTN.spacing_H = 0;   // y 좌표 간격
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
+//--------------------------------------------------------------------------------------------
 
 // If you add a minimize button to your dialog, you will need the code below
 //  to draw the icon.  For MFC applications using the document/view model,
@@ -95,10 +123,107 @@ void CWordMemorizationDlg::OnPaint()
 	}
 	else
 	{
-		CDialogEx::OnPaint();
+		CPaintDC dc(this);
+		CRect r;
+
+		OnDrawTrainButton(&dc, &r);
+		OnDrawScreenButton(&dc, &r);
+
+		//CDialogEx::OnPaint();
 	}
 }
 
+void CWordMemorizationDlg::OnDrawTrainButton(CDC *p_DC, CRect *p_R)
+{
+	for (int rowCnt = 0; rowCnt < m_trainBTN.rowCount; rowCnt++) {
+		for (int colCnt = 0; colCnt < m_trainBTN.colCount; colCnt++) {
+			p_R->left = m_trainBTN.xPos + rowCnt * (m_trainBTN.width + m_trainBTN.spacing_W);
+			p_R->right = p_R->left + m_trainBTN.width;
+			p_R->top = m_trainBTN.yPos + colCnt * m_trainBTN.spacing_H;
+			p_R->bottom = p_R->top + m_trainBTN.height;
+
+			int old_mode = p_DC->SetBkMode(TRANSPARENT);
+			CString str;
+			str.Format(L"Car0%d", rowCnt);
+
+			if (1 == m_ClickedCarPos[rowCnt]) {
+				p_DC->FillSolidRect(p_R, RGB(100, 200, 100)); // 연두색
+				p_DC->Draw3dRect(p_R, RGB(0, 0, 0), RGB(100, 200, 100));
+				p_DC->SetTextColor(RGB(255, 255, 255)); // 흰색
+
+				p_DC->DrawText(str, *p_R + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+			}
+			else {
+				p_DC->FillSolidRect(p_R, RGB(192, 192, 192)); // 회색
+				p_DC->Draw3dRect(p_R, RGB(192, 192, 192), RGB(0, 0, 0));
+				p_DC->SetTextColor(RGB(0, 0, 0)); // 검정
+
+				p_DC->DrawText(str, p_R, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			}
+
+			// 배경을 이전 모드로 설정한다.
+			p_DC->SetBkMode(old_mode);
+		}
+	}
+
+	// train button 좌표 범위 저장.
+	m_CarButtonRange_StartX = m_trainBTN.xPos;
+	m_CarButtonRange_EndX = p_R->right;
+	m_CarButtonRange_StartY = m_trainBTN.yPos;
+	m_CarButtonRange_EndY = p_R->bottom;
+}
+//--------------------------------------------------------------------------------------------
+
+void CWordMemorizationDlg::OnDrawScreenButton(CDC *p_DC, CRect *p_R)
+{
+	int startWidth, endWidht;
+	int startHeight, endHeight;
+
+	for (int i = 0; i < 1; i++) {
+		for (int j = 0; j < 6; j++) {
+			startWidth = 1200 + i * 130; // x좌표 시작점, 10만큼 떨어진 곳에 그림.
+			endWidht = startWidth + 120;
+			startHeight = 35 + j * 40; // 10만큼 떨어진 곳에 그림.
+			endHeight = startHeight + 35;
+
+			p_R->left = startWidth;
+			p_R->right = endWidht;
+			p_R->top = startHeight;
+			p_R->bottom = endHeight;
+
+			int old_mode = p_DC->SetBkMode(TRANSPARENT);
+			CString str;
+			str.Format(L"Screen0%d", j);
+
+			if (1 == m_ClickedScreenPos[j]) { // 셀을 회색으로 채움
+				p_DC->FillSolidRect(p_R, RGB(100, 200, 200)); // // 하늘색
+				p_DC->Draw3dRect(p_R, RGB(0, 0, 0), RGB(100, 200, 200));
+				p_DC->SetTextColor(RGB(255, 255, 255)); // 흰색
+
+				p_DC->DrawText(str, *p_R + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+			}
+			else {
+				p_DC->FillSolidRect(p_R, RGB(192, 192, 192)); // 회색
+				p_DC->Draw3dRect(p_R, RGB(192, 192, 192), RGB(0, 0, 0));
+				p_DC->SetTextColor(RGB(0, 0, 0)); // 검정
+
+				p_DC->DrawText(str, p_R, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			}
+
+			// 배경을 이전 모드로 설정한다.
+			p_DC->SetBkMode(old_mode);
+		}
+	}
+
+	// screen button 버튼 좌표 범위 저장.
+	m_ScreenButtonRange_StartX = 1200;
+	m_ScreenButtonRange_EndX = endWidht;
+	m_ScreenButtonRange_StartY = 35;
+	m_ScreenButtonRange_EndY = endHeight;
+}
+//--------------------------------------------------------------------------------------------
 
 // The system calls this function to obtain the cursor to display while the user drags
 //  the minimized window.
@@ -117,7 +242,7 @@ int CWordMemorizationDlg::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	return 0;
 }
-
+//--------------------------------------------------------------------------------------------
 
 void CWordMemorizationDlg::OnClose()
 {
@@ -134,7 +259,7 @@ void CWordMemorizationDlg::OnClose()
 		CDialogEx::OnClose();
 	}
 }
-
+//--------------------------------------------------------------------------------------------
 
 void CWordMemorizationDlg::OnDestroy()
 {
@@ -160,7 +285,7 @@ void CWordMemorizationDlg::OnDestroy()
 		mp_Form_SetMVB->DestroyWindow();
 	}
 }
-
+//--------------------------------------------------------------------------------------------
 
 BOOL CWordMemorizationDlg::PreTranslateMessage(MSG* pMsg)
 {
@@ -172,6 +297,7 @@ BOOL CWordMemorizationDlg::PreTranslateMessage(MSG* pMsg)
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
+//--------------------------------------------------------------------------------------------
 
 // 화면 전환
 void CWordMemorizationDlg::ChangeScreen(UINT ID)
@@ -189,7 +315,7 @@ void CWordMemorizationDlg::ChangeScreen(UINT ID)
 		break;
 
 	case 1:
-		AfxMessageBox(L"Heartbit");
+		//AfxMessageBox(L"Heartbit");
 		mp_Form_Protocol->ShowWindow(SW_HIDE);
 		mp_Form_HeartBit->ShowWindow(SW_SHOW);
 		mp_Form_DuDefault_1->ShowWindow(SW_HIDE);
@@ -197,7 +323,7 @@ void CWordMemorizationDlg::ChangeScreen(UINT ID)
 		break;
 
 	case 2:
-		AfxMessageBox(L"My Node");
+		//AfxMessageBox(L"My Node");
 		//SetMVBValue(0, 0, 1);
 		break;
 
@@ -222,77 +348,7 @@ void CWordMemorizationDlg::ChangeScreen(UINT ID)
 
 	
 }
-
-// 차량 선택
-void CWordMemorizationDlg::SelectedCar(UINT ID)
-{
-	CString msg = _T("");
-
-	// aDTC, aMC1 이면 노드가 0인데 여기서는 myNode 계산 때문에 0이면 myNode를 의미 하고 1이면 0번 노드를 말함. (원래 노드에서 +1을 함)
-	switch (ID - IDC_SELECTED_CAR_0)
-	{
-	case 0:
-		nodeData.node = 1; 
-
-		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
-		//AfxMessageBox(msg);
-
-		memset(&(m_pData->data[0][0]), 0x0f, 1);
-		break;
-
-	case 1:
-		nodeData.node = 1;
-
-		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
-		//AfxMessageBox(msg);
-
-		memset(&(m_pData->data[0][1]), 0xaa, 1);
-		break;
-
-	case 2:
-		nodeData.node = 2;
-
-		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
-		AfxMessageBox(msg);
-		break;
-
-	case 3:
-		nodeData.node = 2;
-
-		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
-		AfxMessageBox(msg);
-		break;
-
-	case 4:
-		nodeData.node = 3;
-
-		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
-		AfxMessageBox(msg);
-		break;
-
-	case 5:
-		nodeData.node = 3;
-
-		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
-		AfxMessageBox(msg);
-		break;
-
-	case 6:
-		nodeData.node = 4;
-
-		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
-		AfxMessageBox(msg);
-		break;
-
-	case 7:
-		nodeData.node = 4;
-
-		msg.Format(L"Car %d Port >> %d", ID - IDC_SELECTED_CAR_0, nodeData.node);
-		AfxMessageBox(msg);
-		break;
-	}
-}
-
+//--------------------------------------------------------------------------------------------
 
 void CWordMemorizationDlg::CreateForm()
 {
@@ -410,152 +466,7 @@ void CWordMemorizationDlg::Set08DataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Wo
 void CWordMemorizationDlg::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
 	// http://www.tipssoft.com/bulletin/board.php?bo_table=FAQ&wr_id=645
-	// WM_DrawItem 메세지를 발생시킨 컨트롤인 경우
-	if (nIDCtl == IDC_SCREEN_PROTOCOL_BTN00 || nIDCtl == IDC_SCREEN_HEARTBIT_BTN01 || nIDCtl == IDC_SCREEN_MYNODE_BTN02 ||
-		nIDCtl == IDC_SCREEN_DUDEFAULT_BTN03 || nIDCtl == IDC_SCREEN_SETMVB_BNT04) {
-
-		// DRAWITEMSTRUCT 구조체의 정보중에서 HDC 형식의 핸들값을 CDC 객체로 변환한다.
-		CDC *p_dc = CDC::FromHandle(lpDrawItemStruct->hDC);
-
-		// RECT 형식의 구조체값을 이용하여 CRect 객체를 생성한다.
-		CRect r(lpDrawItemStruct->rcItem);
-
-		CString str;
-		// 버튼의 캡션을 얻는다.
-		GetDlgItemText(nIDCtl, str);
-
-		// 글자를 출력할 때 적용할 배경을 투명으로 설정한다.
-		int old_mode = p_dc->SetBkMode(TRANSPARENT);
-
-		// 버튼을 사용할 수 없는 상태일 경우
-		if (lpDrawItemStruct->itemState & ODS_DISABLED) {
-			// 버튼 영역을 회색으로 채운다.
-			p_dc->FillSolidRect(r, RGB(192, 192, 192));
-
-			// 진한 회색으로 글자색을 설정한다.
-			p_dc->SetTextColor(RGB(128, 128, 128));
-			// 버튼의 캡션을 출력한다.
-			p_dc->DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-		}
-		else {
-			// 영역을 한픽셀씩 내부 방향으로 줄인다.
-			r.left++;
-			r.top++;
-			r.right--;
-			r.bottom--;
-
-			if (lpDrawItemStruct->itemState & ODS_SELECTED) {
-				// 버튼 영역을 아쿠아색으로 채운다. (클릭 중.)
-				p_dc->FillSolidRect(r, RGB(0, 128, 128));
-
-				// 회색으로 테두리를 그리고, 글자색을 흰색으로 설정한다.
-				p_dc->Draw3dRect(r, RGB(0, 0, 0), RGB(192, 192, 192));
-				p_dc->SetTextColor(RGB(255, 255, 255));
-
-				// 버튼의 캡션을 오른쪽 아래 방향으로 한픽셀씩 이동시켜 출력한다.
-				p_dc->DrawText(str, r + CPoint(1, 1), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-			}
-			// 버튼이 포커스를 얻은 경우 (클릭 됨.)
-			else if (lpDrawItemStruct->itemState & ODS_FOCUS) {
-				// 버튼 영역을 하늘색으로 채운다.
-				p_dc->FillSolidRect(r, RGB(100, 205, 255));
-
-				// 분홍색으로 테두리를 그리고, 글자색도 분홍색으로 설정한다.
-				p_dc->Draw3dRect(r, RGB(192, 192, 192), RGB(0, 0, 0));
-				p_dc->SetTextColor(RGB(0, 0, 0));
-
-				// 버튼의 캡션을 출력한다.
-				p_dc->DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-			}
-			else {
-				// 버튼 영역을 회색으로 채운다.
-				p_dc->FillSolidRect(r, RGB(128, 128, 128));
-
-				// 회색으로 테두리를 그리고, 글자색을 흰색으로 설정한다.
-				p_dc->Draw3dRect(r, RGB(192, 192, 192), RGB(0, 0, 0));
-				p_dc->SetTextColor(RGB(255, 255, 255));
-
-				// 버튼의 캡션을 출력한다.
-				p_dc->DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-			}
-		}
-		// 배경을 이전 모드로 설정한다.
-		p_dc->SetBkMode(old_mode);
-	}
 	
-	// 위에 열차 버튼
-	if (nIDCtl == IDC_SELECTED_CAR_0 || nIDCtl == IDC_SELECTED_CAR_1 || nIDCtl == IDC_SELECTED_CAR_2 || nIDCtl == IDC_SELECTED_CAR_3 ||
-		nIDCtl == IDC_SELECTED_CAR_4 || nIDCtl == IDC_SELECTED_CAR_5 || nIDCtl == IDC_SELECTED_CAR_6 || nIDCtl == IDC_SELECTED_CAR_7) {
-
-		// DRAWITEMSTRUCT 구조체의 정보중에서 HDC 형식의 핸들값을 CDC 객체로 변환한다.
-		CDC *p_dc = CDC::FromHandle(lpDrawItemStruct->hDC);
-
-		// RECT 형식의 구조체값을 이용하여 CRect 객체를 생성한다.
-		CRect r(lpDrawItemStruct->rcItem);
-
-		CString str;
-		// 버튼의 캡션을 얻는다.
-		GetDlgItemText(nIDCtl, str);
-
-		// 글자를 출력할 때 적용할 배경을 투명으로 설정한다.
-		int old_mode = p_dc->SetBkMode(TRANSPARENT);
-
-		// 버튼을 사용할 수 없는 상태일 경우
-		if (lpDrawItemStruct->itemState & ODS_DISABLED) {
-			// 버튼 영역을 회색으로 채운다.
-			p_dc->FillSolidRect(r, RGB(192, 192, 192));
-
-			// 진한 회색으로 글자색을 설정한다.
-			p_dc->SetTextColor(RGB(128, 128, 128));
-			// 버튼의 캡션을 출력한다.
-			p_dc->DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-		}
-		else {
-			// 영역을 한픽셀씩 내부 방향으로 줄인다.
-			r.left++;
-			r.top++;
-			r.right--;
-			r.bottom--;
-
-			if (lpDrawItemStruct->itemState & ODS_SELECTED) {
-				// 버튼 영역을 아쿠아색으로 채운다. (클릭 중.)
-				p_dc->FillSolidRect(r, RGB(0, 128, 128));
-
-				// 회색으로 테두리를 그리고, 글자색을 흰색으로 설정한다.
-				p_dc->Draw3dRect(r, RGB(0, 0, 0), RGB(192, 192, 192));
-				p_dc->SetTextColor(RGB(255, 255, 255));
-
-				// 버튼의 캡션을 오른쪽 아래 방향으로 한픽셀씩 이동시켜 출력한다.
-				p_dc->DrawText(str, r + CPoint(1, 1), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-			}
-			// 버튼이 포커스를 얻은 경우 (클릭 됨.)
-			else if (lpDrawItemStruct->itemState & ODS_FOCUS) {
-				// 버튼 영역을 하늘색으로 채운다.
-				p_dc->FillSolidRect(r, RGB(100, 205, 255));
-
-				// 분홍색으로 테두리를 그리고, 글자색도 분홍색으로 설정한다.
-				p_dc->Draw3dRect(r, RGB(192, 192, 192), RGB(0, 0, 0));
-				p_dc->SetTextColor(RGB(0, 0, 0));
-
-				// 버튼의 캡션을 출력한다.
-				p_dc->DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-			}
-			else {
-				// 버튼 영역을 회색으로 채운다.
-				p_dc->FillSolidRect(r, RGB(128, 128, 128));
-
-				// 회색으로 테두리를 그리고, 글자색을 흰색으로 설정한다.
-				p_dc->Draw3dRect(r, RGB(192, 192, 192), RGB(0, 0, 0));
-				p_dc->SetTextColor(RGB(255, 255, 255));
-
-				// 버튼의 캡션을 출력한다.
-				p_dc->DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-			}
-		}
-		// 배경을 이전 모드로 설정한다.
-		p_dc->SetBkMode(old_mode);
-	}
-
 	CDialogEx::OnDrawItem(nIDCtl, lpDrawItemStruct);
 }
 
@@ -583,3 +494,63 @@ pDC->SetBkMode(TRANSPARENT);
 
 출처: https://elkeipy.tistory.com/entry/DrawFrameControl [케이피's 불량블로그!]
 */
+
+void CWordMemorizationDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	int leftPos, rightPos;
+	int topPos, bottomPos;
+
+	unsigned int rx, ry;
+	if (point.x >= m_CarButtonRange_StartX && point.y <= m_CarButtonRange_EndY) { // car
+		// 120의 의미가 사각형의 폭을 말하며 사각형 폭 넓이 만큼 나눔.
+		// 35의 의미가 사각형의 높이를 말하며 사각형 높이 만큼 나눔.
+		//rx = (unsigned int)(point.x - m_trainBTN.xPos) / m_trainBTN.width;
+		rx = (unsigned int)(point.x - m_trainBTN.xPos) / m_trainBTN.width;
+		ry = (unsigned int)(point.y - m_trainBTN.yPos) / m_trainBTN.height;
+
+		m_point_X = rx;
+
+		CClientDC dc(this);
+		CRect r;
+
+		// train button
+		if ((rx < 8) && (ry == 0)) {
+			leftPos = m_trainBTN.xPos + rx * (m_trainBTN.width + m_trainBTN.spacing_W);
+			rightPos = leftPos + m_trainBTN.width;
+			topPos = m_trainBTN.yPos + ry * m_trainBTN.spacing_H;
+			bottomPos = topPos + m_trainBTN.height;
+
+			r.left = leftPos;
+			r.right = rightPos;
+			r.top = topPos;
+			r.bottom = bottomPos;
+
+			int old_mode = dc.SetBkMode(TRANSPARENT);
+			CString str;
+			str.Format(L"Car0%d", m_point_X);
+
+			if (1 == m_ClickedCarPos[m_point_X]) { // 셀을 회색으로 채움
+				m_ClickedCarPos[m_point_X] = 0;
+
+				dc.FillSolidRect(r, RGB(192, 192, 192)); // 회색
+				dc.Draw3dRect(r, RGB(192, 192, 192), RGB(0, 0, 0));
+				dc.SetTextColor(RGB(0, 0, 0)); // 검정
+				dc.DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+			}
+			else {
+				m_ClickedCarPos[m_point_X] = 1;
+
+				dc.FillSolidRect(r, RGB(100, 200, 200)); // // 하늘색
+				dc.Draw3dRect(r, RGB(0, 0, 0), RGB(100, 200, 200));
+				dc.SetTextColor(RGB(255, 255, 255)); // 흰색
+				dc.DrawText(str, r + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			}
+
+			// 배경을 이전 모드로 설정한다.
+			dc.SetBkMode(old_mode);
+		}
+	}
+
+	CDialogEx::OnLButtonDown(nFlags, point);
+}

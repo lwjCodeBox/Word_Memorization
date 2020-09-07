@@ -36,3 +36,24 @@ CString GetTextFormExcel(int a_Row, int a_Col, libxl::Sheet *ap_Excel){
 	return ap_Excel->readStr(a_Row + 3, a_Col + 1, NULL);
 }
 //--------------------------------------------------------------------------------------------
+
+void TrainButtonPos(int a_StartPos, int a_RowCount, int a_ColCount)
+{
+
+	//int startHeight, endHeight;
+
+	a_StartPos = 20;
+	int startWidth, endWidht;
+
+	for (int cnt = 0; cnt < a_RowCount; cnt++) {
+		startWidth = a_StartPos + cnt * 120; // x좌표 시작점, 10만큼 떨어진 곳에 그림.
+		endWidht = startWidth + 100/*110*/;
+
+
+		//for (int j = 0; j < a_ColCount; j++) {
+			//startHeight = 35 + j * 40; // 10만큼 떨어진 곳에 그림.
+			//endHeight = startHeight + 35;
+		//}
+	}
+}
+//--------------------------------------------------------------------------------------------
