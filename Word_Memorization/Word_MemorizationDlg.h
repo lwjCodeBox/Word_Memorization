@@ -39,10 +39,9 @@ private:
 	unsigned int m_ScreenButtonRange_StartY;
 	unsigned int m_ScreenButtonRange_EndY;
 
-	unsigned char m_ClickedCarPos[8];
+	//unsigned char m_ClickedCarPos[8];
+	unsigned char **m_ClickedCarPos = NULL;
 	unsigned char m_ClickedScreenPos[5];
-
-	unsigned int m_point_X, m_Point_Y;
 
 // lwj
 public:

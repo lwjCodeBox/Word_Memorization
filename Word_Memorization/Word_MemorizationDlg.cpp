@@ -67,24 +67,35 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	nodeData.node = 1;
 	CreateForm();
 
-	memset(m_ClickedCarPos, 0, sizeof(m_ClickedCarPos));
-	memset(m_ClickedScreenPos, 0, sizeof(m_ClickedScreenPos));
-
-	m_point_X = 0;
-	m_Point_Y = 0;
-
-
+		
 	// Init Train Button Pos;
-	m_trainBTN.xPos = 20;     // x 시작 좌표	
-	m_trainBTN.width = 100;   // 폭 사이즈
-	m_trainBTN.spacing_W = 5; // x 좌표 간격
-	m_trainBTN.rowCount = 8;
+	m_trainBTN.xPos = 20;      // x 시작 좌표	
+	m_trainBTN.width = 100;    // 폭 사이즈
+	m_trainBTN.spacing_W = 20; // x 좌표 간격
+	m_trainBTN.rowCount = 1;
 
-	m_trainBTN.yPos = 20;    // y 시작 좌표	
-	m_trainBTN.height = 25; // 높이
-	m_trainBTN.spacing_H = 10;   // y 좌표 간격
-	m_trainBTN.colCount = 1;
+	m_trainBTN.yPos = 20;      // y 시작 좌표	
+	m_trainBTN.height = 25;    // 높이
+	m_trainBTN.spacing_H = 0;  // y 좌표 간격
+	m_trainBTN.colCount = 8;
 
+
+	m_ClickedCarPos = new unsigned char *[m_trainBTN.rowCount];
+	
+	for (int i = 0; i < m_trainBTN.rowCount; i++) {
+		m_ClickedCarPos[i] = new unsigned char[m_trainBTN.rowCount];
+
+		for (int j = 0; j < m_trainBTN.rowCount; j++) {
+			m_ClickedCarPos[i][j] = i * m_trainBTN.rowCount + j;			
+		}
+	}
+
+	// 2차원 배열 초기화 (double pointer)
+	for (int i = 0; i < m_trainBTN.rowCount; i++) {
+		// 초기화 시킬 배열, 초기화 할 값, colum갯수
+		memset(m_ClickedCarPos[i], 0, m_trainBTN.colCount * sizeof(unsigned char));
+	}
+	
 	// Init Screen Button Pos;
 	//m_scrBTN.xPos = 0;     // x 시작 좌표	
 	//m_scrBTN.width = 0;   // 폭 사이즈
@@ -94,6 +105,12 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	//m_scrBTN.Height = 0; // 높이
 	//m_scrBTN.spacing_H = 0;   // y 좌표 간격
 
+	//for (int i = 0; i < m_trainBTN.rowCount; i++) {
+	//	// 초기화 시킬 배열, 초기화 할 값, colum갯수
+	//	memset(m_ClickedCarPos[i], 0, m_trainBTN.colCount * sizeof(unsigned char));
+	//}
+
+	
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 //--------------------------------------------------------------------------------------------
@@ -127,7 +144,7 @@ void CWordMemorizationDlg::OnPaint()
 		CRect r;
 
 		OnDrawTrainButton(&dc, &r);
-		OnDrawScreenButton(&dc, &r);
+		//OnDrawScreenButton(&dc, &r);
 
 		//CDialogEx::OnPaint();
 	}
@@ -137,16 +154,16 @@ void CWordMemorizationDlg::OnDrawTrainButton(CDC *p_DC, CRect *p_R)
 {
 	for (int rowCnt = 0; rowCnt < m_trainBTN.rowCount; rowCnt++) {
 		for (int colCnt = 0; colCnt < m_trainBTN.colCount; colCnt++) {
-			p_R->left = m_trainBTN.xPos + rowCnt * (m_trainBTN.width + m_trainBTN.spacing_W);
+			p_R->left = m_trainBTN.xPos + colCnt * (m_trainBTN.width + m_trainBTN.spacing_W);
 			p_R->right = p_R->left + m_trainBTN.width;
-			p_R->top = m_trainBTN.yPos + colCnt * m_trainBTN.spacing_H;
+			p_R->top = m_trainBTN.yPos + rowCnt * m_trainBTN.spacing_H;
 			p_R->bottom = p_R->top + m_trainBTN.height;
 
 			int old_mode = p_DC->SetBkMode(TRANSPARENT);
 			CString str;
-			str.Format(L"Car0%d", rowCnt);
+			str.Format(L"Car0%d", colCnt);
 
-			if (1 == m_ClickedCarPos[rowCnt]) {
+			if (1 == m_ClickedCarPos[rowCnt][colCnt]) {
 				p_DC->FillSolidRect(p_R, RGB(100, 200, 100)); // 연두색
 				p_DC->Draw3dRect(p_R, RGB(0, 0, 0), RGB(100, 200, 100));
 				p_DC->SetTextColor(RGB(255, 255, 255)); // 흰색
@@ -497,40 +514,29 @@ pDC->SetBkMode(TRANSPARENT);
 
 void CWordMemorizationDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	int leftPos, rightPos;
-	int topPos, bottomPos;
-
-	unsigned int rx, ry;
+	unsigned int _col, _row;
 	if (point.x >= m_CarButtonRange_StartX && point.y <= m_CarButtonRange_EndY) { // car
 		// 120의 의미가 사각형의 폭을 말하며 사각형 폭 넓이 만큼 나눔.
 		// 35의 의미가 사각형의 높이를 말하며 사각형 높이 만큼 나눔.
-		//rx = (unsigned int)(point.x - m_trainBTN.xPos) / m_trainBTN.width;
-		rx = (unsigned int)(point.x - m_trainBTN.xPos) / m_trainBTN.width;
-		ry = (unsigned int)(point.y - m_trainBTN.yPos) / m_trainBTN.height;
-
-		m_point_X = rx;
+		_col = (unsigned int)(point.x - m_trainBTN.xPos) / m_trainBTN.width;
+		_row = (unsigned int)(point.y - m_trainBTN.yPos) / m_trainBTN.height;
 
 		CClientDC dc(this);
 		CRect r;
 
 		// train button
-		if ((rx < 8) && (ry == 0)) {
-			leftPos = m_trainBTN.xPos + rx * (m_trainBTN.width + m_trainBTN.spacing_W);
-			rightPos = leftPos + m_trainBTN.width;
-			topPos = m_trainBTN.yPos + ry * m_trainBTN.spacing_H;
-			bottomPos = topPos + m_trainBTN.height;
-
-			r.left = leftPos;
-			r.right = rightPos;
-			r.top = topPos;
-			r.bottom = bottomPos;
+		if ((_col < 8) && (_row == 0)) {
+			r.left = m_trainBTN.xPos + _col * (m_trainBTN.width + m_trainBTN.spacing_W);
+			r.right = r.left + m_trainBTN.width;
+			r.top = m_trainBTN.yPos + _row * m_trainBTN.spacing_H;
+			r.bottom = r.top + m_trainBTN.height;
 
 			int old_mode = dc.SetBkMode(TRANSPARENT);
 			CString str;
-			str.Format(L"Car0%d", m_point_X);
+			str.Format(L"Car0%d", _col);
 
-			if (1 == m_ClickedCarPos[m_point_X]) { // 셀을 회색으로 채움
-				m_ClickedCarPos[m_point_X] = 0;
+			if (1 == m_ClickedCarPos[_row][_col]) { // 셀을 회색으로 채움
+				m_ClickedCarPos[_row][_col] = 0;
 
 				dc.FillSolidRect(r, RGB(192, 192, 192)); // 회색
 				dc.Draw3dRect(r, RGB(192, 192, 192), RGB(0, 0, 0));
@@ -539,7 +545,7 @@ void CWordMemorizationDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 			}
 			else {
-				m_ClickedCarPos[m_point_X] = 1;
+				m_ClickedCarPos[0][_col] = 1;
 
 				dc.FillSolidRect(r, RGB(100, 200, 200)); // // 하늘색
 				dc.Draw3dRect(r, RGB(0, 0, 0), RGB(100, 200, 200));

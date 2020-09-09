@@ -22,12 +22,12 @@ typedef struct TButtonRect
 	int xPos;     // x ½ÃÀÛ ÁÂÇ¥    //int xPos = 20;     // x ½ÃÀÛ ÁÂÇ¥
 	int width;    // Æø »çÀÌÁî	   //int width = 100;   // Æø »çÀÌÁî
 	int spacing_W;// x ÁÂÇ¥ °£°İ	   //int spacing_W = 5; // x ÁÂÇ¥ °£°İ
-	int rowCount; // row °¹¼ö
+	int colCount; // col °¹¼ö
 
 	int yPos;     // y ½ÃÀÛ ÁÂÇ¥	   //int yPos = 20;    // y ½ÃÀÛ ÁÂÇ¥
 	int height;   // ³ôÀÌ		   //int Height = 20; // ³ôÀÌ
 	int spacing_H;// y ÁÂÇ¥ °£°İ    //int spacing_H = 10;   // y ÁÂÇ¥ °£°İ
-	int colCount; // col °¹¼ö
+	int rowCount; // row °¹¼ö
 }TButtonRect;
 //--------------------------------------------------------------------------------------------
 
