@@ -92,6 +92,7 @@ private:
 public:
 	void SetMVBValue(unsigned int a_Node, unsigned int a_Port, unsigned int a_Value);
 	void SetMVBHeartBit(unsigned int a_Port, unsigned int a_Value);
+	void SetMVBHeartBit15(unsigned int a_Port, unsigned int a_Value);
 
 	WORD GetWordDataFromSM(WORD a_PortAddr, BYTE a_Node, BYTE a_WordPos);
 	BYTE GetByteDataFromSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Byte);

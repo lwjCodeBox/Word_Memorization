@@ -73,7 +73,7 @@ void CForm_SetMVB::Dump(CDumpContext &dc) const
 
 
 BOOL CForm_SetMVB::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext)
-{		
+{
 	return CFormView::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
 }
 
@@ -110,19 +110,19 @@ void CForm_SetMVB::OnBnClickedButton1()
 		BYTE l_byte, h_byte;
 
 		_CExcelLib *p_ExcelLib = (_CExcelLib *)mp_FormMainDlg->mp_Libxl;
-		
+
 		// 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다.
 		// int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
 		int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
 		int t_port = binarySearch(p_ExcelLib->mvb_Addr, dataSize, portAddr);
-		
+
 		t_port += p_ExcelLib->m_totalNodeCnt * node;
 
 		h_byte = ((unsigned char *)&value)[1]; // word 상위
 		l_byte = ((unsigned char *)&value)[0]; // word 하위
 
 		memset(&(mp_FormMainDlg->m_pData->data[t_port][word]), h_byte, 1);   // mvb 상위 바이트에 값을 넣음
-		memset(&(mp_FormMainDlg->m_pData->data[t_port][word+1]), l_byte, 1); // mvb 하위 바이트에 값을 넣음
+		memset(&(mp_FormMainDlg->m_pData->data[t_port][word + 1]), l_byte, 1); // mvb 하위 바이트에 값을 넣음
 
 		p_ExcelLib = NULL;
 	}
@@ -187,7 +187,7 @@ void CForm_SetMVB::OnTimer(UINT_PTR nIDEvent)
 		if (m_HeartBit_3 != 0xFFFF) {
 			m_HeartBit_3++;
 
-			mp_FormMainDlg->SetMVBHeartBit(port, m_HeartBit_3);
+			mp_FormMainDlg->SetMVBHeartBit15(port, m_HeartBit_3);
 			//memset(&(mp_FormMainDlg->m_pData->data[port][0]), m_HeartBit_3, 2);
 		}
 		else
@@ -254,7 +254,7 @@ void CForm_SetMVB::TimerStop(UINT ID)
 //--------------------------------------------------------------------------------------------
 
 void CForm_SetMVB::OnBnClickedButton2()
-{ 
+{
 	WORD portAddr, word, value;
 
 	portAddr = GetDlgItemInt(IDC_SETMVB_ADDR2);
@@ -294,11 +294,11 @@ void CForm_SetMVB::OnBnClickedButton3()
 	if (strPortAddr == L"" || node >= 5)
 		return;
 
-	
+
 	if (mp_ScrSetMVB_Grid == NULL) {
 		mp_ScrSetMVB_Grid = new CGridCtrl;
 		mp_ScrSetMVB_Grid->Create(CRect(10, 310, 1020, 1065), this, IDC_GFG_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
-	
+
 		mp_ScrSetMVB_Grid->SetRowCount(32 + 2);
 		mp_ScrSetMVB_Grid->SetColumnCount(8 + 1); // 현시할 column 8개, fixed column 1개
 
@@ -313,7 +313,7 @@ void CForm_SetMVB::OnBnClickedButton3()
 		mp_ScrSetMVB_Grid->SetEditable(true);
 
 		mp_ScrSetMVB_Grid->EnableTitleTips(false);
-	
+
 		CString str;
 
 		// Bit 7 ~ 0

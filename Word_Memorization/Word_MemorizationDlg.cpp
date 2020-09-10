@@ -143,7 +143,7 @@ void CWordMemorizationDlg::OnPaint()
 		CPaintDC dc(this);
 		CRect r;
 
-		OnDrawTrainButton(&dc, &r);
+		//OnDrawTrainButton(&dc, &r);
 		//OnDrawScreenButton(&dc, &r);
 
 		//CDialogEx::OnPaint();
@@ -408,6 +408,12 @@ void CWordMemorizationDlg::SetMVBValue(unsigned int a_Node, unsigned int a_Port,
 void CWordMemorizationDlg::SetMVBHeartBit(unsigned int a_Port, unsigned int a_Value)
 {
 	memset(&(m_pData->data[a_Port][0]), a_Value, 2);
+}
+//--------------------------------------------------------------------------------------------
+
+void CWordMemorizationDlg::SetMVBHeartBit15(unsigned int a_Port, unsigned int a_Value)
+{
+	memset(&(m_pData->data[a_Port][30]), a_Value, 2);
 }
 //--------------------------------------------------------------------------------------------
 
