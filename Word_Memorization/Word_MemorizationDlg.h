@@ -5,6 +5,8 @@
 #pragma once
 
 #include "_CExcelLib.h"
+#include <string.h>
+#include <vector>
 
 #include "CSharedMemory.h"
 
@@ -55,7 +57,7 @@ public:
 	TSharedMemory *m_pData; // Pointer of Shared Memory (Realtime Protocol)
 
 	TButtonRect m_trainBTN;
-	TButtonRect m_scrBTN;
+	TButtonRect m_scrBTN;	
 
 // Construction
 public:
@@ -87,6 +89,8 @@ private:
 
 	void OnDrawTrainButton(CDC *p_DC, CRect *p_R);
 	void OnDrawScreenButton(CDC *p_DC, CRect *p_R);
+
+	void OnInitTrainBuutton();
 
 // lwj
 public:

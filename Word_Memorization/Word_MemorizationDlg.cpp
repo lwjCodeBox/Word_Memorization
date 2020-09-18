@@ -67,7 +67,7 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	nodeData.node = 1;
 	CreateForm();
 
-		
+//--------------------------------------------------------------------------------------------		
 	// Init Train Button Pos;
 	m_trainBTN.xPos = 20;      // x 시작 좌표	
 	m_trainBTN.width = 100;    // 폭 사이즈
@@ -79,23 +79,25 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	m_trainBTN.spacing_H = 0;  // y 좌표 간격
 	m_trainBTN.colCount = 8;
 
+	OnInitTrainBuutton();
 
-	m_ClickedCarPos = new unsigned char *[m_trainBTN.rowCount];
+	m_ClickedCarPos = new unsigned char * [m_trainBTN.rowCount];
 	
 	for (int i = 0; i < m_trainBTN.rowCount; i++) {
 		m_ClickedCarPos[i] = new unsigned char[m_trainBTN.rowCount];
-
-		for (int j = 0; j < m_trainBTN.rowCount; j++) {
-			m_ClickedCarPos[i][j] = i * m_trainBTN.rowCount + j;			
+		//memset(m_ClickedCarPos[i], 1, sizeof(unsigned char) * m_trainBTN.colCount);
+		for (int j = 0; j < m_trainBTN.colCount; j++) {
+			m_ClickedCarPos[i][j] = 1;//i * m_trainBTN.rowCount + j;			
 		}
 	}
 
-	// 2차원 배열 초기화 (double pointer)
-	for (int i = 0; i < m_trainBTN.rowCount; i++) {
-		// 초기화 시킬 배열, 초기화 할 값, colum갯수
-		memset(m_ClickedCarPos[i], 0, m_trainBTN.colCount * sizeof(unsigned char));
-	}
-	
+	//// 2차원 배열 초기화 (double pointer)
+	//for (int i = 0; i < m_trainBTN.rowCount; i++) {
+	//	// 초기화 시킬 배열, 초기화 할 값, colum갯수
+	//	
+	//}
+//--------------------------------------------------------------------------------------------
+
 	// Init Screen Button Pos;
 	//m_scrBTN.xPos = 0;     // x 시작 좌표	
 	//m_scrBTN.width = 0;   // 폭 사이즈
@@ -143,12 +145,29 @@ void CWordMemorizationDlg::OnPaint()
 		CPaintDC dc(this);
 		CRect r;
 
-		//OnDrawTrainButton(&dc, &r);
+		OnDrawTrainButton(&dc, &r);
 		//OnDrawScreenButton(&dc, &r);
 
 		//CDialogEx::OnPaint();
 	}
 }
+//--------------------------------------------------------------------------------------------
+
+void CWordMemorizationDlg::OnInitTrainBuutton()
+{	
+	/*RECT r;
+	for (int rowCnt = 0; rowCnt < m_trainBTN.rowCount; rowCnt++) {
+		for (int colCnt = 0; colCnt < m_trainBTN.colCount; colCnt++) {
+			r.left = m_trainBTN.xPos + colCnt * (m_trainBTN.width + m_trainBTN.spacing_W);
+			r.right = r.left + m_trainBTN.width;
+			r.top = m_trainBTN.yPos + rowCnt * m_trainBTN.spacing_H;
+			r.bottom = r.top + m_trainBTN.height;
+
+			m_trainBTN.r.push_back(r);			
+		}
+	}*/
+}
+//--------------------------------------------------------------------------------------------
 
 void CWordMemorizationDlg::OnDrawTrainButton(CDC *p_DC, CRect *p_R)
 {
@@ -164,15 +183,14 @@ void CWordMemorizationDlg::OnDrawTrainButton(CDC *p_DC, CRect *p_R)
 			str.Format(L"Car0%d", colCnt);
 
 			if (1 == m_ClickedCarPos[rowCnt][colCnt]) {
-				p_DC->FillSolidRect(p_R, RGB(100, 200, 100)); // 연두색
+				p_DC->FillSolidRect(p_R/*&m_trainBTN.r[colCnt]*/, RGB(100, 200, 100)); // 연두색
 				p_DC->Draw3dRect(p_R, RGB(0, 0, 0), RGB(100, 200, 100));
 				p_DC->SetTextColor(RGB(255, 255, 255)); // 흰색
 
 				p_DC->DrawText(str, *p_R + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-
 			}
 			else {
-				p_DC->FillSolidRect(p_R, RGB(192, 192, 192)); // 회색
+				p_DC->FillSolidRect(p_R/*&m_trainBTN.r[colCnt]*/, RGB(192, 192, 192)); // 회색
 				p_DC->Draw3dRect(p_R, RGB(192, 192, 192), RGB(0, 0, 0));
 				p_DC->SetTextColor(RGB(0, 0, 0)); // 검정
 
@@ -272,7 +290,7 @@ void CWordMemorizationDlg::OnClose()
 		mp_Libxl->m_Book->release();
 		delete mp_Libxl;
 		mp_Libxl = NULL;
-
+		
 		CDialogEx::OnClose();
 	}
 }
@@ -281,6 +299,17 @@ void CWordMemorizationDlg::OnClose()
 void CWordMemorizationDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
+
+	// Train Button	
+	if (m_ClickedCarPos != NULL) {
+		for (int i = 0; i < m_trainBTN.rowCount; i++) {			
+			delete[] m_ClickedCarPos[i];
+			m_ClickedCarPos[i] = NULL;
+		}
+		delete[] m_ClickedCarPos;		
+	}
+	//m_trainBTN.r.clear();
+	//m_trainBTN.r.~vector();
 
 	if (mp_Form_Protocol != NULL)
 	{

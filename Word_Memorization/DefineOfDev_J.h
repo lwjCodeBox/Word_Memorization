@@ -1,6 +1,7 @@
 #pragma once
 
 #include "libxl.h"
+#include <vector>
 
 #define RCLICK_RGB		RGB(0, 255, 128)
 #define LDCLICK_RGB		RGB(255, 255, 204)
@@ -28,6 +29,10 @@ typedef struct TButtonRect
 	int height;   // 堪檜		   //int Height = 20; // 堪檜
 	int spacing_H;// y 謝ル 除問    //int spacing_H = 10;   // y 謝ル 除問
 	int rowCount; // row 偎熱
+
+	//std::vector<RECT>/*::iterator */r;
+	//std::vector<RECT>::iterator rr;
+	//RECT rect;
 }TButtonRect;
 //--------------------------------------------------------------------------------------------
 
