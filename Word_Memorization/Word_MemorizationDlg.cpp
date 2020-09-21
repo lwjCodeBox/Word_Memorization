@@ -84,11 +84,11 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	m_ClickedCarPos = new unsigned char * [m_trainBTN.rowCount];
 	
 	for (int i = 0; i < m_trainBTN.rowCount; i++) {
-		m_ClickedCarPos[i] = new unsigned char[m_trainBTN.rowCount];
-		//memset(m_ClickedCarPos[i], 1, sizeof(unsigned char) * m_trainBTN.colCount);
-		for (int j = 0; j < m_trainBTN.colCount; j++) {
-			m_ClickedCarPos[i][j] = 1;//i * m_trainBTN.rowCount + j;			
-		}
+		m_ClickedCarPos[i] = new unsigned char[m_trainBTN.colCount];
+		memset(m_ClickedCarPos[i], 0, sizeof(unsigned char) * m_trainBTN.colCount);
+		//for (int j = 0; j < m_trainBTN.colCount; j++) {
+		//	m_ClickedCarPos[i][j] = 0;//i * m_trainBTN.rowCount + j;			
+		//}
 	}
 
 	//// 2차원 배열 초기화 (double pointer)
@@ -155,7 +155,9 @@ void CWordMemorizationDlg::OnPaint()
 
 void CWordMemorizationDlg::OnInitTrainBuutton()
 {	
-	/*RECT r;
+	m_trainBTN.r.clear();
+
+	RECT r;
 	for (int rowCnt = 0; rowCnt < m_trainBTN.rowCount; rowCnt++) {
 		for (int colCnt = 0; colCnt < m_trainBTN.colCount; colCnt++) {
 			r.left = m_trainBTN.xPos + colCnt * (m_trainBTN.width + m_trainBTN.spacing_W);
@@ -165,7 +167,7 @@ void CWordMemorizationDlg::OnInitTrainBuutton()
 
 			m_trainBTN.r.push_back(r);			
 		}
-	}*/
+	}
 }
 //--------------------------------------------------------------------------------------------
 
@@ -173,28 +175,25 @@ void CWordMemorizationDlg::OnDrawTrainButton(CDC *p_DC, CRect *p_R)
 {
 	for (int rowCnt = 0; rowCnt < m_trainBTN.rowCount; rowCnt++) {
 		for (int colCnt = 0; colCnt < m_trainBTN.colCount; colCnt++) {
-			p_R->left = m_trainBTN.xPos + colCnt * (m_trainBTN.width + m_trainBTN.spacing_W);
-			p_R->right = p_R->left + m_trainBTN.width;
-			p_R->top = m_trainBTN.yPos + rowCnt * m_trainBTN.spacing_H;
-			p_R->bottom = p_R->top + m_trainBTN.height;
 
 			int old_mode = p_DC->SetBkMode(TRANSPARENT);
 			CString str;
 			str.Format(L"Car0%d", colCnt);
 
 			if (1 == m_ClickedCarPos[rowCnt][colCnt]) {
-				p_DC->FillSolidRect(p_R/*&m_trainBTN.r[colCnt]*/, RGB(100, 200, 100)); // 연두색
-				p_DC->Draw3dRect(p_R, RGB(0, 0, 0), RGB(100, 200, 100));
+				p_DC->FillSolidRect(&m_trainBTN.r[colCnt], RGB(200, 200, 100)); // 연두색
+				p_DC->Draw3dRect(&m_trainBTN.r[colCnt], RGB(0, 0, 0), RGB(200, 200, 100));
 				p_DC->SetTextColor(RGB(255, 255, 255)); // 흰색
 
-				p_DC->DrawText(str, *p_R + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				p_DC->DrawText(str, (CRect)m_trainBTN.r[colCnt] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 			}
 			else {
-				p_DC->FillSolidRect(p_R/*&m_trainBTN.r[colCnt]*/, RGB(192, 192, 192)); // 회색
-				p_DC->Draw3dRect(p_R, RGB(192, 192, 192), RGB(0, 0, 0));
+				p_DC->FillSolidRect(&m_trainBTN.r[colCnt], RGB(192, 192, 192)); // 회색
+				p_DC->Draw3dRect(&m_trainBTN.r[colCnt], RGB(192, 192, 192), RGB(0, 0, 0));
 				p_DC->SetTextColor(RGB(0, 0, 0)); // 검정
 
-				p_DC->DrawText(str, p_R, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				p_DC->DrawText(str, &m_trainBTN.r[colCnt], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
 			}
 
 			// 배경을 이전 모드로 설정한다.
@@ -202,11 +201,11 @@ void CWordMemorizationDlg::OnDrawTrainButton(CDC *p_DC, CRect *p_R)
 		}
 	}
 
-	// train button 좌표 범위 저장.
-	m_CarButtonRange_StartX = m_trainBTN.xPos;
-	m_CarButtonRange_EndX = p_R->right;
-	m_CarButtonRange_StartY = m_trainBTN.yPos;
-	m_CarButtonRange_EndY = p_R->bottom;
+	//// train button 좌표 범위 저장.
+	//m_CarButtonRange_StartX = m_trainBTN.xPos;
+	//m_CarButtonRange_EndX = p_R->right;
+	//m_CarButtonRange_StartY = m_trainBTN.yPos;
+	//m_CarButtonRange_EndY = p_R->bottom;
 }
 //--------------------------------------------------------------------------------------------
 
@@ -308,7 +307,8 @@ void CWordMemorizationDlg::OnDestroy()
 		}
 		delete[] m_ClickedCarPos;		
 	}
-	//m_trainBTN.r.clear();
+	
+	m_trainBTN.r.clear();
 	//m_trainBTN.r.~vector();
 
 	if (mp_Form_Protocol != NULL)
@@ -550,47 +550,51 @@ pDC->SetBkMode(TRANSPARENT);
 void CWordMemorizationDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	unsigned int _col, _row;
-	if (point.x >= m_CarButtonRange_StartX && point.y <= m_CarButtonRange_EndY) { // car
-		// 120의 의미가 사각형의 폭을 말하며 사각형 폭 넓이 만큼 나눔.
-		// 35의 의미가 사각형의 높이를 말하며 사각형 높이 만큼 나눔.
-		_col = (unsigned int)(point.x - m_trainBTN.xPos) / m_trainBTN.width;
-		_row = (unsigned int)(point.y - m_trainBTN.yPos) / m_trainBTN.height;
 
+	if ((point.x > 20 && point.x < 120 && point.y > 20 && point.y < 45) ||
+		(point.x > 140 && point.x < 240 && point.y > 20 && point.y < 45) ||
+		(point.x > 260 && point.x < 360 && point.y > 20 && point.y < 45) ||
+		(point.x > 380 && point.x < 480 && point.y > 20 && point.y < 45) ||
+		(point.x > 500 && point.x < 600 && point.y > 20 && point.y < 45) ||
+		(point.x > 620 && point.x < 720 && point.y > 20 && point.y < 45) ||
+		(point.x > 740 && point.x < 840 && point.y > 20 && point.y < 45) ||
+		(point.x > 860 && point.x < 960 && point.y > 20 && point.y < 45) ) { // car
+
+		MessageBox(L"ok");
+		_col = 0;
+	
 		CClientDC dc(this);
 		CRect r;
 
+		//r.left r.right r.top r.bottom
+		
 		// train button
-		if ((_col < 8) && (_row == 0)) {
-			r.left = m_trainBTN.xPos + _col * (m_trainBTN.width + m_trainBTN.spacing_W);
-			r.right = r.left + m_trainBTN.width;
-			r.top = m_trainBTN.yPos + _row * m_trainBTN.spacing_H;
-			r.bottom = r.top + m_trainBTN.height;
+		//if ((_col < 8) && (_row == 0)) {
+		//	int old_mode = dc.SetBkMode(TRANSPARENT);
+		//	CString str;
+		//	str.Format(L"Car0%d", _col);
 
-			int old_mode = dc.SetBkMode(TRANSPARENT);
-			CString str;
-			str.Format(L"Car0%d", _col);
+		//	if (1 == m_ClickedCarPos[_row][_col]) { // 셀을 회색으로 채움
+		//		m_ClickedCarPos[_row][_col] = 0;
 
-			if (1 == m_ClickedCarPos[_row][_col]) { // 셀을 회색으로 채움
-				m_ClickedCarPos[_row][_col] = 0;
+		//		dc.FillSolidRect(r, RGB(192, 192, 192)); // 회색
+		//		dc.Draw3dRect(r, RGB(192, 192, 192), RGB(0, 0, 0));
+		//		dc.SetTextColor(RGB(0, 0, 0)); // 검정
+		//		dc.DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-				dc.FillSolidRect(r, RGB(192, 192, 192)); // 회색
-				dc.Draw3dRect(r, RGB(192, 192, 192), RGB(0, 0, 0));
-				dc.SetTextColor(RGB(0, 0, 0)); // 검정
-				dc.DrawText(str, r, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		//	}
+		//	else {
+		//		m_ClickedCarPos[0][_col] = 1;
 
-			}
-			else {
-				m_ClickedCarPos[0][_col] = 1;
+		//		dc.FillSolidRect(r, RGB(100, 200, 200)); // // 하늘색
+		//		dc.Draw3dRect(r, RGB(0, 0, 0), RGB(100, 200, 200));
+		//		dc.SetTextColor(RGB(255, 255, 255)); // 흰색
+		//		dc.DrawText(str, r + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		//	}
 
-				dc.FillSolidRect(r, RGB(100, 200, 200)); // // 하늘색
-				dc.Draw3dRect(r, RGB(0, 0, 0), RGB(100, 200, 200));
-				dc.SetTextColor(RGB(255, 255, 255)); // 흰색
-				dc.DrawText(str, r + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-			}
-
-			// 배경을 이전 모드로 설정한다.
-			dc.SetBkMode(old_mode);
-		}
+		//	// 배경을 이전 모드로 설정한다.
+		//	dc.SetBkMode(old_mode);
+		//}
 	}
 
 	CDialogEx::OnLButtonDown(nFlags, point);

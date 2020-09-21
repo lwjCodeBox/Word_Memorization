@@ -30,7 +30,7 @@ typedef struct TButtonRect
 	int spacing_H;// y 謝ル 除問    //int spacing_H = 10;   // y 謝ル 除問
 	int rowCount; // row 偎熱
 
-	//std::vector<RECT>/*::iterator */r;
+	std::vector<RECT>/*::iterator */r;
 	//std::vector<RECT>::iterator rr;
 	//RECT rect;
 }TButtonRect;
