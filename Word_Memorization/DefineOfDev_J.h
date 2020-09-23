@@ -1,7 +1,9 @@
 #pragma once
 
+#include <iostream>
 #include "libxl.h"
 #include <vector>
+#include <map>
 
 #define RCLICK_RGB		RGB(0, 255, 128)
 #define LDCLICK_RGB		RGB(255, 255, 204)
@@ -36,7 +38,12 @@ typedef struct TButtonRect
 }TButtonRect;
 //--------------------------------------------------------------------------------------------
 
+typedef struct TCaption
+{	
+	std::map<int, std::wstring> srcBTN_Caption{ {0, L"Protocol"}, {1, L"HeartBit"}, {2, L"DU Default"}, {3, L"MyNode"}, {4, L"SetMVB"} };
+}TCaption;
 //--------------------------------------------------------------------------------------------
+
 int binarySearch(WORD *data, int size, WORD d);
 bool IsBitCheck16(WORD a_Target, WORD a_BitPos);
 //--------------------------------------------------------------------------------------------

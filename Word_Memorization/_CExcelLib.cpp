@@ -96,7 +96,6 @@ bool _CExcelLib::Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data)
 
 		int readFcode = 0;
 
-		unsigned char buf[10][10];
 		unsigned char arr[5] = { 1,2,3,4,5 };
 
 		
@@ -104,7 +103,7 @@ bool _CExcelLib::Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data)
 		{		
 			for (int i = t_col_start; i < t_col_end + 1; i++)
 			{
-				readFcode = m_pSheet2->readNum(i, 5, &format);
+				readFcode = (int)m_pSheet2->readNum(i, 5, &format);
 				
 				if (readFcode != 0)
 				{
@@ -163,7 +162,7 @@ bool _CExcelLib::Load_logical_Port_Adrs()
 		{
 			for (int j = t_row_start; j*4 <= t_row_end; j++)
 			{
-				readFcode = m_pSheet2->readNum(i, j*4+1, &format); // fcode 위치 정보
+				readFcode = (int)m_pSheet2->readNum(i, j*4+1, &format); // fcode 위치 정보
 
 				if (readFcode != 0) {
 					str = m_pSheet2->readStr(i, j*4, &format); // addr

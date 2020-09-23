@@ -2,11 +2,12 @@
 // Word_MemorizationDlg.h : header file
 //
 
-#pragma once
+#pragma once  
 
 #include "_CExcelLib.h"
 #include <string.h>
 #include <vector>
+#include <map>
 
 #include "CSharedMemory.h"
 
@@ -31,20 +32,13 @@ private:
 	CForm_DuDefault_1 *mp_Form_DuDefault_1;
 	CForm_SetMVB      *mp_Form_SetMVB;
 
-	unsigned int m_CarButtonRange_StartX;
-	unsigned int m_CarButtonRange_EndX;
-	unsigned int m_CarButtonRange_StartY;
-	unsigned int m_CarButtonRange_EndY;
-
-	unsigned int m_ScreenButtonRange_StartX;
-	unsigned int m_ScreenButtonRange_EndX;
-	unsigned int m_ScreenButtonRange_StartY;
-	unsigned int m_ScreenButtonRange_EndY;
-
-	//unsigned char m_ClickedCarPos[8];
 	unsigned char **m_ClickedCarPos = NULL;
-	unsigned char m_ClickedScreenPos[5];
+	unsigned char **m_ClickedScreenPos = NULL;
+	
+	char m_oldClickedCarBTN = -1; // -1의 의미는 아무것도 선택한적 없었다는 의미.
+	char m_oldClickedScrBTN = -1; // -1의 의미는 아무것도 선택한적 없었다는 의미.
 
+	TCaption caption;
 // lwj
 public:
 	_CExcelLib *mp_Libxl;
@@ -90,7 +84,8 @@ private:
 	void OnDrawTrainButton(CDC *p_DC, CRect *p_R);
 	void OnDrawScreenButton(CDC *p_DC, CRect *p_R);
 
-	void OnInitTrainBuutton();
+	void OnInitTrainButton();
+	void OnInitScreenButton();
 
 // lwj
 public:
