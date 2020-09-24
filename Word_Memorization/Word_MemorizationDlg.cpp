@@ -69,7 +69,7 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 
 //--------------------------------------------------------------------------------------------
 	// Init Train Button Pos;	
-	m_trainBTN.xPos = 20;      // x 시작 좌표	
+	m_trainBTN.xPos = 40;      // x 시작 좌표	
 	m_trainBTN.width = 100;    // 폭 사이즈
 	m_trainBTN.spacing_W = 20; // x 좌표 간격
 	m_trainBTN.rowCount = 1;
@@ -92,12 +92,12 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	// Init Screen Button Pos;
 	m_scrBTN.xPos = 1110;      // x 시작 좌표	
 	m_scrBTN.width = 100;    // 폭 사이즈
-	m_scrBTN.spacing_W = 3; // x 좌표 간격
+	m_scrBTN.spacing_W = 0; // x 좌표 간격
 	m_scrBTN.rowCount = 5;
 
-	m_scrBTN.yPos = 60;      // y 시작 좌표	
+	m_scrBTN.yPos = 80;      // y 시작 좌표	
 	m_scrBTN.height = 25;    // 높이
-	m_scrBTN.spacing_H = 3;  // y 좌표 간격
+	m_scrBTN.spacing_H = 5;  // y 좌표 간격
 	m_scrBTN.colCount = 1;
 
 	OnInitScreenButton();
@@ -192,12 +192,12 @@ void CWordMemorizationDlg::OnDrawTrainButton(CDC *p_DC, CRect *p_R)
 
 	for (int rowCnt = 0; rowCnt < m_trainBTN.rowCount; rowCnt++) {
 		for (int colCnt = 0; colCnt < m_trainBTN.colCount; colCnt++) {
-
 			int old_mode = p_DC->SetBkMode(TRANSPARENT);
-			CString str;
-			str.Format(L"Car0%d", colCnt);
-
+						
 			pos = (m_trainBTN.colCount * rowCnt) + colCnt;
+			
+			CString str;
+			str.Format(L"Car0%d (%s)", colCnt, caption.trainBTN_Caption.at(colCnt).c_str());
 
 			if (1 == m_ClickedCarPos[rowCnt][colCnt]) {
 				p_DC->FillSolidRect(&m_trainBTN.r[pos], RGB(200, 200, 100)); // 연두색
@@ -227,8 +227,8 @@ void CWordMemorizationDlg::OnDrawScreenButton(CDC *p_DC, CRect *p_R)
 
 	for (int rowCnt = 0; rowCnt < m_scrBTN.rowCount; rowCnt++) {
 		for (int colCnt = 0; colCnt < m_scrBTN.colCount; colCnt++) {
-
 			int old_mode = p_DC->SetBkMode(TRANSPARENT);
+			
 			CString str;
 			str.Format(L"%s", caption.srcBTN_Caption.at(rowCnt).c_str());			
 
@@ -356,30 +356,27 @@ void CWordMemorizationDlg::ChangeScreen(UINT ID)
 {
 	CString msg = _T("");
 
-	switch (ID - IDC_SCREEN_PROTOCOL_BTN00)
+	switch (ID)
 	{
-	case 0:
-		AfxMessageBox(L"Protocol");
+	case 0: // Protocol
 		mp_Form_Protocol->ShowWindow(SW_SHOW);
 		mp_Form_HeartBit->ShowWindow(SW_HIDE);
 		mp_Form_DuDefault_1->ShowWindow(SW_HIDE);
 		mp_Form_SetMVB->ShowWindow(SW_HIDE);
 		break;
 
-	case 1:
-		//AfxMessageBox(L"Heartbit");
+	case 1: // Heartbit
 		mp_Form_Protocol->ShowWindow(SW_HIDE);
 		mp_Form_HeartBit->ShowWindow(SW_SHOW);
 		mp_Form_DuDefault_1->ShowWindow(SW_HIDE);
 		mp_Form_SetMVB->ShowWindow(SW_HIDE);
 		break;
 
-	case 2:
-		//AfxMessageBox(L"My Node");
+	case 2: // My Node
 		//SetMVBValue(0, 0, 1);
 		break;
 
-	case 3:
+	case 3: // DU Default
 		mp_Form_Protocol->ShowWindow(SW_HIDE);
 		mp_Form_HeartBit->ShowWindow(SW_HIDE);
 
@@ -389,8 +386,7 @@ void CWordMemorizationDlg::ChangeScreen(UINT ID)
 		mp_Form_SetMVB->ShowWindow(SW_HIDE);
 		break;
 
-	case 4:
-		//AfxMessageBox(L"Set MVB");
+	case 4: // Set MVB
 		mp_Form_Protocol->ShowWindow(SW_HIDE);
 		mp_Form_HeartBit->ShowWindow(SW_HIDE);
 		mp_Form_DuDefault_1->ShowWindow(SW_HIDE);
@@ -512,11 +508,11 @@ void CWordMemorizationDlg::Set08DataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Wo
 {
 	int port = binarySearch(mp_Libxl->mvb_Addr, 120, a_PortAddr); // 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다. // int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
 	port += mp_Libxl->m_totalNodeCnt * a_Node;
-	
-	if (!a_Pos)
-		memset(&(m_pData->data[port][a_Word * 2]), a_Data, 1);
-	else
-		memset(&(m_pData->data[port][a_Word * 2 + 1]), a_Data, 1);
+		
+	if (!a_Pos) // 0이면 상위(false), 1이면 하위(true) 		
+		memset(&(m_pData->data[port][a_Word * 2]), a_Data, 1); // 상위
+	else 
+		memset(&(m_pData->data[port][a_Word * 2 + 1]), a_Data, 1); // 하위
 }
 //--------------------------------------------------------------------------------------------
 
@@ -556,28 +552,44 @@ pDC->SetBkMode(TRANSPARENT);
 void CWordMemorizationDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	unsigned int _col = 0, _row = 0;
+	
+	// train button 범위 체크.	
+	bool bTrainBTN = false;	
+	char selectTrainBTN = -1;
+	for (int i = 0; i < m_trainBTN.colCount; i++) {
+		if (PtInRect(&m_trainBTN.r[i], point)/*m_trainBTN.r[i].PtInRect(point)*/) {
+			bTrainBTN = true;
+			selectTrainBTN = i;
+			break;
+		}
+	}
+	
+	// screen button 범위 체크.
+	bool bScrBTN = false;
+	char selectScrBTN = -1;
+	for (int i = 0; i < m_scrBTN.rowCount; i++) {
+		if (PtInRect(&m_scrBTN.r[i], point)/*m_scrBTN.r[i].PtInRect(point)*/) {			
+			bScrBTN = true;
+			selectScrBTN = i;
+			break;
+		}		
+	}
 
 	// train button
-	if ((point.y >= 20 && point.y <= 45) &&
-		((point.x >= 020 && point.x <= 120) || (point.x >= 140 && point.x <= 240) || (point.x >= 260 && point.x <= 360) ||
-		 (point.x >= 380 && point.x <= 480) || (point.x >= 500 && point.x <= 600) || (point.x >= 620 && point.x <= 720) ||
-		 (point.x >= 740 && point.x <= 840) || (point.x >= 860 && point.x < 960))) {
-
+	if (bTrainBTN) {
 		CClientDC dc(this);
-
-		_col = (unsigned int)point.x / (m_trainBTN.width + m_trainBTN.xPos);
 
 		int old_mode = dc.SetBkMode(TRANSPARENT);
 		CString str;
-		str.Format(L"Car0%d", _col);
+		str.Format(L"Car0%d (%s)", selectTrainBTN, caption.trainBTN_Caption.at(selectTrainBTN).c_str());
 
-		if (1 == m_ClickedCarPos[_row][_col]) {
-			m_ClickedCarPos[_row][_col] = 0;
+		if (1 == m_ClickedCarPos[_row][selectTrainBTN]) {
+			m_ClickedCarPos[_row][selectTrainBTN] = 0;
 
-			dc.FillSolidRect(&m_trainBTN.r[_col], RGB(192, 192, 192)); // 회색
-			dc.Draw3dRect(&m_trainBTN.r[_col], RGB(192, 192, 192), RGB(0, 0, 0));
+			dc.FillSolidRect(&m_trainBTN.r[selectTrainBTN], RGB(192, 192, 192)); // 회색
+			dc.Draw3dRect(&m_trainBTN.r[selectTrainBTN], RGB(192, 192, 192), RGB(0, 0, 0));
 			dc.SetTextColor(RGB(0, 0, 0)); // 검정
-			dc.DrawText(str, &m_trainBTN.r[_col], DT_CENTER | DT_VCENTER | DT_SINGLELINE);			
+			dc.DrawText(str, &m_trainBTN.r[selectTrainBTN], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 		}
 		else {
 			// 이전에 클릭했던 버튼이 있다면...
@@ -585,7 +597,7 @@ void CWordMemorizationDlg::OnLButtonDown(UINT nFlags, CPoint point)
 				int t_old_mode = dc.SetBkMode(TRANSPARENT);
 				
 				CString t_str;
-				t_str.Format(L"Car0%d", m_oldClickedCarBTN);
+				t_str.Format(L"Car0%d (%s)", m_oldClickedCarBTN, caption.trainBTN_Caption.at(m_oldClickedCarBTN).c_str());
 
 				m_ClickedCarPos[_row][m_oldClickedCarBTN] = 0;
 
@@ -597,22 +609,68 @@ void CWordMemorizationDlg::OnLButtonDown(UINT nFlags, CPoint point)
 				dc.SetBkMode(t_old_mode);
 			}
 
-			m_ClickedCarPos[0][_col] = 1;
+			m_ClickedCarPos[0][selectTrainBTN] = 1;
 
-			dc.FillSolidRect(&m_trainBTN.r[_col], RGB(100, 200, 200)); // // 하늘색
-			dc.Draw3dRect(&m_trainBTN.r[_col], RGB(0, 0, 0), RGB(100, 200, 200));
+			dc.FillSolidRect(&m_trainBTN.r[selectTrainBTN], RGB(100, 200, 200)); // 하늘색
+			dc.Draw3dRect(&m_trainBTN.r[selectTrainBTN], RGB(0, 0, 0), RGB(100, 200, 200));
 			dc.SetTextColor(RGB(255, 255, 255)); // 흰색
-			dc.DrawText(str, (CRect)m_trainBTN.r[_col] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			dc.DrawText(str, (CRect)m_trainBTN.r[selectTrainBTN] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 			
-			m_oldClickedCarBTN = _col;
+			m_oldClickedCarBTN = selectTrainBTN;
 		}
 
 		// 배경을 이전 모드로 설정한다.
 		dc.SetBkMode(old_mode);		
 	}
-	/*else if () {
-	여기서 부터 진행
-	}*/
+	else if (bScrBTN) {
+		CClientDC dc(this);
+
+		int old_mode = dc.SetBkMode(TRANSPARENT);
+		
+		CString str;
+		str.Format(L"%s", caption.srcBTN_Caption.at(selectScrBTN).c_str());
+
+		if (1 == m_ClickedScreenPos[selectScrBTN][_col]) {
+			m_ClickedScreenPos[selectScrBTN][_col] = 0;
+
+			dc.FillSolidRect(&m_scrBTN.r[selectScrBTN], RGB(192, 192, 192)); // 회색
+			dc.Draw3dRect(&m_scrBTN.r[selectScrBTN], RGB(192, 192, 192), RGB(0, 0, 0));
+			dc.SetTextColor(RGB(0, 0, 0)); // 검정
+			dc.DrawText(str, &m_scrBTN.r[selectScrBTN], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		}
+		else {
+			// 이전에 클릭했던 버튼이 있다면...
+			if (m_oldClickedScrBTN != -1) {
+				int t_old_mode = dc.SetBkMode(TRANSPARENT);
+
+				CString t_str;
+				t_str.Format(L"%s", caption.srcBTN_Caption.at(m_oldClickedScrBTN).c_str());
+
+				m_ClickedScreenPos[m_oldClickedScrBTN][_col] = 0;
+
+				dc.FillSolidRect(&m_scrBTN.r[m_oldClickedScrBTN], RGB(192, 192, 192)); // 회색
+				dc.Draw3dRect(&m_scrBTN.r[m_oldClickedScrBTN], RGB(192, 192, 192), RGB(0, 0, 0));
+				dc.SetTextColor(RGB(0, 0, 0)); // 검정
+				dc.DrawText(t_str, &m_scrBTN.r[m_oldClickedScrBTN], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+				dc.SetBkMode(t_old_mode);
+			}
+
+			m_ClickedScreenPos[selectScrBTN][_col] = 1;
+
+			dc.FillSolidRect(&m_scrBTN.r[selectScrBTN], RGB(100, 200, 200)); // 하늘색
+			dc.Draw3dRect(&m_scrBTN.r[selectScrBTN], RGB(0, 0, 0), RGB(100, 200, 200));
+			dc.SetTextColor(RGB(255, 255, 255)); // 흰색
+			dc.DrawText(str, (CRect)m_scrBTN.r[selectScrBTN] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+			m_oldClickedScrBTN = selectScrBTN;
+
+			ChangeScreen(selectScrBTN);
+		}
+
+		// 배경을 이전 모드로 설정한다.
+		dc.SetBkMode(old_mode);
+	}
 
 	CDialogEx::OnLButtonDown(nFlags, point);
 }

@@ -347,21 +347,21 @@ void _GFG::_GFG_SetMergeData(int a_GridRow, int a_GridColumn, WORD a_SetData, WO
 		//ap_grid->RedrawCell(a_GridRow, a_GridColumn);
 	}
 	else if (8 == mergeCount) {
-		unsigned char data = (unsigned char)a_SetData;
-		bool checkUpDonw = a_GridRow % 2; // 0이면 상위 1이면 하위
-				
-		if (0 != data)
+		unsigned char data = (unsigned char)a_SetData;		
+		bool checkUpDonw = a_GridRow % 2; // 0이면 상위(false), 1이면 하위(true)
+
+		if (0 != data)		
 			ap_grid->SetItemBkColour(a_GridRow, a_GridColumn, LIGHTYELLOW_COLOR);
 		else
 			ap_grid->SetItemBkColour(a_GridRow, a_GridColumn, WHITE_RGB);
-
+		
 		mainDlg->Set08DataToSM(a_portAddr, a_node, wordPos, checkUpDonw, data);
 
 		gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(a_GridRow, a_GridColumn, pSheet), data, data);
 		ap_grid->SetItemText(a_GridRow, a_GridColumn, gridText);				
 	}
 	else if (mergeCount >= 2 && mergeCount <= 7) {
-		WORD smData = mainDlg->GetByteDataFromSM(a_portAddr, a_node, a_GridRow - 2);
+		BYTE smData = mainDlg->GetByteDataFromSM(a_portAddr, a_node, a_GridRow - 2);
 		unsigned char data = (unsigned char)a_SetData;
 
 		if (mergeCount == 2 && data >= 4) {
@@ -388,12 +388,12 @@ void _GFG::_GFG_SetMergeData(int a_GridRow, int a_GridColumn, WORD a_SetData, WO
 
 		unsigned char move = colPos - mergeCount + 1;
 
-		unsigned char headData = smData >> colPos + move;
+		unsigned char headData = smData >> (colPos + move);
 		unsigned char bodyData = data;
 		unsigned char tailData = smData & ((int)pow(2, move) - 1);
 
-		smData = (headData << colPos + move) | (bodyData << move) | tailData;
-		
+		smData = (headData << (colPos + move)) | (bodyData << move) | tailData;
+				
 		if (0 != data)
 			ap_grid->SetItemBkColour(a_GridRow, a_GridColumn, AQUA_COLOR);
 		else

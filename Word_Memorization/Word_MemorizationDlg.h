@@ -38,6 +38,9 @@ private:
 	char m_oldClickedCarBTN = -1; // -1의 의미는 아무것도 선택한적 없었다는 의미.
 	char m_oldClickedScrBTN = -1; // -1의 의미는 아무것도 선택한적 없었다는 의미.
 
+	TButtonRect m_trainBTN;
+	TButtonRect m_scrBTN;
+
 	TCaption caption;
 // lwj
 public:
@@ -49,9 +52,6 @@ public:
 	// Shared Memory
 	CSharedMemory *m_sm; // For Allocating Shared Memory (Realtime Protocol)
 	TSharedMemory *m_pData; // Pointer of Shared Memory (Realtime Protocol)
-
-	TButtonRect m_trainBTN;
-	TButtonRect m_scrBTN;	
 
 // Construction
 public:
@@ -81,11 +81,11 @@ private:
 	afx_msg void ChangeScreen(UINT ID);
 	void CreateForm();
 
-	void OnDrawTrainButton(CDC *p_DC, CRect *p_R);
-	void OnDrawScreenButton(CDC *p_DC, CRect *p_R);
-
 	void OnInitTrainButton();
 	void OnInitScreenButton();
+
+	void OnDrawTrainButton(CDC *p_DC, CRect *p_R);
+	void OnDrawScreenButton(CDC *p_DC, CRect *p_R);
 
 // lwj
 public:
