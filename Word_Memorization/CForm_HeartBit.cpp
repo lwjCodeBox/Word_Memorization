@@ -26,6 +26,8 @@ void CForm_HeartBit::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CForm_HeartBit, CFormView)
+	ON_WM_PAINT()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -51,11 +53,58 @@ void CForm_HeartBit::Dump(CDumpContext& dc) const
 
 BOOL CForm_HeartBit::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext)
 {
-	// TODO: Add your specialized code here and/or call the base class
+	// fix Caption
+	fixCaption.xPos = 20;      // x 시작 좌표	
+	fixCaption.width = 100;    // 폭 사이즈
+	fixCaption.spacing_W = 20; // x 좌표 간격
+	fixCaption.rowCount = 1;
+
+	fixCaption.yPos = 20;      // y 시작 좌표	
+	fixCaption.height = 25;    // 높이
+	fixCaption.spacing_H = 0;  // y 좌표 간격
+	fixCaption.colCount = 8;
+
+	OnInitFixCaptionButton();
+
+	// Init HeartBit Button Pos;	
+	heartBitBTN.xPos = 20;      // x 시작 좌표	
+	heartBitBTN.width = 100;    // 폭 사이즈
+	heartBitBTN.spacing_W = 20; // x 좌표 간격
+	heartBitBTN.rowCount = 5;
+
+	heartBitBTN.yPos = 50;      // y 시작 좌표	
+	heartBitBTN.height = 25;    // 높이
+	heartBitBTN.spacing_H = 10;  // y 좌표 간격
+	heartBitBTN.colCount = 8;
+
+	OnInitHeartBitButton();
+
+	m_HB_ClickedPos = new unsigned char *[heartBitBTN.rowCount];
+
+	for (int i = 0; i < heartBitBTN.rowCount; i++) {
+		m_HB_ClickedPos[i] = new unsigned char[heartBitBTN.colCount];
+		memset(m_HB_ClickedPos[i], 0, sizeof(unsigned char) * heartBitBTN.colCount);
+
+	}
 
 	return CFormView::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
 }
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
+void CForm_HeartBit::OnDestroy()
+{
+	CFormView::OnDestroy();
+
+	// HeartBit Button	
+	if (m_HB_ClickedPos != NULL) {
+		for (int i = 0; i < heartBitBTN.rowCount; i++) {
+			delete[] m_HB_ClickedPos[i];
+			m_HB_ClickedPos[i] = NULL;
+		}
+		delete[] m_HB_ClickedPos;
+	}
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CForm_HeartBit::OnInitialUpdate()
 {
@@ -63,3 +112,105 @@ void CForm_HeartBit::OnInitialUpdate()
 
 	// TODO: Add your specialized code here and/or call the base class
 }
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+void CForm_HeartBit::OnPaint()
+{
+	CPaintDC dc(this);
+	CRect r;
+
+	OnDrawFixCaption(&dc, &r);
+	OnDrawHeartBitButton(&dc, &r);
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+void CForm_HeartBit::OnInitFixCaptionButton()
+{
+	fixCaption.r.clear();
+
+	RECT r;
+	for (int rowCnt = 0; rowCnt < fixCaption.rowCount; rowCnt++) {
+		for (int colCnt = 0; colCnt < fixCaption.colCount; colCnt++) {
+			r.left = fixCaption.xPos + colCnt * (fixCaption.width + fixCaption.spacing_W);
+			r.right = r.left + fixCaption.width;
+			r.top = fixCaption.yPos + rowCnt * (fixCaption.height + fixCaption.spacing_H);
+			r.bottom = r.top + fixCaption.height;
+
+			fixCaption.r.push_back(r);
+		}
+	}
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+void CForm_HeartBit::OnInitHeartBitButton()
+{
+	heartBitBTN.r.clear();
+
+	RECT r;
+	for (int rowCnt = 0; rowCnt < heartBitBTN.rowCount; rowCnt++) {
+		for (int colCnt = 0; colCnt < heartBitBTN.colCount; colCnt++) {
+			r.left = heartBitBTN.xPos + colCnt * (heartBitBTN.width + heartBitBTN.spacing_W);
+			r.right = r.left + heartBitBTN.width;
+			r.top = heartBitBTN.yPos + rowCnt * (heartBitBTN.height + heartBitBTN.spacing_H);
+			r.bottom = r.top + heartBitBTN.height;
+
+			heartBitBTN.r.push_back(r);
+		}
+	}
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+void CForm_HeartBit::OnDrawFixCaption(CDC *p_DC, CRect *p_R)
+{
+	for (int i = 0; i < fixCaption.colCount; i++) {
+		int old_mode = p_DC->SetBkMode(TRANSPARENT);
+
+		CString str;
+		str.Format(L"%s", caption.trainBTN_Caption.at(i).c_str());
+
+		//p_DC->FillSolidRect(&fixCaption.r[i], RGB(255, 255, 128)); 
+		//p_DC->Draw3dRect(&fixCaption.r[i], RGB(0, 0, 0), RGB(0, 0, 0));
+		p_DC->SetTextColor(RGB(0, 0, 128));
+
+		p_DC->DrawText(str, &fixCaption.r[i], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+
+		// 배경을 이전 모드로 설정한다.
+		p_DC->SetBkMode(old_mode);
+	}
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+void CForm_HeartBit::OnDrawHeartBitButton(CDC *p_DC, CRect *p_R)
+{
+	int pos = 0;
+
+	for (int rowCnt = 0; rowCnt < heartBitBTN.rowCount; rowCnt++) {
+		for (int colCnt = 0; colCnt < heartBitBTN.colCount; colCnt++) {
+			int old_mode = p_DC->SetBkMode(TRANSPARENT);
+
+			pos = (heartBitBTN.colCount * rowCnt) + colCnt;
+
+			CString str;
+			str.Format(L"Car0%d", colCnt);
+
+			if (1 == m_HB_ClickedPos[rowCnt][colCnt]) {
+				p_DC->FillSolidRect(&heartBitBTN.r[pos], RGB(200, 200, 100)); // 연두색
+				p_DC->Draw3dRect(&heartBitBTN.r[pos], RGB(0, 0, 0), RGB(200, 200, 100));
+				p_DC->SetTextColor(RGB(255, 255, 255)); // 흰색
+
+				p_DC->DrawText(str, (CRect)heartBitBTN.r[pos] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			}
+			else {
+				p_DC->FillSolidRect(&heartBitBTN.r[pos], RGB(192, 192, 192)); // 회색
+				p_DC->Draw3dRect(&heartBitBTN.r[pos], RGB(192, 192, 192), RGB(0, 0, 0));
+				p_DC->SetTextColor(RGB(0, 0, 0)); // 검정
+
+				p_DC->DrawText(str, &heartBitBTN.r[pos], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			}
+
+			// 배경을 이전 모드로 설정한다.
+			p_DC->SetBkMode(old_mode);
+		}
+	}
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

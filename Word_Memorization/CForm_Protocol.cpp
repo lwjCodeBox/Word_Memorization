@@ -29,6 +29,7 @@ BEGIN_MESSAGE_MAP(CForm_Protocol, CFormView)
 
 	ON_WM_PAINT()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -91,6 +92,21 @@ BOOL CForm_Protocol::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD
 	return CFormView::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
 }
 //--------------------------------------------------------------------------------------------
+
+void CForm_Protocol::OnDestroy()
+{
+	CFormView::OnDestroy();
+
+	// Protocol Button	
+	if (m_ClickedPos != NULL) {
+		for (int i = 0; i < protocolBTN.rowCount; i++) {
+			delete[] m_ClickedPos[i];
+			m_ClickedPos[i] = NULL;
+		}
+		delete[] m_ClickedPos;
+	}
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CForm_Protocol::OnInitialUpdate()
 {
@@ -207,3 +223,4 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 
 	CFormView::OnLButtonDown(nFlags, point);
 }
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

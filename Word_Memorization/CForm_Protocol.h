@@ -32,6 +32,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:	
+	// 어떤 버튼을 클릭 했는지 정보를 담고 있는 변수
 	unsigned char **m_ClickedPos = NULL;
 
 	TCaption caption;
@@ -51,6 +52,7 @@ public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnPaint();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnDestroy();
 };
 
 
