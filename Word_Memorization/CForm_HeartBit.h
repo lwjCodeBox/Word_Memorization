@@ -33,7 +33,7 @@ protected:
 
 private:
 	unsigned char **m_HB_ClickedPos = NULL;
-
+	
 	TCaption caption;
 
 	TButtonRect fixCaption;
@@ -51,6 +51,8 @@ public:
 	virtual void OnInitialUpdate();
 	afx_msg void OnPaint();
 	afx_msg void OnDestroy();
+	afx_msg BOOL OnEraseBkgnd(CDC *pDC);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 };
 
 

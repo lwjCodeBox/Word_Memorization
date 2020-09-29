@@ -28,6 +28,8 @@ void CForm_HeartBit::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CForm_HeartBit, CFormView)
 	ON_WM_PAINT()
 	ON_WM_DESTROY()
+	ON_WM_ERASEBKGND()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -54,7 +56,7 @@ void CForm_HeartBit::Dump(CDumpContext& dc) const
 BOOL CForm_HeartBit::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext)
 {
 	// fix Caption
-	fixCaption.xPos = 20;      // x 시작 좌표	
+	fixCaption.xPos = 65;      // x 시작 좌표	
 	fixCaption.width = 100;    // 폭 사이즈
 	fixCaption.spacing_W = 20; // x 좌표 간격
 	fixCaption.rowCount = 1;
@@ -67,13 +69,13 @@ BOOL CForm_HeartBit::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD
 	OnInitFixCaptionButton();
 
 	// Init HeartBit Button Pos;	
-	heartBitBTN.xPos = 20;      // x 시작 좌표	
+	heartBitBTN.xPos = 65;      // x 시작 좌표	
 	heartBitBTN.width = 100;    // 폭 사이즈
 	heartBitBTN.spacing_W = 20; // x 좌표 간격
-	heartBitBTN.rowCount = 5;
+	heartBitBTN.rowCount = 16;
 
 	heartBitBTN.yPos = 50;      // y 시작 좌표	
-	heartBitBTN.height = 25;    // 높이
+	heartBitBTN.height = 30;    // 높이
 	heartBitBTN.spacing_H = 10;  // y 좌표 간격
 	heartBitBTN.colCount = 8;
 
@@ -94,7 +96,7 @@ BOOL CForm_HeartBit::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD
 void CForm_HeartBit::OnDestroy()
 {
 	CFormView::OnDestroy();
-
+	
 	// HeartBit Button	
 	if (m_HB_ClickedPos != NULL) {
 		for (int i = 0; i < heartBitBTN.rowCount; i++) {
@@ -103,6 +105,9 @@ void CForm_HeartBit::OnDestroy()
 		}
 		delete[] m_HB_ClickedPos;
 	}
+	
+	fixCaption.r.clear();
+	heartBitBTN.r.clear();
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -170,7 +175,7 @@ void CForm_HeartBit::OnDrawFixCaption(CDC *p_DC, CRect *p_R)
 
 		//p_DC->FillSolidRect(&fixCaption.r[i], RGB(255, 255, 128)); 
 		//p_DC->Draw3dRect(&fixCaption.r[i], RGB(0, 0, 0), RGB(0, 0, 0));
-		p_DC->SetTextColor(RGB(0, 0, 128));
+		p_DC->SetTextColor(RGB(0, 200, 255));
 
 		p_DC->DrawText(str, &fixCaption.r[i], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
@@ -185,32 +190,131 @@ void CForm_HeartBit::OnDrawHeartBitButton(CDC *p_DC, CRect *p_R)
 	int pos = 0;
 
 	for (int rowCnt = 0; rowCnt < heartBitBTN.rowCount; rowCnt++) {
-		for (int colCnt = 0; colCnt < heartBitBTN.colCount; colCnt++) {
-			int old_mode = p_DC->SetBkMode(TRANSPARENT);
-
+		for (int colCnt = 0; colCnt < heartBitBTN.colCount; colCnt++) {		
 			pos = (heartBitBTN.colCount * rowCnt) + colCnt;
 
 			CString str;
-			str.Format(L"Car0%d", colCnt);
-
-			if (1 == m_HB_ClickedPos[rowCnt][colCnt]) {
-				p_DC->FillSolidRect(&heartBitBTN.r[pos], RGB(200, 200, 100)); // 연두색
-				p_DC->Draw3dRect(&heartBitBTN.r[pos], RGB(0, 0, 0), RGB(200, 200, 100));
-				p_DC->SetTextColor(RGB(255, 255, 255)); // 흰색
-
-				p_DC->DrawText(str, (CRect)heartBitBTN.r[pos] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			str.Format(L"%s", caption.HB_BTN_Caption.at(pos).c_str());			
+			if (!str.Compare(L"*")) {
+				// empth
 			}
 			else {
-				p_DC->FillSolidRect(&heartBitBTN.r[pos], RGB(192, 192, 192)); // 회색
-				p_DC->Draw3dRect(&heartBitBTN.r[pos], RGB(192, 192, 192), RGB(0, 0, 0));
-				p_DC->SetTextColor(RGB(0, 0, 0)); // 검정
+				int old_mode = p_DC->SetBkMode(TRANSPARENT);
 
-				p_DC->DrawText(str, &heartBitBTN.r[pos], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				if (1 == m_HB_ClickedPos[rowCnt][colCnt]) {
+					p_DC->FillSolidRect(&heartBitBTN.r[pos], RGB(0, 50, 128)); // 눌림.
+					p_DC->Draw3dRect(&heartBitBTN.r[pos], RGB(0, 200, 255), RGB(0, 0, 0));
+					p_DC->SetTextColor(RGB(255, 255, 255));
+
+					p_DC->DrawText(str, (CRect)heartBitBTN.r[pos] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				}
+				else {					
+					p_DC->FillSolidRect(&heartBitBTN.r[pos], RGB(192, 192, 192)); // 안눌림.							
+					p_DC->Draw3dRect(&heartBitBTN.r[pos], RGB(255, 255, 255), RGB(255, 255, 255));
+					p_DC->SetTextColor(RGB(0, 0, 0));
+
+					p_DC->DrawText(str, &heartBitBTN.r[pos], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				}
+
+				// 배경을 이전 모드로 설정한다.
+				p_DC->SetBkMode(old_mode);
 			}
-
-			// 배경을 이전 모드로 설정한다.
-			p_DC->SetBkMode(old_mode);
 		}
 	}
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+BOOL CForm_HeartBit::OnEraseBkgnd(CDC *pDC)
+{
+	CRect rect;
+	GetClientRect(rect);
+	pDC->FillSolidRect(rect, RGB(0, 0, 0));
+	pDC->Draw3dRect(rect, RGB(0, 0, 0), RGB(0, 0, 0));
+
+	return true;	
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	unsigned int _col = 0, _row = 0;
+
+	// HeartBit button 범위 체크.	
+	bool bHeartBitBTN = false;
+	short click_HB_BTN = -1;
+	short pos = 0;
+
+	for (int rowCnt = 0; rowCnt < heartBitBTN.rowCount; rowCnt++) {
+		for (int colCnt = 0; colCnt < heartBitBTN.colCount; colCnt++) {	
+			pos = (heartBitBTN.colCount * rowCnt) + colCnt;
+			
+			if (PtInRect(&heartBitBTN.r[pos], point)) {
+				CString str;
+				try { str.Format(L"%s", caption.HB_BTN_Caption.at(pos).c_str()); }
+				catch (std::out_of_range &e) { AfxMessageBox(L"Catch the std::out_of_range"); }
+
+				if (!str.Compare(L"*")) {
+					return;
+				}				
+				bHeartBitBTN = true;
+				click_HB_BTN = pos;								
+			}			
+		}
+	}
+
+	/*for (int i = 0; i < heartBitBTN.colCount; i++) {
+		if (PtInRect(&heartBitBTN.r[i], point)) {
+			bHeartBitBTN = true;
+			click_HB_BTN = i;
+			break;
+		}
+	}*/
+	
+	// HeartBit button
+	if (bHeartBitBTN) {
+		CClientDC dc(this);
+
+		int old_mode = dc.SetBkMode(TRANSPARENT);
+		CString str;
+		str.Format(L"%s", caption.HB_BTN_Caption.at(click_HB_BTN).c_str());
+		
+				
+		if (1 == m_HB_ClickedPos[_row][click_HB_BTN]) {
+			m_HB_ClickedPos[_row][click_HB_BTN] = 0; 
+
+			dc.FillSolidRect(&heartBitBTN.r[click_HB_BTN], RGB(192, 192, 192)); // 안눌림.							
+			dc.Draw3dRect(&heartBitBTN.r[click_HB_BTN], RGB(255, 255, 255), RGB(255, 255, 255));
+			dc.SetTextColor(RGB(0, 0, 0));
+
+			dc.DrawText(str, &heartBitBTN.r[click_HB_BTN], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			TRACE(L"1->0 click_HB_BTN >> %d\n", click_HB_BTN);
+			//dc.FillSolidRect(&heartBitBTN.r[click_HB_BTN], RGB(192, 192, 192)); // 회색
+			//dc.Draw3dRect(&heartBitBTN.r[click_HB_BTN], RGB(192, 192, 192), RGB(0, 0, 0));
+			//dc.SetTextColor(RGB(0, 0, 0)); // 검정
+			//dc.DrawText(str, &heartBitBTN.r[click_HB_BTN], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		}
+		else {		
+			m_HB_ClickedPos[_row][click_HB_BTN] = 1;
+
+			dc.FillSolidRect(&heartBitBTN.r[click_HB_BTN], RGB(0, 50, 128)); // 눌림.
+			dc.Draw3dRect(&heartBitBTN.r[click_HB_BTN], RGB(0, 200, 255), RGB(0, 0, 0));
+			dc.SetTextColor(RGB(255, 255, 255));
+
+			dc.DrawText(str, (CRect)heartBitBTN.r[click_HB_BTN] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			TRACE(L"0->1 click_HB_BTN >> %d\n", click_HB_BTN);
+			//dc.FillSolidRect(&heartBitBTN.r[click_HB_BTN], RGB(100, 200, 200)); // 하늘색
+			//dc.Draw3dRect(&heartBitBTN.r[click_HB_BTN], RGB(0, 0, 0), RGB(100, 200, 200));
+			//dc.SetTextColor(RGB(255, 255, 255)); // 흰색
+			//dc.DrawText(str, (CRect)heartBitBTN.r[click_HB_BTN] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);			
+		}
+
+		// 배경을 이전 모드로 설정한다.
+		dc.SetBkMode(old_mode);
+	}
+	else {
+		return;
+	}
+
+	CFormView::OnLButtonDown(nFlags, point);
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

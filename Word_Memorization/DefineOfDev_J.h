@@ -40,9 +40,43 @@ typedef struct TButtonRect
 
 typedef struct TCaption
 {	
+	// Train Caption.
 	std::map<int, std::wstring> trainBTN_Caption{ {0, L"aDTC"}, {1, L"aMC1"}, {2, L"aMC2"}, {3, L"aMCI"}, 
 												  {4, L"bMCI"}, {5, L"bMC2"}, {6, L"bMC1"}, {7, L"bDTC"} };
+	// Main Screen Button Caption.
 	std::map<int, std::wstring> srcBTN_Caption{ {0, L"Protocol"}, {1, L"HeartBit"}, {2, L"DU Default"}, {3, L"MyNode"}, {4, L"SetMVB"} };
+	// HeartBit Screen Button Caption.
+	std::map<int, std::wstring> HB_BTN_Caption{ // *의 의미는 사용하지 않는 버튼이라는 의미이다. 
+		// VAC
+		{ 0, L"VAC1"}, { 1, L"VAC3"}, { 2, L"VAC1"}, { 3, L"VAC3"}, { 4, L"VAC3"}, { 5, L"VAC1"}, { 6, L"VAC3"}, { 7, L"VAC1"}, 
+		{ 8, L"VAC2"}, { 9, L"VAC4"}, {10, L"VAC2"}, {11, L"VAC4"}, {12, L"VAC4"}, {13, L"VAC2"}, {14, L"VAC4"}, {15, L"VAC2"},
+		// DCU
+		{16, L"LDCU1"}, {17, L"LDCU2"}, {18, L"LDCU1"}, {19, L"LDCU2"}, {20, L"LDCU2"}, {21, L"LDCU1"}, {22, L"LDCU2"}, {23, L"LDCU1"},
+		{24, L"RDCU1"}, {25, L"RDCU2"}, {26, L"RDCU1"}, {27, L"RDCU2"}, {28, L"RDCU2"}, {29, L"RDCU1"}, {30, L"RDCU2"}, {31, L"RDCU1"},
+		// ECU
+		{32, L"ECU1"}, {33, L"ECU3"}, {34, L"ECU1"}, {35, L"ECU3"}, {36, L"ECU3"}, {37, L"ECU1"}, {38, L"ECU3"}, {39, L"ECU1"},
+		{40, L"ECU2"}, {41, L"ECU4"}, {42, L"ECU2"}, {43, L"ECU4"}, {44, L"ECU4"}, {45, L"ECU2"}, {46, L"ECU4"}, {47, L"ECU2"},
+		// VVVF
+		{48, L"*"}, {49, L"VVVF3"}, {50, L"VVVF1"}, {51, L"VVVF3"}, {52, L"VVVF3"}, {53, L"VVVF1"}, {54, L"VVVF3"}, {55, L"*"},
+		{56, L"*"}, {57, L"VVVF4"}, {58, L"VVVF2"}, {59, L"VVVF4"}, {60, L"VVVF4"}, {61, L"VVVF2"}, {62, L"VVVF4"}, {63, L"*"},
+		// AAU
+		{64, L"AAU"}, {65, L"*"}, {66, L"*"}, {67, L"*"}, {68, L"*"}, {69, L"*"}, {70, L"*"}, {71, L"AAU"},
+		// CCTV
+		{72, L"CCTV"}, {73, L"*"}, {74, L"*"}, {75, L"*"}, {76, L"*"}, {77, L"*"}, {78, L"*"}, {79, L"CCTV"},
+		// FDU
+		{80, L"FDU"}, {81, L"*"}, {82, L"*"}, {83, L"*"}, {84, L"*"}, {85, L"*"}, {86, L"*"}, {87, L"FDU"},
+		// APU
+		{88, L"APU1"}, {89, L"*"}, {90, L"*"}, {91, L"*"}, {92, L"*"}, {93, L"*"}, {94, L"*"}, {95, L"APU1"},
+		{96, L"APU2"}, {97, L"*"}, {98, L"*"}, {99, L"*"}, {100, L"*"}, {101, L"*"}, {102, L"*"}, {103, L"APU2"},
+		// RADIO
+		{104, L"RADIO"}, {105, L"*"}, {106, L"*"}, {107, L"*"}, {108, L"*"}, {109, L"*"}, {110, L"*"}, {111, L"RADIO"},
+		// ATC
+		{112, L"ATC"}, {113, L"*"}, {114, L"*"}, {115, L"*"}, {116, L"*"}, {117, L"*"}, {118, L"*"}, {119, L"ATC"},
+		// EVR
+		{120, L"EVR"}, {121, L"*"}, {122, L"*"}, {123, L"*"}, {124, L"*"}, {125, L"*"}, {126, L"*"}, {127, L"EVR"},
+		// BC
+		{128, L"*"}, {129, L"BC1"}, {130, L"BC2"}, {131, L"*"}, {132, L"*"}, {133, L"BC2"}, {134, L"BC1"}, {135, L"*"}
+	};
 }TCaption;
 //--------------------------------------------------------------------------------------------
 
