@@ -39,6 +39,9 @@ private:
 	TButtonRect fixCaption;
 	TButtonRect heartBitBTN;
 
+	HANDLE hThread = NULL;
+	DWORD dwThreadID = NULL;
+
 private:
 	void OnInitFixCaptionButton();
 	void OnInitHeartBitButton();
