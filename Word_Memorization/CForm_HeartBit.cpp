@@ -296,9 +296,9 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 
 			// add 2020.10.05
 			// main 쓰레드가 종료하면 워커쓰레드도 종료하므로 무한 대기하게 한다
-			WaitForSingleObject(hThread, INFINITE);
+			WaitForMultipleObjects(MAXTHREAD, m_pThread[click_HB_BTN], TRUE, 50000);
 		}
-		else {		
+		else {
 			m_HB_ClickedPos[_row][_col] = true;
 
 			dc.FillSolidRect(&heartBitBTN.r[click_HB_BTN], RGB(0, 50, 128)); // 눌림.
@@ -308,26 +308,12 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 			dc.DrawText(str, (CRect)heartBitBTN.r[click_HB_BTN] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 			// add 2020.10.05
-			//AfxBeginThread(WorkerThread, this);
-						
-			_beginthreadex(NULL, 0, WorkerThread, NULL, 0, (unsigned *)&dwThreadID);
-			
-			if (hThread == 0) TRACE("_beginthreadex Error\n\n");
-
-		
+			//m_pThread[click_HB_BTN] = AfxBeginThread(WorkerThread, this);
+			AfxBeginThread(WorkerThread, this);
 		}
 
 		// 배경을 이전 모드로 설정한다.
-		dc.SetBkMode(old_mode);
-
-		//// add 2020.10.05
-		//clock_t start, finish;
-		//double duration;
-		//DWORD threadId;
-		//HANDLE hThrd[MAXTHREAD];
-
-		//int i;
-		//start = clock();//현재 시간 반환
+		dc.SetBkMode(old_mode);			
 
 		//for (i = 0; i < MAXTHREAD; i++) {
 		//	hThrd[i] = CreateThread(NULL,
@@ -341,16 +327,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 		//WaitForMultipleObjects(MAXTHREAD, hThrd, TRUE, INFINITE);
 		//for (i = 0; i < MAXTHREAD; i++) {
 		//	CloseHandle(hThrd[i]);
-		//}
-		////종료
-		//finish = clock();
-		//duration = (double)(finish - start) / CLOCKS_PER_SEC;
-
-		//CString threadSTR;
-		//threadSTR.Format(L"%f 초입니다", duration);
-		//AfxMessageBox(threadSTR);
-		////printf("%f 초입니다\n", duration);
-		//return;
+		//}				
 	}	
 
 	CFormView::OnLButtonDown(nFlags, point);

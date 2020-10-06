@@ -42,6 +42,9 @@ private:
 	HANDLE hThread = NULL;
 	DWORD dwThreadID = NULL;
 
+	//CWinThread *m_pThread[10];
+	HANDLE *m_pThread[10];
+
 private:
 	void OnInitFixCaptionButton();
 	void OnInitHeartBitButton();

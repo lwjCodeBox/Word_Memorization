@@ -95,5 +95,5 @@ void TrainButtonPos(int a_StartPos, int a_RowCount, int a_ColCount);
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 // Thread
-UINT WINAPI WorkerThread(LPVOID lParam);
+UINT WorkerThread(LPVOID lParam);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

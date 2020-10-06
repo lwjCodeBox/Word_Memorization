@@ -58,13 +58,13 @@ void TrainButtonPos(int a_StartPos, int a_RowCount, int a_ColCount)
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-UINT WINAPI WorkerThread(LPVOID lParam)   //Thread를호출한클래스의주소값을받는다
+UINT WorkerThread(LPVOID lParam)   //Thread를호출한클래스의주소값을받는다
 {
 	//CThreadDlg *dlg = (CThreadDlg *)lParam; //호출한클래스의포인터객체생성
 	int per = 0;
 
-	for (int i = 0; i < 100; i++) { //0부터999까지1000번의루프를실행하며
-		Sleep(1);
+	for (int i = 0; i < 1000; i++) { //0부터999까지1000번의루프를실행하며
+		Sleep(500);
 		//dlg->m_progressWT.SetPos(i);       //프로그레스바를수정
 		
 		if (i % 10 == 0) {
