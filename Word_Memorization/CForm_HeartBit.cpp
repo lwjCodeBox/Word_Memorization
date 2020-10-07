@@ -178,6 +178,20 @@ void CForm_HeartBit::OnDrawFixCaption(CDC *p_DC, CRect *p_R)
 		CString str;
 		str.Format(L"%s", caption.trainBTN_Caption.at(i).c_str());
 
+		// 글꼴 객체 선언
+		CFont font;
+
+		// 원하는 그림을 그리기 위해 DC를 얻는다.
+		//CClientDC dc(this);
+
+		// 원하는 속성을 지정하여 글꼴을 생성한다.
+		font.CreateFont(18, 0, 0, 0, FW_BOLD, 0, 0, 0, DEFAULT_CHARSET,
+			OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+			DEFAULT_PITCH | FF_SWISS, L"맑은 고딕");
+
+		// 생성된 글꼴을 사용하여 문자열을 출력하기 위해 해당 글꼴을 DC에 연결한다.
+		p_DC->SelectObject(&font);
+
 		//p_DC->FillSolidRect(&fixCaption.r[i], RGB(255, 255, 128)); 
 		//p_DC->Draw3dRect(&fixCaption.r[i], RGB(0, 0, 0), RGB(0, 0, 0));
 		p_DC->SetTextColor(RGB(0, 255, 255));
@@ -186,6 +200,9 @@ void CForm_HeartBit::OnDrawFixCaption(CDC *p_DC, CRect *p_R)
 
 		// 배경을 이전 모드로 설정한다.
 		p_DC->SetBkMode(old_mode);
+
+		// 글꼴 객체를 제거한다.
+		font.DeleteObject();
 	}
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -206,6 +223,20 @@ void CForm_HeartBit::OnDrawHeartBitButton(CDC *p_DC, CRect *p_R)
 			else {
 				int old_mode = p_DC->SetBkMode(TRANSPARENT);
 
+				// 글꼴 객체 선언
+				CFont font;
+
+				// 원하는 그림을 그리기 위해 DC를 얻는다.
+				//CClientDC dc(this);
+
+				// 원하는 속성을 지정하여 글꼴을 생성한다.
+				font.CreateFont(18, 0, 0, 0, FW_BOLD, 0, 0, 0, DEFAULT_CHARSET,
+					OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+					DEFAULT_PITCH | FF_SWISS, L"맑은 고딕");
+
+				// 생성된 글꼴을 사용하여 문자열을 출력하기 위해 해당 글꼴을 DC에 연결한다.
+				p_DC->SelectObject(&font);
+
 				if (1 == m_HB_ClickedPos[rowCnt][colCnt]) {
 					p_DC->FillSolidRect(&heartBitBTN.r[pos], RGB(0, 50, 128)); // 눌림.
 					p_DC->Draw3dRect(&heartBitBTN.r[pos], RGB(0, 200, 255), RGB(0, 0, 0));
@@ -223,6 +254,9 @@ void CForm_HeartBit::OnDrawHeartBitButton(CDC *p_DC, CRect *p_R)
 
 				// 배경을 이전 모드로 설정한다.
 				p_DC->SetBkMode(old_mode);
+
+				// 글꼴 객체를 제거한다.
+				font.DeleteObject();
 			}
 		}
 	}
@@ -279,12 +313,24 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 	
 	// HeartBit button
 	if (bHeartBitBTN) {
+		// 글꼴 객체 선언
+		CFont font;
+
+		// 원하는 그림을 그리기 위해 DC를 얻는다.
 		CClientDC dc(this);
+
+		// 원하는 속성을 지정하여 글꼴을 생성한다.
+		font.CreateFont(18, 0, 0, 0, FW_BOLD, 0, 0, 0, DEFAULT_CHARSET,
+			OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+			DEFAULT_PITCH | FF_SWISS, L"맑은 고딕");
+
+		// 생성된 글꼴을 사용하여 문자열을 출력하기 위해 해당 글꼴을 DC에 연결한다.
+		dc.SelectObject(&font);
 
 		int old_mode = dc.SetBkMode(TRANSPARENT);
 		CString str;
-		str.Format(L"%s", caption.HB_BTN_Caption.at(click_HB_BTN).c_str());
-		
+		str.Format(L"%s", caption.HB_BTN_Caption.at(click_HB_BTN).c_str());		
+
 		if (1 == m_HB_ClickedPos[_row][_col]) {
 			m_HB_ClickedPos[_row][_col] = false;
 
@@ -296,7 +342,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 
 			// add 2020.10.05
 			// main 쓰레드가 종료하면 워커쓰레드도 종료하므로 무한 대기하게 한다
-			WaitForMultipleObjects(MAXTHREAD, m_pThread[click_HB_BTN], TRUE, 50000);
+			//WaitForMultipleObjects(MAXTHREAD, m_pThread[click_HB_BTN], TRUE, 50000);
 		}
 		else {
 			m_HB_ClickedPos[_row][_col] = true;
@@ -309,8 +355,11 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 
 			// add 2020.10.05
 			//m_pThread[click_HB_BTN] = AfxBeginThread(WorkerThread, this);
-			AfxBeginThread(WorkerThread, this);
+			//AfxBeginThread(WorkerThread, this);
 		}
+
+		// 글꼴 객체를 제거한다.
+		font.DeleteObject();
 
 		// 배경을 이전 모드로 설정한다.
 		dc.SetBkMode(old_mode);			
