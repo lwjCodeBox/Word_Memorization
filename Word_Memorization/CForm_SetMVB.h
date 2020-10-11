@@ -52,6 +52,20 @@ private:
 
 	unsigned short m_HeartBit_0, m_HeartBit_1, m_HeartBit_2, m_HeartBit_3;
 
+
+	// Timer value
+	WORD number_00;
+	WORD hb_00 = 0;
+
+	WORD number_01;
+	WORD hb_01 = 0;
+
+	WORD number_02;
+	WORD hb_02 = 0;
+
+	WORD number_03;
+	WORD hb_03 = 0;
+
 private:
 	void TiemerStart(UINT ID);
 	void TimerStop(UINT ID);
@@ -64,6 +78,14 @@ public:
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton3();
 	virtual BOOL DestroyWindow();
+	afx_msg void OnBnClickedButton4();
+	afx_msg void OnBnClickedButton5();
+	afx_msg void OnBnClickedButton6();
+	afx_msg void OnBnClickedButton7();
+	afx_msg void OnBnClickedButton9();
+	afx_msg void OnBnClickedButton11();
+	afx_msg void OnBnClickedButton12();
+	afx_msg void OnBnClickedButton13();
 };
 
 

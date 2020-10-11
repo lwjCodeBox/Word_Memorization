@@ -49,6 +49,14 @@ BEGIN_MESSAGE_MAP(CForm_SetMVB, CFormView)
 	ON_COMMAND_RANGE(IDC_SETMVB_TM_STOP_0, IDC_SETMVB_TM_STOP_3, TimerStop)
 	ON_BN_CLICKED(IDC_BUTTON2, &CForm_SetMVB::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &CForm_SetMVB::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON4, &CForm_SetMVB::OnBnClickedButton4)
+	ON_BN_CLICKED(IDC_BUTTON5, &CForm_SetMVB::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_BUTTON6, &CForm_SetMVB::OnBnClickedButton6)
+	ON_BN_CLICKED(IDC_BUTTON7, &CForm_SetMVB::OnBnClickedButton7)
+	ON_BN_CLICKED(IDC_BUTTON9, &CForm_SetMVB::OnBnClickedButton9)
+	ON_BN_CLICKED(IDC_BUTTON11, &CForm_SetMVB::OnBnClickedButton11)
+	ON_BN_CLICKED(IDC_BUTTON12, &CForm_SetMVB::OnBnClickedButton12)
+	ON_BN_CLICKED(IDC_BUTTON13, &CForm_SetMVB::OnBnClickedButton13)
 END_MESSAGE_MAP()
 
 
@@ -131,7 +139,7 @@ void CForm_SetMVB::OnBnClickedButton1()
 
 }
 
-
+// Å¸ÀÌ¸Ó...
 void CForm_SetMVB::OnTimer(UINT_PTR nIDEvent)
 {
 	unsigned int port;
@@ -145,8 +153,8 @@ void CForm_SetMVB::OnTimer(UINT_PTR nIDEvent)
 		if (m_HeartBit_0 != 0xFFFF) {
 			m_HeartBit_0++;
 
-			mp_FormMainDlg->SetMVBHeartBit(port, m_HeartBit_0);
-			//memset(&(mp_FormMainDlg->m_pData->data[port][0]), m_HeartBit_0, 2);
+			//mp_FormMainDlg->SetMVBHeartBit(port, m_HeartBit_0);
+			memset(&(mp_FormMainDlg->m_pData->data[port][1]), m_HeartBit_0, 1);
 		}
 		else
 			m_HeartBit_0 = 0;
@@ -160,7 +168,7 @@ void CForm_SetMVB::OnTimer(UINT_PTR nIDEvent)
 			m_HeartBit_1++;
 
 			//mp_FormMainDlg->SetMVBHeartBit(port, m_HeartBit_1);
-			memset(&(mp_FormMainDlg->m_pData->data[port][0]), m_HeartBit_1, 2);
+			memset(&(mp_FormMainDlg->m_pData->data[port][1]), m_HeartBit_1, 1);
 		}
 		else
 			m_HeartBit_1 = 0;
@@ -173,8 +181,8 @@ void CForm_SetMVB::OnTimer(UINT_PTR nIDEvent)
 		if (m_HeartBit_2 != 0xFFFF) {
 			m_HeartBit_2++;
 
-			mp_FormMainDlg->SetMVBHeartBit(port, m_HeartBit_2);
-			//memset(&(mp_FormMainDlg->m_pData->data[port][0]), m_HeartBit_2, 2);
+			//mp_FormMainDlg->SetMVBHeartBit(port, m_HeartBit_2);
+			memset(&(mp_FormMainDlg->m_pData->data[port][1]), m_HeartBit_2, 1);
 		}
 		else
 			m_HeartBit_2 = 0;
@@ -187,20 +195,69 @@ void CForm_SetMVB::OnTimer(UINT_PTR nIDEvent)
 		if (m_HeartBit_3 != 0xFFFF) {
 			m_HeartBit_3++;
 
-			mp_FormMainDlg->SetMVBHeartBit15(port, m_HeartBit_3);
-			//memset(&(mp_FormMainDlg->m_pData->data[port][0]), m_HeartBit_3, 2);
+			//mp_FormMainDlg->SetMVBHeartBit15(port, m_HeartBit_3);
+			memset(&(mp_FormMainDlg->m_pData->data[port][1]), m_HeartBit_3, 1);
 		}
 		else
 			m_HeartBit_3 = 0;
 
 		break;
+
+	case 10:
+		if (hb_00 != 0xFFFF) {
+			hb_00++;
+
+			//mp_FormMainDlg->SetMVBHeartBit15(port, m_HeartBit_3);
+			memset(&(mp_FormMainDlg->m_pData->data[number_00][1]), hb_00, 1);
+		}
+		else
+			hb_00 = 0;
+
+		break;
+
+	case 11:
+		if (hb_01 != 0xFFFF) {
+			hb_01++;
+
+			//mp_FormMainDlg->SetMVBHeartBit15(port, m_HeartBit_3);
+			memset(&(mp_FormMainDlg->m_pData->data[number_01][1]), hb_01, 1);
+		}
+		else
+			hb_01 = 0;
+
+		break;
+
+	case 12:
+		if (hb_02 != 0xFFFF) {
+			hb_02++;
+
+			//mp_FormMainDlg->SetMVBHeartBit15(port, m_HeartBit_3);
+			memset(&(mp_FormMainDlg->m_pData->data[number_02][1]), hb_02, 1);
+		}
+		else
+			hb_02 = 0;
+
+		break;
+
+	case 13:
+		if (hb_03 != 0xFFFF) {
+			hb_03++;
+
+			//mp_FormMainDlg->SetMVBHeartBit15(port, m_HeartBit_3);
+			memset(&(mp_FormMainDlg->m_pData->data[number_03][1]), hb_03, 1);
+		}
+		else
+			hb_03 = 0;
+
+		break;
+
 	}
 
 	mp_FormMainDlg = NULL;
 
 	CFormView::OnTimer(nIDEvent);
-}
 
+}
 
 void CForm_SetMVB::TiemerStart(UINT ID)
 {
@@ -413,3 +470,54 @@ void CForm_SetMVB::On_GFG_GridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 	mainDlg = NULL;
 }
 //--------------------------------------------------------------------------------------------
+
+
+
+void CForm_SetMVB::OnBnClickedButton4()
+{
+	number_00 = GetDlgItemInt(IDC_ADDR_00); 
+	SetTimer(10, 500, NULL);
+}
+
+void CForm_SetMVB::OnBnClickedButton5()
+{
+	KillTimer(10);
+}
+
+
+void CForm_SetMVB::OnBnClickedButton6()
+{
+	number_01 = GetDlgItemInt(IDC_ADDR_01);
+	SetTimer(11, 500, NULL);
+}
+
+
+void CForm_SetMVB::OnBnClickedButton7()
+{
+	KillTimer(11);
+}
+
+
+void CForm_SetMVB::OnBnClickedButton9()
+{
+	number_02 = GetDlgItemInt(IDC_ADDR_02);
+	SetTimer(12, 500, NULL);
+}
+
+void CForm_SetMVB::OnBnClickedButton11()
+{
+	KillTimer(12);
+}
+
+
+void CForm_SetMVB::OnBnClickedButton12()
+{
+	number_03 = GetDlgItemInt(IDC_ADDR_03);
+	SetTimer(13, 500, NULL);
+}
+
+
+void CForm_SetMVB::OnBnClickedButton13()
+{
+	KillTimer(13);
+}

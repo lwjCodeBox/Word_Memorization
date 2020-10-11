@@ -128,8 +128,6 @@ namespace gridctrl {
 #include <afxadv.h>            // For CSharedFile
 #include <afxconv.h>           // For LPTSTR -> LPSTR macros
 
-#pragma warning(disable:4996)
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -164,6 +162,8 @@ UINT GetMouseScrollLines()
     // Do things the hard way in win95
     OSVERSIONINFO VersionInfo;
     VersionInfo.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+
+/*
     if (!GetVersionEx(&VersionInfo) || 
         (VersionInfo.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS && VersionInfo.dwMinorVersion == 0))
     {
@@ -186,6 +186,7 @@ UINT GetMouseScrollLines()
     // win98 or greater
     else
            SystemParametersInfo (SPI_GETWHEELSCROLLLINES, 0, &nScrollLines, 0);
+*/
 #endif
 
     return nScrollLines;
