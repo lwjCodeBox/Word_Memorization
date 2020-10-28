@@ -16,6 +16,9 @@
     <Filter Include="Grid_Ctrl">
       <UniqueIdentifier>{7686c526-3a64-40eb-9983-bc2098250af7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Multi_Thread">
+      <UniqueIdentifier>{f65d01c2-49ab-4ba4-9c8f-192a73e02b2e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Word_Memorization.h">
@@ -62,6 +65,9 @@
     </ClInclude>
     <ClInclude Include="CSetDataPopUp.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\Multi_Thread.h">
+      <Filter>Multi_Thread</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +124,9 @@
     </ClCompile>
     <ClCompile Include="CSetDataPopUp.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread\Multi_Thread.cpp">
+      <Filter>Multi_Thread</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,8 @@
 #include <time.h>
 #include <Windows.h>
 
+#include "Thread/Multi_Thread.h"
+
 #define MAXTHREAD 5
 
 // CForm_HeartBit
@@ -331,7 +333,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 		CString str;
 		str.Format(L"%s", caption.HB_BTN_Caption.at(click_HB_BTN).c_str());		
 
-		if (1 == m_HB_ClickedPos[_row][_col]) {
+		if (1 == m_HB_ClickedPos[_row][_col]) { // 눌림 -> 안눌림
 			m_HB_ClickedPos[_row][_col] = false;
 
 			dc.FillSolidRect(&heartBitBTN.r[click_HB_BTN], RGB(192, 192, 192)); // 안눌림.							
@@ -344,7 +346,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 			// main 쓰레드가 종료하면 워커쓰레드도 종료하므로 무한 대기하게 한다
 			//WaitForMultipleObjects(MAXTHREAD, m_pThread[click_HB_BTN], TRUE, 50000);
 		}
-		else {
+		else { // 안눌림 -> 눌림
 			m_HB_ClickedPos[_row][_col] = true;
 
 			dc.FillSolidRect(&heartBitBTN.r[click_HB_BTN], RGB(0, 50, 128)); // 눌림.
@@ -353,9 +355,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 
 			dc.DrawText(str, (CRect)heartBitBTN.r[click_HB_BTN] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-			// add 2020.10.05
-			//m_pThread[click_HB_BTN] = AfxBeginThread(WorkerThread, this);
-			//AfxBeginThread(WorkerThread, this);
+			Thread_run();
 		}
 
 		// 글꼴 객체를 제거한다.
@@ -380,5 +380,31 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 	}	
 
 	CFormView::OnLButtonDown(nFlags, point);
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+void CForm_HeartBit::Thread_run()
+{
+	//if (m_thread_list.GetCount() > 0) return;
+	
+	//m_sum = 0;
+	//m_start_tick = GetTickCount();
+
+	ThreadData *p;
+	p = new ThreadData;
+	p->h_wnd = m_hWnd;
+		
+	p->thread_count = m_thread_count;
+	//p->p_sum = &m_sum;
+	p->h_kill_event = CreateEvent(NULL, 1, 0, NULL);
+	p->h_thread = CreateThread(NULL, 0, SM_Thread_Run, p, 0, &p->thread_id);	
+
+	m_thread_count++;
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+void CForm_HeartBit::Thread_stop()
+{
+
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

@@ -39,11 +39,7 @@ private:
 	TButtonRect fixCaption;
 	TButtonRect heartBitBTN;
 
-	HANDLE hThread = NULL;
-	DWORD dwThreadID = NULL;
-
-	//CWinThread *m_pThread[10];
-	HANDLE *m_pThread[10];
+	int m_thread_count = 0;
 
 private:
 	void OnInitFixCaptionButton();
@@ -51,6 +47,10 @@ private:
 
 	void OnDrawFixCaption(CDC *p_DC, CRect *p_R);
 	void OnDrawHeartBitButton(CDC *p_DC, CRect *p_R);
+
+	// thread start, stop
+	void Thread_run();
+	void Thread_stop();
 
 public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext = NULL);
