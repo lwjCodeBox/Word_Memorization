@@ -5,6 +5,9 @@
 /// * Copyright 2020.10.28 ภฬฟ๘มพ. All rights reserved.
 /// </Developed by developer Wonjong>
 
+#include "../CSharedMemory.h"
+#include <map>
+
 typedef struct ThreadData
 {
 	HWND h_wnd;
@@ -19,6 +22,11 @@ typedef struct ThreadData
 }ThreadData;
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
+
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+int ThreadWorking(int a_num);
+//ThreadData GetThreadDataPtr(int a_num);
+
+
 DWORD WINAPI SM_Thread_Run(void *ap_data);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

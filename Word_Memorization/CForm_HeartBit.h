@@ -49,7 +49,7 @@ private:
 	void OnDrawHeartBitButton(CDC *p_DC, CRect *p_R);
 
 	// thread start, stop
-	void Thread_run();
+	void Thread_Start();
 	void Thread_stop();
 
 public:

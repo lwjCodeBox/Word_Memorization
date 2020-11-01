@@ -6,6 +6,36 @@
 /// </Developed by developer Wonjong>
 
 #include "Multi_Thread.h"
+#include "../Word_MemorizationDlg.h"
+
+class CWordMemorizationDlg;
+
+int ThreadWorking(int a_num)
+{
+	CWordMemorizationDlg *mp_ParentDlg;// = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	
+
+	//TSharedMemory *m_pData;
+	//m_pData = (TSharedMemory *)GetData();
+
+	//for (int i = 2; i < a_num; i++) {
+		//memset(&(mp_ParentDlg->m_pData->data[2][1]), 2, 1);
+		//memset(&(mp_FormMainDlg->m_pData->data[port][1]), m_HeartBit_2, 1);
+		Sleep(10);
+	//}
+	return 1;
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+//ThreadData GetThreadDataPtr(int a_num)
+//{
+//	
+//	try { 
+//		//v.at(a_num);
+//	}
+//	catch (std::out_of_range &e) { AfxMessageBox(L"Catch the std::out_of_range(thread pointer Pos)"); }
+//}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 DWORD WINAPI SM_Thread_Run(void *ap_data)
 {
@@ -21,9 +51,10 @@ DWORD WINAPI SM_Thread_Run(void *ap_data)
 	
 	if (WaitForSingleObject(p_data->h_kill_event, 0) == WAIT_OBJECT_0)	kill_flag = 1;
 		
-	//if (IsPrime(i)) sum += i;		
+	//if (ThreadWorking(i)) sum += i;
+	ThreadWorking(10000);
 	
-	TRACE("[%08x] Thread Stop!", p_data->thread_id);
+	TRACE("[%08x] Thread Stop!\n", p_data->thread_id);
 
 	CloseHandle(p_data->h_thread);
 

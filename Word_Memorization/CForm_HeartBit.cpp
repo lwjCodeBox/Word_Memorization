@@ -7,6 +7,7 @@
 
 #include <time.h>
 #include <Windows.h>
+#include <map>
 
 #include "Thread/Multi_Thread.h"
 
@@ -95,7 +96,6 @@ BOOL CForm_HeartBit::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD
 		memset(m_HB_ClickedPos[i], 0, sizeof(unsigned char) * heartBitBTN.colCount);
 	}
 	
-
 	return CFormView::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -121,8 +121,7 @@ void CForm_HeartBit::OnDestroy()
 void CForm_HeartBit::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
-
-	// TODO: Add your specialized code here and/or call the base class
+	
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -355,7 +354,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 
 			dc.DrawText(str, (CRect)heartBitBTN.r[click_HB_BTN] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
-			Thread_run();
+			Thread_Start();
 		}
 
 		// 글꼴 객체를 제거한다.
@@ -383,7 +382,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-void CForm_HeartBit::Thread_run()
+void CForm_HeartBit::Thread_Start()
 {
 	//if (m_thread_list.GetCount() > 0) return;
 	
@@ -393,11 +392,12 @@ void CForm_HeartBit::Thread_run()
 	ThreadData *p;
 	p = new ThreadData;
 	p->h_wnd = m_hWnd;
-		
 	p->thread_count = m_thread_count;
 	//p->p_sum = &m_sum;
 	p->h_kill_event = CreateEvent(NULL, 1, 0, NULL);
-	p->h_thread = CreateThread(NULL, 0, SM_Thread_Run, p, 0, &p->thread_id);	
+	p->h_thread = CreateThread(NULL, 0, SM_Thread_Run, p, 0, &p->thread_id);
+	
+//	thd_Ptr.insert(make_pair(m_thread_count, p));
 
 	m_thread_count++;
 }
@@ -405,6 +405,18 @@ void CForm_HeartBit::Thread_run()
 
 void CForm_HeartBit::Thread_stop()
 {
+	/*ThreadData *p = (ThreadData *)m_thread_list.GetItemDataPtr(index);
+	if (p->h_thread != NULL) {
+		SetEvent(p->h_kill_event);
 
+		MSG msg;
+		while (p->h_thread != NULL) {
+			if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
+	}
+	delete p;*/
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
