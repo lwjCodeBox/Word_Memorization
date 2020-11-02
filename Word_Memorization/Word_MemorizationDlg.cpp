@@ -109,7 +109,7 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 		memset(m_ClickedScreenPos[i], 0, sizeof(unsigned char) * m_scrBTN.colCount);
 	}		
 //--------------------------------------------------------------------------------------------
-
+	
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 //--------------------------------------------------------------------------------------------

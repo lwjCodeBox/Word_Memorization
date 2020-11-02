@@ -7,11 +7,8 @@
 
 #include <time.h>
 #include <Windows.h>
-#include <map>
 
 #include "Thread/Multi_Thread.h"
-
-#define MAXTHREAD 5
 
 // CForm_HeartBit
 
@@ -38,6 +35,7 @@ BEGIN_MESSAGE_MAP(CForm_HeartBit, CFormView)
 	ON_WM_DESTROY()
 	ON_WM_ERASEBKGND()
 	ON_WM_LBUTTONDOWN()
+	ON_MESSAGE(27001, &CForm_HeartBit::On27001)
 END_MESSAGE_MAP()
 
 
@@ -275,14 +273,6 @@ BOOL CForm_HeartBit::OnEraseBkgnd(CDC *pDC)
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-DWORD WINAPI ThreadFunc(LPVOID n)
-{
-	for (int i = 0; i < 1000000000; i++) {
-		3 + 5 + 8 * 24;
-	}
-	return 0;
-}
-
 void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	unsigned int _col = 0, _row = 0;
@@ -299,7 +289,10 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 			if (PtInRect(&heartBitBTN.r[pos], point)) {
 				CString str;
 				try { str.Format(L"%s", caption.HB_BTN_Caption.at(pos).c_str()); }
-				catch (std::out_of_range &e) { AfxMessageBox(L"Catch the std::out_of_range"); }
+				catch (std::out_of_range &e) { 
+					str.Format(L"[Catch the std::out_of_range] %s", e.what());
+					AfxMessageBox(str); 
+				}
 
 				if (!str.Compare(L"*")) return;				
 				
@@ -341,9 +334,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 
 			dc.DrawText(str, &heartBitBTN.r[click_HB_BTN], DT_CENTER | DT_VCENTER | DT_SINGLELINE);		
 
-			// add 2020.10.05
-			// main 쓰레드가 종료하면 워커쓰레드도 종료하므로 무한 대기하게 한다
-			//WaitForMultipleObjects(MAXTHREAD, m_pThread[click_HB_BTN], TRUE, 50000);
+			Thread_stop();
 		}
 		else { // 안눌림 -> 눌림
 			m_HB_ClickedPos[_row][_col] = true;
@@ -361,21 +352,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 		font.DeleteObject();
 
 		// 배경을 이전 모드로 설정한다.
-		dc.SetBkMode(old_mode);			
-
-		//for (i = 0; i < MAXTHREAD; i++) {
-		//	hThrd[i] = CreateThread(NULL,
-		//		0,
-		//		ThreadFunc,
-		//		(LPVOID)i,
-		//		0,
-		//		&threadId
-		//	);
-		//}
-		//WaitForMultipleObjects(MAXTHREAD, hThrd, TRUE, INFINITE);
-		//for (i = 0; i < MAXTHREAD; i++) {
-		//	CloseHandle(hThrd[i]);
-		//}				
+		dc.SetBkMode(old_mode);							
 	}	
 
 	CFormView::OnLButtonDown(nFlags, point);
@@ -385,28 +362,29 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 void CForm_HeartBit::Thread_Start()
 {
 	//if (m_thread_list.GetCount() > 0) return;
-	
-	//m_sum = 0;
-	//m_start_tick = GetTickCount();
 
-	ThreadData *p;
-	p = new ThreadData;
+	ThreadData *p = new ThreadData;
 	p->h_wnd = m_hWnd;
-	p->thread_count = m_thread_count;
-	//p->p_sum = &m_sum;
+
+	// lwj - 2020.11.02
+	p->thread_count = m_thread_count;	
+	p->port = m_thread_count;
+	p->flag = true;
+
 	p->h_kill_event = CreateEvent(NULL, 1, 0, NULL);
 	p->h_thread = CreateThread(NULL, 0, SM_Thread_Run, p, 0, &p->thread_id);
-	
-//	thd_Ptr.insert(make_pair(m_thread_count, p));
 
 	m_thread_count++;
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CForm_HeartBit::Thread_stop()
-{
-	/*ThreadData *p = (ThreadData *)m_thread_list.GetItemDataPtr(index);
+{			
+	m_thread_count--;
+
+	ThreadData *p = (ThreadData*)GetThreadPtr(m_thread_count);	
 	if (p->h_thread != NULL) {
+		p->flag = false;
 		SetEvent(p->h_kill_event);
 
 		MSG msg;
@@ -417,6 +395,24 @@ void CForm_HeartBit::Thread_stop()
 			}
 		}
 	}
-	delete p;*/
+	delete p;	
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+afx_msg LRESULT CForm_HeartBit::On27001(WPARAM wParam, LPARAM lParam)
+{
+	ThreadData *p = (ThreadData *)lParam;
+	
+	for (int i = 0; i <= m_thread_count; i++) {
+		if (GetThreadPtr(i) == p) {
+			CloseHandle(p->h_kill_event);
+
+			if (wParam == 0) delete p;
+			else p->h_thread = NULL;
+			break;
+		}
+	}
+
+	return 0;
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

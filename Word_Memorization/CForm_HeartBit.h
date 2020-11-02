@@ -59,6 +59,9 @@ public:
 	afx_msg void OnDestroy();
 	afx_msg BOOL OnEraseBkgnd(CDC *pDC);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+
+protected:
+	afx_msg LRESULT On27001(WPARAM wParam, LPARAM lParam);
 };
 
 

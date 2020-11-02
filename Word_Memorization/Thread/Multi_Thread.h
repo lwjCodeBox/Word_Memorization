@@ -1,32 +1,35 @@
-#pragma once
-
 /// <Developed by developer Wonjong>
 /// * 멀티 스레드 코드임.
 /// * Copyright 2020.10.28 이원종. All rights reserved.
 /// </Developed by developer Wonjong>
 
-#include "../CSharedMemory.h"
-#include <map>
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+#define MAX_THREAD_CNT 10;
 
-typedef struct ThreadData
+struct ThreadData
 {
 	HWND h_wnd;
-	//CListBox *p_list_box;
 	HANDLE h_kill_event;
 	HANDLE h_thread;
 	DWORD thread_id;
 
-	unsigned int thread_count;
+	// lwj - 2020.11.02
+	unsigned int thread_count; // 필요 없음...
+	unsigned int port;
+	bool flag;
+
 	//unsigned int start_step, end_step, thread_count;	
 	__int64 *p_sum;
-}ThreadData;
+};
+
+struct TDataPtr
+{
+	void *p_ptr[10];
+};
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-int ThreadWorking(int a_num);
-//ThreadData GetThreadDataPtr(int a_num);
-
-
+void *GetThreadPtr(int a_pos);
+void ThreadWorking(int a_port, ThreadData *ap_data);
 DWORD WINAPI SM_Thread_Run(void *ap_data);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
