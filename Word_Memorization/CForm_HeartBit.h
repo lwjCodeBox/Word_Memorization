@@ -39,7 +39,7 @@ private:
 	TButtonRect fixCaption;
 	TButtonRect heartBitBTN;
 
-	int m_thread_count = 0;
+	int m_thread_count = -1; // -1의 의미는 스레드를 하나라도 생성하지 않았다는 의미이다.
 
 private:
 	void OnInitFixCaptionButton();
@@ -51,6 +51,7 @@ private:
 	// thread start, stop
 	void Thread_Start();
 	void Thread_stop();
+	void Thread_Allstop();
 
 public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext = NULL);

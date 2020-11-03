@@ -30,6 +30,7 @@ struct TDataPtr
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 void *GetThreadPtr(int a_pos);
+void DeleteThreadPtr(int a_pos);
 void ThreadWorking(int a_port, ThreadData *ap_data);
 DWORD WINAPI SM_Thread_Run(void *ap_data);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

@@ -102,6 +102,8 @@ void CForm_HeartBit::OnDestroy()
 {
 	CFormView::OnDestroy();
 	
+	//Thread_Allstop();
+
 	// HeartBit Button	
 	if (m_HB_ClickedPos != NULL) {
 		for (int i = 0; i < heartBitBTN.rowCount; i++) {
@@ -335,6 +337,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 			dc.DrawText(str, &heartBitBTN.r[click_HB_BTN], DT_CENTER | DT_VCENTER | DT_SINGLELINE);		
 
 			Thread_stop();
+			//Thread_Allstop();
 		}
 		else { // 안눌림 -> 눌림
 			m_HB_ClickedPos[_row][_col] = true;
@@ -362,6 +365,8 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 void CForm_HeartBit::Thread_Start()
 {
 	//if (m_thread_list.GetCount() > 0) return;
+	
+	++m_thread_count;
 
 	ThreadData *p = new ThreadData;
 	p->h_wnd = m_hWnd;
@@ -371,48 +376,82 @@ void CForm_HeartBit::Thread_Start()
 	p->port = m_thread_count;
 	p->flag = true;
 
-	p->h_kill_event = CreateEvent(NULL, 1, 0, NULL);
-	p->h_thread = CreateThread(NULL, 0, SM_Thread_Run, p, 0, &p->thread_id);
-
-	m_thread_count++;
+	p->h_kill_event = CreateEvent(NULL, 1, 0, NULL); // 스레드를 위한 이벤트 큐 생성.
+	p->h_thread = CreateThread(NULL, 0, SM_Thread_Run, p, 0, &p->thread_id); // 스레드 생성.
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CForm_HeartBit::Thread_stop()
 {			
-	m_thread_count--;
-
-	ThreadData *p = (ThreadData*)GetThreadPtr(m_thread_count);	
+	ThreadData *p = (ThreadData*)GetThreadPtr(m_thread_count);
 	if (p->h_thread != NULL) {
 		p->flag = false;
-		SetEvent(p->h_kill_event);
-
+		SetEvent(p->h_kill_event); // 스레드가 종료되었다는 이벤트로 설정함.
+		
+		// 데드락을 피하기 위해 이 작업을 함.
 		MSG msg;
+		// 27001 이벤트에서 종료한 스레드를 NULL로 만들때 까지 계속 진행하고 
+		// 27001 이벤트에서 종료한 스레드를 NULL로 만들었다면 그때 동적할당한 스레드를 파괴한다.
+		// 즉, 아래 코드는 스레드가 종료 되었는지 체크하기 위함이다.
 		while (p->h_thread != NULL) {
+			// PeekMessage >> 메시지가 있는지 없는지 보는 함수이며 메시지가 없으면 이 함수에 걸려 있지 않고 알아서 PeekMessage 함수를 빠져나온다.
+			// GetMessage >> 메시지가 있어야지만 빠져 나오는 함수이며 메시지가 없으면 여기에 걸려 있다. 
+			//               그래서 메시지가 들어 올때 까지 대기를 타게되서 데드락에 빠질 수 있다.
 			if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
 			}
 		}
 	}
+	DeleteThreadPtr(m_thread_count);
+	m_thread_count--;
 	delete p;	
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
+// lParam >> 어떤 스레드가 종료되었는지를 알 수 있는 스레드 정보를 담고 있다.
 afx_msg LRESULT CForm_HeartBit::On27001(WPARAM wParam, LPARAM lParam)
 {
 	ThreadData *p = (ThreadData *)lParam;
 	
 	for (int i = 0; i <= m_thread_count; i++) {
 		if (GetThreadPtr(i) == p) {
-			CloseHandle(p->h_kill_event);
+			CloseHandle(p->h_kill_event); // 스레드가 종료되었기 때문에 이벤트도 종료시킴.
 
-			if (wParam == 0) delete p;
-			else p->h_thread = NULL;
+			if (wParam == 0) // 스스로 죽은 경우. (이 코드에서는 스스로 죽지 않는다. 이사님 코드 참고) 
+				delete p; 
+			else 
+				p->h_thread = NULL;
 			break;
 		}
 	}
 
 	return 0;
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+void CForm_HeartBit::Thread_Allstop()
+{
+	ThreadData *p;
+	int count = m_thread_count;
+	for (int i = 0; i <= count; i++) {
+		p = (ThreadData *)GetThreadPtr(m_thread_count);
+		SetEvent(p->h_kill_event);
+	}
+
+	MSG msg;
+	while (count) {
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+			if (msg.message == 27001) {
+				count--;
+				msg.wParam = 0;
+			}
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	}
+
+	m_thread_count = -1;
+	TRACE(L"Thread All Stop\n");
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
