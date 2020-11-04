@@ -1,10 +1,9 @@
 /// <Developed by developer Wonjong>
 /// * 멀티 스레드 코드임.
-/// * Copyright 2020.10.28 이원종. All rights reserved.
+/// * Copyright 2020.11.04 이원종. All rights reserved.
 /// </Developed by developer Wonjong>
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-#define MAX_THREAD_CNT 10;
 
 struct ThreadData
 {
@@ -31,6 +30,6 @@ struct TDataPtr
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 void *GetThreadPtr(int a_pos);
 void DeleteThreadPtr(int a_pos);
-void ThreadWorking(int a_port, ThreadData *ap_data);
+int ThreadWorking(unsigned int a_heartbit, int a_port, ThreadData *ap_data);
 DWORD WINAPI SM_Thread_Run(void *ap_data);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

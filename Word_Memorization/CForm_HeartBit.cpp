@@ -102,7 +102,7 @@ void CForm_HeartBit::OnDestroy()
 {
 	CFormView::OnDestroy();
 	
-	//Thread_Allstop();
+	Thread_Allstop();
 
 	// HeartBit Button	
 	if (m_HB_ClickedPos != NULL) {
@@ -132,6 +132,9 @@ void CForm_HeartBit::OnPaint()
 
 	OnDrawFixCaption(&dc, &r);
 	OnDrawHeartBitButton(&dc, &r);
+	
+	// Thread all exit button;
+	Rectangle(dc, 0, 0, 50, 50);
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -336,8 +339,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 
 			dc.DrawText(str, &heartBitBTN.r[click_HB_BTN], DT_CENTER | DT_VCENTER | DT_SINGLELINE);		
 
-			Thread_stop();
-			//Thread_Allstop();
+			Thread_stop();			
 		}
 		else { // 안눌림 -> 눌림
 			m_HB_ClickedPos[_row][_col] = true;
@@ -347,7 +349,12 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 			dc.SetTextColor(RGB(255, 255, 255));
 
 			dc.DrawText(str, (CRect)heartBitBTN.r[click_HB_BTN] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-
+			
+			/* 2020.11.04 - 이 주석 부터 시작하면됨.
+			// 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다.
+			// int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
+			int t_port = binarySearch(p_ExcelLib->mvb_Addr, 120, portAddr);
+			*/
 			Thread_Start();
 		}
 
@@ -358,20 +365,23 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 		dc.SetBkMode(old_mode);							
 	}	
 
+	// Thread all exit button;
+	if (point.x < 50 && point.y < 50) {
+		AfxMessageBox(L"Thread all exit button clicked");
+		Thread_Allstop();
+	}
+
 	CFormView::OnLButtonDown(nFlags, point);
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CForm_HeartBit::Thread_Start()
-{
-	//if (m_thread_list.GetCount() > 0) return;
-	
-	++m_thread_count;
+{	
+	m_thread_count++;
 
 	ThreadData *p = new ThreadData;
 	p->h_wnd = m_hWnd;
 
-	// lwj - 2020.11.02
 	p->thread_count = m_thread_count;	
 	p->port = m_thread_count;
 	p->flag = true;
@@ -416,12 +426,11 @@ afx_msg LRESULT CForm_HeartBit::On27001(WPARAM wParam, LPARAM lParam)
 	
 	for (int i = 0; i <= m_thread_count; i++) {
 		if (GetThreadPtr(i) == p) {
-			CloseHandle(p->h_kill_event); // 스레드가 종료되었기 때문에 이벤트도 종료시킴.
+			CloseHandle(p->h_kill_event); // 스레드가 종료되었기 때문에 스레드 이벤트 종료시킴.
 
-			if (wParam == 0) // 스스로 죽은 경우. (이 코드에서는 스스로 죽지 않는다. 이사님 코드 참고) 
-				delete p; 
-			else 
-				p->h_thread = NULL;
+			// wParam == 0의 의미는 스스로 죽은 경우. (이 코드에서는 스스로 죽지 않는다. 이사님 코드 참고) 
+			if (wParam == 0) delete p;				 
+			else p->h_thread = NULL;				
 			break;
 		}
 	}
@@ -435,23 +444,32 @@ void CForm_HeartBit::Thread_Allstop()
 	ThreadData *p;
 	int count = m_thread_count;
 	for (int i = 0; i <= count; i++) {
-		p = (ThreadData *)GetThreadPtr(m_thread_count);
+		p = (ThreadData *)GetThreadPtr(i);
+		p->flag = false;
 		SetEvent(p->h_kill_event);
 	}
 
+	TRACE(L"Shut down the %d working threads.\n", count+1);
+
 	MSG msg;
-	while (count) {
+	while (-1 != count) {
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 			if (msg.message == 27001) {
 				count--;
 				msg.wParam = 0;
 			}
 			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+			// DispatchMessage()함수를 통해서 27001 메시지를 처리하게 된다.
+			// (On27001(WPARAM wParam, LPARAM lParam) 이 함수로 빠짐.)
+			DispatchMessage(&msg); 
 		}
 	}
 
+	TRACE(L"*****Thread All Stop Finish!!!*****\n");
+
+	for (int i = 0; i <= m_thread_count; i++) 
+		DeleteThreadPtr(i);
+	
 	m_thread_count = -1;
-	TRACE(L"Thread All Stop\n");
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

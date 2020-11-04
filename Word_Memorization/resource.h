@@ -45,7 +45,6 @@
 #define IDC_ADDR_02                     1039
 #define IDC_BUTTON11                    1040
 #define IDC_BUTTON12                    1041
-#define IDC_ADDR_3                      1042
 #define IDC_ADDR_03                     1042
 #define IDC_BUTTON13                    1043
 #define IDC_SELECTED_CAR_0              2000

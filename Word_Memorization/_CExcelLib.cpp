@@ -130,38 +130,17 @@ bool _CExcelLib::Load_logical_Port_Adrs()
 	int mem_row_idx = 0;
 
 	if (m_pSheet2) {
-		//int t_col_start = 4; // (열 시작 위치)
-		//int t_col_end = 123;
-		//int t_row_start = 4; // (행 시작 위치)
-		//int t_row_end = 9;
-
 		int readFcode = 0;
 		const wchar_t *str = NULL; 
 
-		//for (int i = t_col_start; i <= t_col_end; i++)
-		//{
-		//	readFcode = m_pSheet2->readNum(i, 5, &format);
-
-		//	if (readFcode != 0) {
-		//		str = m_pSheet2->readStr(i, 4, &format);
-		//		readAddr = _tcstoul(str, NULL, 16); // 문자열을 16진수로 변환.
-
-		//		mvb_Addr[mem_row_idx] = readAddr;
-		//		mem_row_idx++;
-		//	}
-		//}
-
 		int t_col_start = 4; // (열 시작 위치)
 		int t_col_end = 33;
-
 		int t_row_start = 1;//4; // (행 시작 위치)
 		int t_row_end = 16; //3칸
 		
 		// 엑셀 행, 열 시작 위치를 mvb 주소(addr) 위치를 기준으로 잡음.
-		for (int i = t_col_start; i <= t_col_end; i++)
-		{
-			for (int j = t_row_start; j*4 <= t_row_end; j++)
-			{
+		for (int i = t_col_start; i <= t_col_end; i++) {		
+			for (int j = t_row_start; j*4 <= t_row_end; j++) {			
 				readFcode = (int)m_pSheet2->readNum(i, j*4+1, &format); // fcode 위치 정보
 
 				if (readFcode != 0) {

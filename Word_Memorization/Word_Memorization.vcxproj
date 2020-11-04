@@ -100,6 +100,14 @@
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>C:\Third-party\libxl-3.8.2.0\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>libxl.lib</AdditionalDependencies>
+      <HeapReserveSize>
+      </HeapReserveSize>
+      <HeapCommitSize>
+      </HeapCommitSize>
+      <StackReserveSize>
+      </StackReserveSize>
+      <StackCommitSize>
+      </StackCommitSize>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

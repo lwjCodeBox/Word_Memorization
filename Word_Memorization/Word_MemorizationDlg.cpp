@@ -62,6 +62,7 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 
 	m_pData = (TSharedMemory*)m_sm->GetData();
 	
+	// 장치 주소를 엑셀에서 읽어와서 저장함.
 	mp_Libxl->Load_logical_Port_Adrs();
 
 	nodeData.node = 1;
