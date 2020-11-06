@@ -147,7 +147,7 @@ bool _CExcelLib::Load_logical_Port_Adrs()
 					str = m_pSheet2->readStr(i, j*4, &format); // addr
 					readAddr = _tcstoul(str, NULL, 16); // 문자열을 16진수로 변환.
 
-					mvb_Addr[mem_row_idx] = readAddr;
+					mvb_Addr[mem_row_idx] = readAddr;					
 					mem_row_idx++;
 				}
 			}

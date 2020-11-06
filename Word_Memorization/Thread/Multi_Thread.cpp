@@ -7,26 +7,59 @@
 
 #include "Multi_Thread.h"
 #include "../Word_MemorizationDlg.h"
+#include "../CForm_HeartBit.h"
 
-TDataPtr threadItemPtr;
 
-void *GetThreadPtr(int a_pos)
+void *FindThreadPtr(ThreadData *ap_data)
 {
-	ThreadData *data = (ThreadData*)threadItemPtr.p_ptr[a_pos];
-	return data;
+	CWordMemorizationDlg *main = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	TDataPtr *dataPtr = &main->Get_CForm_HeartBit_Info()->dataPtr;
+
+	int size = dataPtr->pThreadItemDataPtr.size();
+
+	for (int i = 0; i < size; i++) {
+		if (ap_data == dataPtr->pThreadItemDataPtr[i]) {			
+			return dataPtr->pThreadItemDataPtr[i];
+		}
+	}
+
+	return NULL;
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-void DeleteThreadPtr(int a_pos) 
+void *GetThreadPtr(int a_pos)
+{			
+	CWordMemorizationDlg *main = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();	
+	TDataPtr *dataPtr = &main->Get_CForm_HeartBit_Info()->dataPtr;
+	
+	int size = dataPtr->pThreadItemDataPtr.size();
+
+	for (int i = 0; i < size; i++) {
+		if (a_pos == dataPtr->ClickedPos[i]) {
+			ThreadData *thraedData = (ThreadData *)dataPtr->pThreadItemDataPtr[i];
+			return thraedData;
+		}
+	}	
+
+	return NULL;
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+void *GetThreadPtr_2(int a_pos)
 {
-	threadItemPtr.p_ptr[a_pos] = NULL;
+	CWordMemorizationDlg *main = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	TDataPtr *dataPtr = &main->Get_CForm_HeartBit_Info()->dataPtr;
+	
+	ThreadData *thraedData = (ThreadData *)dataPtr->pThreadItemDataPtr[a_pos];
+
+	return thraedData;	
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 int ThreadWorking(unsigned int a_heartbit, int a_port, ThreadData *ap_data)
 {	
-	CWordMemorizationDlg *parentdlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
-	memset(&(parentdlg->m_pData->data[a_port][1]), a_heartbit, 1);
+	CWordMemorizationDlg *main = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	memset(&(main->m_pData->data[a_port][1]), a_heartbit, 1);	
 	Sleep(300);
 
 	return 1;	
@@ -34,13 +67,12 @@ int ThreadWorking(unsigned int a_heartbit, int a_port, ThreadData *ap_data)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 DWORD WINAPI SM_Thread_Run(void *ap_data)
-{
+{	
 	ThreadData *p_data = (ThreadData *)ap_data;
 	int kill_flag = 0;
 	unsigned int heartbit = 0;
 	
-	TRACE("[%08x] Thread Start!\n", p_data->thread_id);
-	threadItemPtr.p_ptr[p_data->thread_count] = p_data;
+	TRACE("[%08x] Thread Start!\n", p_data->thread_id);	
 
 	while(true){
 		if (WaitForSingleObject(p_data->h_kill_event, 10) == WAIT_OBJECT_0) {
@@ -51,6 +83,7 @@ DWORD WINAPI SM_Thread_Run(void *ap_data)
 		
 		ThreadWorking(heartbit, p_data->port, p_data);
 		heartbit++;
+		if (heartbit == 200) heartbit = 0;
 	}
 
 	TRACE("***[%08x] Exit the task!***\n", p_data->thread_id);

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "DefineOfDev_J.h"
-
 #include <iostream>
-#include <thread>
+
+#include "DefineOfDev_J.h"
+#include "Thread/Multi_Thread.h"
 
 // CForm_HeartBit form view
 
@@ -38,8 +38,13 @@ private:
 
 	TButtonRect fixCaption;
 	TButtonRect heartBitBTN;
+		
+	//today-del
+	//int m_thread_count = -1; // -1의 의미는 스레드를 하나라도 생성하지 않았다는 의미이다.
 
-	int m_thread_count = -1; // -1의 의미는 스레드를 하나라도 생성하지 않았다는 의미이다.
+public: 
+	TMVB_Addr_Info portAddr;
+	TDataPtr dataPtr;
 
 private:
 	void OnInitFixCaptionButton();
@@ -49,8 +54,8 @@ private:
 	void OnDrawHeartBitButton(CDC *p_DC, CRect *p_R);
 
 	// thread start, stop
-	void Thread_Start();
-	void Thread_stop();
+	void Thread_Start(int a_row, int a_col);
+	void Thread_stop(int a_row, int a_col);
 	void Thread_Allstop();
 
 public:

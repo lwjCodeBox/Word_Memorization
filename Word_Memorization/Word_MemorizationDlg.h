@@ -99,6 +99,8 @@ public:
 	void Set16DataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word, WORD a_Data);
 	void Set08DataToSM(WORD a_PortAddr, BYTE a_Node, BYTE a_Word, bool a_Pos, BYTE a_Data);	
 
+	CForm_HeartBit *Get_CForm_HeartBit_Info() { return mp_Form_HeartBit; }
+		
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnClose();

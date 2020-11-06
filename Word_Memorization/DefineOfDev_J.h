@@ -16,12 +16,12 @@
 #define PINK_COLOR				RGB(255, 210, 230)
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-typedef struct DuNode
+struct DuNode
 {
 	unsigned char node;
-}DuNode;
+};
 
-typedef struct TButtonRect
+struct TButtonRect
 {
 	int xPos;     // x 시작 좌표    //int xPos = 20;     // x 시작 좌표
 	int width;    // 폭 사이즈	   //int width = 100;   // 폭 사이즈
@@ -36,10 +36,10 @@ typedef struct TButtonRect
 	std::vector<RECT>/*::iterator */r;
 	//std::vector<RECT>::iterator rr;
 	//RECT rect;
-}TButtonRect;
+};
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-typedef struct TCaption
+struct TCaption
 {	
 	// Train Caption.
 	std::map<int, std::wstring> trainBTN_Caption{ {0, L"aDTC"}, {1, L"aMC1"}, {2, L"aMC2"}, {3, L"aMCI"}, 
@@ -78,9 +78,51 @@ typedef struct TCaption
 		// BC
 		{128, L"*"}, {129, L"BC1"}, {130, L"BC2"}, {131, L"*"}, {132, L"*"}, {133, L"BC2"}, {134, L"BC1"}, {135, L"*"}
 	};
-}TCaption;
+};
+
+struct TMVB_Addr_Info
+{
+	//today-del
+	//WORD port[120]; // myNode 총 갯수가 120개라서 배열의 크기를 120으로 잡음.
+
+	std::map<int, int> mvb_addr{ // *의 의미는 사용하지 않는 버튼이라는 의미이다. 
+		// VAC
+		{  0, 0xB0}, {  1, 0xF0}, { 2, 0xB0}, { 3, 0xF0}, { 4, 0xF0}, { 5, 0xB0}, { 6, 0xF0}, { 7, 0xB0},
+		{ 10, 0xB4}, { 11, 0xF4}, {12, 0xB4}, {13, 0xF4}, {14, 0xF4}, {15, 0xB4}, {16, 0xF4}, {17, 0xB4}
+		//// DCU
+		//{16, L"LDCU1"}, {17, L"LDCU2"}, {18, L"LDCU1"}, {19, L"LDCU2"}, {20, L"LDCU2"}, {21, L"LDCU1"}, {22, L"LDCU2"}, {23, L"LDCU1"},
+		//{24, L"RDCU1"}, {25, L"RDCU2"}, {26, L"RDCU1"}, {27, L"RDCU2"}, {28, L"RDCU2"}, {29, L"RDCU1"}, {30, L"RDCU2"}, {31, L"RDCU1"},
+		//// ECU
+		//{32, L"ECU1"}, {33, L"ECU3"}, {34, L"ECU1"}, {35, L"ECU3"}, {36, L"ECU3"}, {37, L"ECU1"}, {38, L"ECU3"}, {39, L"ECU1"},
+		//{40, L"ECU2"}, {41, L"ECU4"}, {42, L"ECU2"}, {43, L"ECU4"}, {44, L"ECU4"}, {45, L"ECU2"}, {46, L"ECU4"}, {47, L"ECU2"},
+		//// VVVF
+		//{49, L"VVVF3"}, {50, L"VVVF1"}, {51, L"VVVF3"}, {52, L"VVVF3"}, {53, L"VVVF1"}, {54, L"VVVF3"},
+		//{57, L"VVVF4"}, {58, L"VVVF2"}, {59, L"VVVF4"}, {60, L"VVVF4"}, {61, L"VVVF2"}, {62, L"VVVF4"},
+		//// AAU
+		//{64, L"AAU"}, {71, L"AAU"},
+		//// CCTV
+		//{72, L"CCTV"}, {79, L"CCTV"},
+		//// FDU
+		//{80, L"FDU"}, {87, L"FDU"},
+		//// APU
+		//{88, L"APU1"}, {95, L"APU1"},
+		//{96, L"APU2"}, {103, L"APU2"},
+		//// RADIO
+		//{104, L"RADIO"}, {111, L"RADIO"},
+		//// ATC
+		//{112, L"ATC"}, {119, L"ATC"},
+		//// EVR
+		//{120, L"EVR"}, {127, L"EVR"},
+		//// BC
+		//{129, L"BC1"}, {130, L"BC2"}, {133, L"BC2"}, {134, L"BC1"}
+	};
+
+};
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+// 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다.
+// int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);	
 int binarySearch(WORD *data, int size, WORD d);
 bool IsBitCheck16(WORD a_Target, WORD a_BitPos);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

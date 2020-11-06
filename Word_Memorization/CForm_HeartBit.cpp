@@ -8,7 +8,7 @@
 #include <time.h>
 #include <Windows.h>
 
-#include "Thread/Multi_Thread.h"
+#include "Word_MemorizationDlg.h"
 
 // CForm_HeartBit
 
@@ -311,7 +311,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 	
 	// HeartBit button
-	if (bHeartBitBTN) {
+	if (bHeartBitBTN) {	
 		// 글꼴 객체 선언
 		CFont font;
 
@@ -332,14 +332,14 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 
 		if (1 == m_HB_ClickedPos[_row][_col]) { // 눌림 -> 안눌림
 			m_HB_ClickedPos[_row][_col] = false;
-
+			
 			dc.FillSolidRect(&heartBitBTN.r[click_HB_BTN], RGB(192, 192, 192)); // 안눌림.							
 			dc.Draw3dRect(&heartBitBTN.r[click_HB_BTN], RGB(255, 255, 255), RGB(255, 255, 255));
 			dc.SetTextColor(RGB(0, 0, 0));
 
 			dc.DrawText(str, &heartBitBTN.r[click_HB_BTN], DT_CENTER | DT_VCENTER | DT_SINGLELINE);		
-
-			Thread_stop();			
+		
+			Thread_stop(_row, _col);
 		}
 		else { // 안눌림 -> 눌림
 			m_HB_ClickedPos[_row][_col] = true;
@@ -349,13 +349,8 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 			dc.SetTextColor(RGB(255, 255, 255));
 
 			dc.DrawText(str, (CRect)heartBitBTN.r[click_HB_BTN] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-			
-			/* 2020.11.04 - 이 주석 부터 시작하면됨.
-			// 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다.
-			// int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
-			int t_port = binarySearch(p_ExcelLib->mvb_Addr, 120, portAddr);
-			*/
-			Thread_Start();
+															
+			Thread_Start(_row, _col);
 		}
 
 		// 글꼴 객체를 제거한다.
@@ -368,34 +363,43 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 	// Thread all exit button;
 	if (point.x < 50 && point.y < 50) {
 		AfxMessageBox(L"Thread all exit button clicked");
-		Thread_Allstop();
+		Thread_Allstop();		
 	}
 
 	CFormView::OnLButtonDown(nFlags, point);
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-void CForm_HeartBit::Thread_Start()
-{	
-	m_thread_count++;
+void CForm_HeartBit::Thread_Start(int a_row, int a_col)
+{		
+	CWordMemorizationDlg *main = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	int node = a_row / 2;
+	int num = a_row * 10 + a_col;
+	int find = portAddr.mvb_addr[num];
 
+	int port = binarySearch(main->mp_Libxl->mvb_Addr, 120, find);
+			
 	ThreadData *p = new ThreadData;
 	p->h_wnd = m_hWnd;
+	
+	dataPtr.ClickedPos.push_back(num);
+	dataPtr.pThreadItemDataPtr.push_back(p);
 
-	p->thread_count = m_thread_count;	
-	p->port = m_thread_count;
-	p->flag = true;
+	p->node = node;
+	p->port = port;
 
 	p->h_kill_event = CreateEvent(NULL, 1, 0, NULL); // 스레드를 위한 이벤트 큐 생성.
-	p->h_thread = CreateThread(NULL, 0, SM_Thread_Run, p, 0, &p->thread_id); // 스레드 생성.
+	p->h_thread = CreateThread(NULL, 1024*512, SM_Thread_Run, p, 10, &p->thread_id); // 스레드 생성.
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-void CForm_HeartBit::Thread_stop()
-{			
-	ThreadData *p = (ThreadData*)GetThreadPtr(m_thread_count);
-	if (p->h_thread != NULL) {
-		p->flag = false;
+void CForm_HeartBit::Thread_stop(int a_row, int a_col)
+{				
+	int pos = a_row * 10 + a_col;
+
+	ThreadData *p = (ThreadData*)GetThreadPtr(pos);
+
+	if (p->h_thread != NULL) {		
 		SetEvent(p->h_kill_event); // 스레드가 종료되었다는 이벤트로 설정함.
 		
 		// 데드락을 피하기 위해 이 작업을 함.
@@ -413,8 +417,16 @@ void CForm_HeartBit::Thread_stop()
 			}
 		}
 	}
-	DeleteThreadPtr(m_thread_count);
-	m_thread_count--;
+
+	int arrPos = 0;
+	for (unsigned int i = 0; i < dataPtr.ClickedPos.size(); i++) {
+		if (pos == dataPtr.ClickedPos[i])
+			arrPos = i;
+	}
+
+	dataPtr.ClickedPos.erase(dataPtr.ClickedPos.begin() + arrPos);
+	dataPtr.pThreadItemDataPtr.erase(dataPtr.pThreadItemDataPtr.begin() + arrPos);
+		
 	delete p;	
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -422,16 +434,20 @@ void CForm_HeartBit::Thread_stop()
 // lParam >> 어떤 스레드가 종료되었는지를 알 수 있는 스레드 정보를 담고 있다.
 afx_msg LRESULT CForm_HeartBit::On27001(WPARAM wParam, LPARAM lParam)
 {
+	CWordMemorizationDlg *main = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 	ThreadData *p = (ThreadData *)lParam;
-	
-	for (int i = 0; i <= m_thread_count; i++) {
-		if (GetThreadPtr(i) == p) {
+		
+	for (int i = 0; i < (int)dataPtr.pThreadItemDataPtr.size(); i++) {
+		if(FindThreadPtr(p)) {		
 			CloseHandle(p->h_kill_event); // 스레드가 종료되었기 때문에 스레드 이벤트 종료시킴.
 
 			// wParam == 0의 의미는 스스로 죽은 경우. (이 코드에서는 스스로 죽지 않는다. 이사님 코드 참고) 
-			if (wParam == 0) delete p;				 
+			if (wParam == 0) delete p;				
 			else p->h_thread = NULL;				
 			break;
+		}
+		else {
+			TRACE("Do not find Thread Data!!\n");
 		}
 	}
 
@@ -442,19 +458,18 @@ afx_msg LRESULT CForm_HeartBit::On27001(WPARAM wParam, LPARAM lParam)
 void CForm_HeartBit::Thread_Allstop()
 {
 	ThreadData *p;
-	int count = m_thread_count;
-	for (int i = 0; i <= count; i++) {
-		p = (ThreadData *)GetThreadPtr(i);
-		p->flag = false;
+	int count = dataPtr.pThreadItemDataPtr.size();
+	for (int i = 0; i < count; i++) {
+		p = (ThreadData *)GetThreadPtr_2(i);
 		SetEvent(p->h_kill_event);
 	}
 
-	TRACE(L"Shut down the %d working threads.\n", count+1);
+	TRACE(L"Shut down the %d working threads.\n", count);
 
 	MSG msg;
-	while (-1 != count) {
+	while (0 < count) {
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-			if (msg.message == 27001) {
+			if (msg.message == 27001) {				
 				count--;
 				msg.wParam = 0;
 			}
@@ -465,11 +480,12 @@ void CForm_HeartBit::Thread_Allstop()
 		}
 	}
 
-	TRACE(L"*****Thread All Stop Finish!!!*****\n");
+	count = dataPtr.pThreadItemDataPtr.size();
+	for (int i = count; 0 < i; i--) {
+		dataPtr.ClickedPos.erase(dataPtr.ClickedPos.begin() + (i-1));
+		dataPtr.pThreadItemDataPtr.erase(dataPtr.pThreadItemDataPtr.begin() + (i-1));
+	}
 
-	for (int i = 0; i <= m_thread_count; i++) 
-		DeleteThreadPtr(i);
-	
-	m_thread_count = -1;
+	TRACE(L"*****Thread All Stop Finish!!!*****\n");
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
