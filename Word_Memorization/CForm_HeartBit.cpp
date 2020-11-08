@@ -364,6 +364,22 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 	if (point.x < 50 && point.y < 50) {
 		AfxMessageBox(L"Thread all exit button clicked");
 		Thread_Allstop();		
+/*
+		std::vector<int> v;
+		for (int i = 0; i < 5; i++) v.push_back(i);
+		TRACE("push [size >> %d] [capacity >> %d]\n", v.size(), v.capacity());
+
+		v.clear();		
+		TRACE("clear [size >> %d] [capacity >> %d]\n", v.size(), v.capacity());
+		
+		TRACE("-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-\n");
+		
+		for (int i = 0; i < 5; i++) v.push_back(i);
+		TRACE("push [size >> %d] [capacity >> %d]\n", v.size(), v.capacity());
+				
+		std::vector<int>().swap(v); // 임의 백터와 교환을 한다.
+		TRACE("swap [size >> %d] [capacity >> %d]\n", v.size(), v.capacity());		
+*/
 	}
 
 	CFormView::OnLButtonDown(nFlags, point);
@@ -480,12 +496,11 @@ void CForm_HeartBit::Thread_Allstop()
 		}
 	}
 
-	count = dataPtr.pThreadItemDataPtr.size();
-	for (int i = count; 0 < i; i--) {
-		dataPtr.ClickedPos.erase(dataPtr.ClickedPos.begin() + (i-1));
-		dataPtr.pThreadItemDataPtr.erase(dataPtr.pThreadItemDataPtr.begin() + (i-1));
-	}
-
-	TRACE(L"*****Thread All Stop Finish!!!*****\n");
+	std::vector<short>().swap(dataPtr.ClickedPos); // 임의 백터와 교환을 한다.
+	std::vector<void*>().swap(dataPtr.pThreadItemDataPtr); // 임의 백터와 교환을 한다.
+		
+	int num = 88;
+	OutputDebugStringW(L"*****Thread All Stop Finish!!! %d*****"+ num);
+	//TRACE1(L"*****Thread All Stop Finish!!!*****%d\n" + num);
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
