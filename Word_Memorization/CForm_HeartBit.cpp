@@ -78,7 +78,7 @@ BOOL CForm_HeartBit::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD
 	heartBitBTN.xPos = 65;      // x 시작 좌표	
 	heartBitBTN.width = 100;    // 폭 사이즈
 	heartBitBTN.spacing_W = 20; // x 좌표 간격
-	heartBitBTN.rowCount = 16;
+	heartBitBTN.rowCount = 17;
 
 	heartBitBTN.yPos = 50;      // y 시작 좌표	
 	heartBitBTN.height = 30;    // 높이
@@ -364,22 +364,6 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 	if (point.x < 50 && point.y < 50) {
 		AfxMessageBox(L"Thread all exit button clicked");
 		Thread_Allstop();		
-/*
-		std::vector<int> v;
-		for (int i = 0; i < 5; i++) v.push_back(i);
-		TRACE("push [size >> %d] [capacity >> %d]\n", v.size(), v.capacity());
-
-		v.clear();		
-		TRACE("clear [size >> %d] [capacity >> %d]\n", v.size(), v.capacity());
-		
-		TRACE("-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-\n");
-		
-		for (int i = 0; i < 5; i++) v.push_back(i);
-		TRACE("push [size >> %d] [capacity >> %d]\n", v.size(), v.capacity());
-				
-		std::vector<int>().swap(v); // 임의 백터와 교환을 한다.
-		TRACE("swap [size >> %d] [capacity >> %d]\n", v.size(), v.capacity());		
-*/
 	}
 
 	CFormView::OnLButtonDown(nFlags, point);
@@ -389,7 +373,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 void CForm_HeartBit::Thread_Start(int a_row, int a_col)
 {		
 	CWordMemorizationDlg *main = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
-	int node = a_row / 2;
+	int node = a_col / 2;
 	int num = a_row * 10 + a_col;
 	int find = portAddr.mvb_addr[num];
 
@@ -401,11 +385,13 @@ void CForm_HeartBit::Thread_Start(int a_row, int a_col)
 	dataPtr.ClickedPos.push_back(num);
 	dataPtr.pThreadItemDataPtr.push_back(p);
 
-	p->node = node;
+	// 실제 DU에서는 MyNode, 0, 1, 2, 3이지만
+	// 공유메모리상에서는 0이 MyNode 1, 2, 3, 4이기 때문에 +1을 해준다.
+	p->node = node + 1;
 	p->port = port;
 
 	p->h_kill_event = CreateEvent(NULL, 1, 0, NULL); // 스레드를 위한 이벤트 큐 생성.
-	p->h_thread = CreateThread(NULL, 1024*512, SM_Thread_Run, p, 10, &p->thread_id); // 스레드 생성.
+	p->h_thread = CreateThread(NULL, 0x80000, SM_Thread_Run, p, 10, &p->thread_id); // 스레드 생성.
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -463,7 +449,7 @@ afx_msg LRESULT CForm_HeartBit::On27001(WPARAM wParam, LPARAM lParam)
 			break;
 		}
 		else {
-			TRACE("Do not find Thread Data!!\n");
+			DbgLogW(L"Do not find Thread Data!!\n");
 		}
 	}
 
@@ -480,7 +466,7 @@ void CForm_HeartBit::Thread_Allstop()
 		SetEvent(p->h_kill_event);
 	}
 
-	TRACE(L"Shut down the %d working threads.\n", count);
+	DbgLogW(L"Shut down the %d working threads.\n", count);
 
 	MSG msg;
 	while (0 < count) {
@@ -498,9 +484,7 @@ void CForm_HeartBit::Thread_Allstop()
 
 	std::vector<short>().swap(dataPtr.ClickedPos); // 임의 백터와 교환을 한다.
 	std::vector<void*>().swap(dataPtr.pThreadItemDataPtr); // 임의 백터와 교환을 한다.
-		
-	int num = 88;
-	OutputDebugStringW(L"*****Thread All Stop Finish!!! %d*****"+ num);
-	//TRACE1(L"*****Thread All Stop Finish!!!*****%d\n" + num);
+			
+	DbgLogW(L"*****Thread All Stop Finish!!!*****\n");	
 }
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+Z-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

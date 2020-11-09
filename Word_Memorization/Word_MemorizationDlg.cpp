@@ -108,7 +108,11 @@ BOOL CWordMemorizationDlg::OnInitDialog()
 	for (int i = 0; i < m_scrBTN.rowCount; i++) {
 		m_ClickedScreenPos[i] = new unsigned char[m_scrBTN.colCount];
 		memset(m_ClickedScreenPos[i], 0, sizeof(unsigned char) * m_scrBTN.colCount);
-	}		
+	}	
+
+	// 실행시키면 Protocol 화면 클릭 한 것 처럼 Protocol 화면 버튼이 눌려있게 만듬.
+	m_ClickedScreenPos[0][0] = 1;
+	m_oldClickedScrBTN = 0;
 //--------------------------------------------------------------------------------------------
 	
 	return TRUE;  // return TRUE  unless you set the focus to a control
@@ -622,7 +626,7 @@ void CWordMemorizationDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 		// 배경을 이전 모드로 설정한다.
 		dc.SetBkMode(old_mode);		
-	}
+	} // screen button
 	else if (bScrBTN) {
 		CClientDC dc(this);
 

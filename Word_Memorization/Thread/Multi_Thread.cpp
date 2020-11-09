@@ -60,7 +60,7 @@ int ThreadWorking(unsigned int a_heartbit, int a_port, ThreadData *ap_data)
 {	
 	CWordMemorizationDlg *main = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 	memset(&(main->m_pData->data[a_port][1]), a_heartbit, 1);	
-	Sleep(300);
+	Sleep(200);
 
 	return 1;	
 }
@@ -72,21 +72,24 @@ DWORD WINAPI SM_Thread_Run(void *ap_data)
 	int kill_flag = 0;
 	unsigned int heartbit = 0;
 	
-	TRACE("[%08x] Thread Start!\n", p_data->thread_id);	
+	DbgLogW(L"[%08x] Thread Start!\n", p_data->thread_id);
+
+	CWordMemorizationDlg *main = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	int port = p_data->port + main->mp_Libxl->m_totalNodeCnt * p_data->node;
 
 	while(true){
 		if (WaitForSingleObject(p_data->h_kill_event, 10) == WAIT_OBJECT_0) {
-			TRACE("[%08x] Thread Stop!\n", p_data->thread_id);
+			DbgLogW(L"[%08x] Thread Stop!\n", p_data->thread_id);
 			kill_flag = 1; // 1의 의미는 사용자가 스레드를 강제로 중지를 했다는 의미이다.							
 			break;
 		}
-		
-		ThreadWorking(heartbit, p_data->port, p_data);
+
+		ThreadWorking(heartbit, port, p_data);
 		heartbit++;
 		if (heartbit == 200) heartbit = 0;
 	}
 
-	TRACE("***[%08x] Exit the task!***\n", p_data->thread_id);
+	DbgLogW(L"***[%08x] Exit the task!***\n", p_data->thread_id);
 	CloseHandle(p_data->h_thread); // 스레드 종료.
 
 /* 이사님 코드

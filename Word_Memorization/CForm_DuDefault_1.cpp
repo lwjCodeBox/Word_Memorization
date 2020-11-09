@@ -32,119 +32,6 @@ CForm_DuDefault_1::~CForm_DuDefault_1()
 {
 }
 
-#ifdef Edit_and_ListControl_Sample_CODE	
-void CForm_DuDefault_1::Clear_EditCtrl()
-{
-	if (mp_fixedRow != NULL) {
-		for (int i = 0; i < m_fixedRowCnt; i++) {
-			delete mp_fixedRow[i];
-		}
-		delete[] mp_fixedRow;
-	}
-
-	if (mp_fixedColumn != NULL) {
-		for (int i = 0; i < 2; i++) {
-			for (int sub_i = 0; sub_i < m_fixedColumnCnt; sub_i++) {
-				delete mp_fixedColumn[i * m_fixedColumnCnt + sub_i];
-			}
-		}
-		delete[] mp_fixedColumn;
-
-	}
-
-	if (mp_cedit != NULL) {
-		for (int i = 0; i < m_row; i++) {
-			for (int sub_i = 0; sub_i < m_column; sub_i++) {
-				delete mp_cedit[i * m_column + sub_i];
-			}
-		}
-		delete[] mp_cedit;
-	}
-
-	if (mp_setPos != NULL) delete[] mp_setPos;
-}
-
-void CForm_DuDefault_1::Create_EditCtrl(int a_Row, int a_Column)
-{
-	CString number_str;
-
-	int fr_X = 30; // x 시작 좌표
-	int fr_Y = 110; // y 시작 좌표
-	int fr_W = 70; // 사각형의 폭
-	int fr_H = 25; // 사각형의 높이
-
-	m_fixedRowCnt = a_Row; //32;
-	mp_fixedRow = new CEdit * [m_fixedRowCnt];
-
-	for (int i = 0; i < m_fixedRowCnt; i++) {
-		mp_fixedRow[i] = new CEdit();
-		mp_fixedRow[i]->Create(WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER | ES_CENTER,
-			CRect(fr_X, fr_Y + i * fr_H, fr_X + fr_W, fr_Y + (i + 1) * fr_H),
-			//this, 10000 + i * m_fixedRowCnt); 이건 두줄로 표기 할때 아래줄은 한자리수를 나타내고 윗줄은 두자리 수를 나타낼때 사용함.
-			this, 10000 + i);
-
-		number_str.Format(L"Byte %d", i);
-		SetDlgItemText(10000 + i, number_str);
-
-		//number_str.Format(L"%d", 10000 + i);
-		//SetDlgItemText(10000 + i, number_str);
-	}
-
-
-
-	int fc_X = 100; // x 시작 좌표
-	int fc_Y = 60; // y 시작 좌표
-	int fc_W = 100; // 사각형의 폭
-	int fc_H = 25; // 사각형의 높이
-
-	m_fixedColumnCnt = a_Column; //8;
-	mp_fixedColumn = new CEdit * [2 * m_fixedColumnCnt];
-
-	for (int i = 0; i < 2; i++) {
-		for (int sub_i = 0; sub_i < m_fixedColumnCnt; sub_i++) {
-			mp_fixedColumn[i * m_fixedColumnCnt + sub_i] = new CEdit();
-			mp_fixedColumn[i * m_fixedColumnCnt + sub_i]->Create(WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER | ES_CENTER,
-				//CRect(fc_X + i * fc_W, fc_Y, fc_X + (i + 1) * fc_W, fc_Y + fc_H),
-				CRect(fc_X + sub_i * fc_W, fc_Y + i * fc_H, fc_X + (sub_i + 1) * fc_W, fc_Y + (i + 1) * fc_H),
-				this, 20000 + i * m_fixedColumnCnt + sub_i);
-
-			number_str.Format(L"Bit %d", 15 - (i * m_fixedColumnCnt + sub_i));
-			SetDlgItemText(20000 + i * m_fixedColumnCnt + sub_i, number_str);
-
-			//number_str.Format(L"%d", 20000 + i * m_fixedColumnCnt + sub_i);
-			//SetDlgItemText(20000 + i * m_fixedColumnCnt + sub_i, number_str);
-		}
-	}
-
-
-	int d_X = 100; // x 시작 좌표
-	int d_Y = 110; // y 시작 좌표
-	int d_W = 100; // 사각형의 폭
-	int d_H = 25; // 사각형의 높이
-
-	m_row = a_Row; // 32;
-	m_column = a_Column; // 8;
-
-	mp_cedit = new CEdit * [m_row * m_column];
-	for (int i = 0; i < m_row; i++) {
-		for (int sub_i = 0; sub_i < m_column; sub_i++) {
-			mp_cedit[i * m_column + sub_i] = new CEdit();
-			mp_cedit[i * m_column + sub_i]->Create(WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | WS_BORDER | WS_BORDER | ES_MULTILINE | ES_CENTER,
-				CRect(d_X + sub_i * d_W, d_Y + i * d_H, d_X + (sub_i + 1) * d_W, d_Y + (i + 1) * d_H),
-				this, 30000 + i * m_column + sub_i);
-			// col 2 || row 5
-			//SetDlgItemText(30000 + i * m_column + sub_i, pExcel->getExcelValue(i+5, m_column + sub_i + 2));
-			number_str.Format(L"text %d", 30000 + i * m_column + sub_i);
-			SetDlgItemText(30000 + i * m_column + sub_i, number_str);
-		}
-	}
-
-	mp_setPos = new unsigned char[m_row * m_column];
-	memset(mp_setPos, 0, m_row * m_column);
-}
-#endif
-
-
 void CForm_DuDefault_1::DoDataExchange(CDataExchange *pDX)
 {
 	CFormView::DoDataExchange(pDX);
@@ -187,11 +74,6 @@ void CForm_DuDefault_1::Dump(CDumpContext &dc) const
 BOOL CForm_DuDefault_1::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext)
 {
 	// TODO: Add your specialized code here and/or call the base class
-#ifdef Edit_and_ListControl_Sample_CODE
-	mp_fixedRow = NULL;
-	mp_fixedColumn = NULL;
-	mp_cedit = NULL;
-#endif
 	return CFormView::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
 }
 
@@ -282,30 +164,6 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	//mp_gridctrl->SetFocusCell(3, 1);
 	mp_gridctrl->SetEditable(false);
 	//mp_gridctrl->set(true);
-
-#ifdef Edit_and_ListControl_Sample_CODE
-		Clear_EditCtrl(); // 에디트 창을 한번 초기화 한다.
-
-		Create_EditCtrl(32, 8); // 원하는 사이즈 만큼 에디트를 만듬.
-
-		pExcel->Read_DU_Default(m_flag); // 1의 의미는 DU default 1을 클릭 했다는 의미.
-
-		if (mh_bk_fixed_row_col != NULL) {
-			// 자신이 만든 Brush 객체를 제거한다.
-			DeleteObject(mh_bk_fixed_row_col);
-			mh_bk_fixed_row_col = NULL;
-		}
-
-		if (mh_bk_edit_row_col != NULL) {
-			// 자신이 만든 Brush 객체를 제거한다.
-			DeleteObject(mh_bk_edit_row_col);
-			mh_bk_edit_row_col = NULL;
-		}
-
-		mh_bk_fixed_row_col = ::CreateSolidBrush(RGB(192, 192, 192));
-
-		mh_bk_edit_row_col = ::CreateSolidBrush(RGB(128, 128, 255));
-#endif
 }
 //--------------------------------------------------------------------------------------------
 
@@ -454,22 +312,6 @@ BOOL CForm_DuDefault_1::DestroyWindow()
 		mp_gridctrl = NULL;
 	}
 
-
-#ifdef Edit_and_ListControl_Sample_CODE
-	Clear_EditCtrl();
-
-	if (mh_bk_fixed_row_col != NULL) {
-		// 자신이 만든 Brush 객체를 제거한다.
-		DeleteObject(mh_bk_fixed_row_col);
-		mh_bk_fixed_row_col = NULL;
-	}
-
-	if (mh_bk_edit_row_col != NULL) {
-		// 자신이 만든 Brush 객체를 제거한다.
-		DeleteObject(mh_bk_edit_row_col);
-		mh_bk_edit_row_col = NULL;
-	}
-#endif
 	return CFormView::DestroyWindow();
 }
 //--------------------------------------------------------------------------------------------

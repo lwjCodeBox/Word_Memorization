@@ -1,9 +1,12 @@
 #pragma once
 
 #include "DefineOfDev_J.h"
+#include "GridCtrl_src_new/GridCtrl.h"
 
 #include <iostream>
 #include <thread>
+
+#define IDC_PT_GRID		20001
 
 // CForm_Protocol form view
 
@@ -33,12 +36,14 @@ protected:
 
 private:	
 	// 어떤 버튼을 클릭 했는지 정보를 담고 있는 변수
-	unsigned char **m_ClickedPos = NULL;
+	unsigned char **m_pt_ClickedPos = NULL;
 
 	TCaption caption;
 	
 	TButtonRect fixCaption;
 	TButtonRect protocolBTN;
+
+	CGridCtrl *mp_PT_Grid = NULL;
 
 private:
 	void OnInitFixCaptionButton();
@@ -47,12 +52,15 @@ private:
 	void OnDrawFixCaption(CDC *p_DC, CRect *p_R);
 	void OnDrawProtocolButton(CDC *p_DC, CRect *p_R);
 
+	void VAC_Device();
+
 public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext = NULL);
 	virtual void OnInitialUpdate();
 	afx_msg void OnPaint();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnDestroy();
+	afx_msg BOOL OnEraseBkgnd(CDC *pDC);
 };
 
 

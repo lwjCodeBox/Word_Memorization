@@ -5,7 +5,6 @@
 #include "Word_Memorization.h"
 #include "CForm_Protocol.h"
 
-
 // CForm_Protocol
 
 IMPLEMENT_DYNCREATE(CForm_Protocol, CFormView)
@@ -30,6 +29,7 @@ BEGIN_MESSAGE_MAP(CForm_Protocol, CFormView)
 	ON_WM_PAINT()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_DESTROY()
+	ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
 
@@ -54,9 +54,9 @@ void CForm_Protocol::Dump(CDumpContext& dc) const
 
 
 BOOL CForm_Protocol::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext)
-{	
+{		
 	// fix Caption
-	fixCaption.xPos = 20;      // x 시작 좌표	
+	fixCaption.xPos = 65;      // x 시작 좌표	
 	fixCaption.width = 100;    // 폭 사이즈
 	fixCaption.spacing_W = 20; // x 좌표 간격
 	fixCaption.rowCount = 1;
@@ -68,42 +68,40 @@ BOOL CForm_Protocol::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD
 
 	OnInitFixCaptionButton();
 
-	// Init protocol Button Pos;	
-	protocolBTN.xPos = 20;      // x 시작 좌표	
+	// Init Protocol Button Pos;	
+	protocolBTN.xPos = 65;      // x 시작 좌표	
 	protocolBTN.width = 100;    // 폭 사이즈
 	protocolBTN.spacing_W = 20; // x 좌표 간격
-	protocolBTN.rowCount = 1;
+	protocolBTN.rowCount = 17;
 
 	protocolBTN.yPos = 50;      // y 시작 좌표	
-	protocolBTN.height = 25;    // 높이
-	protocolBTN.spacing_H = 0;  // y 좌표 간격
+	protocolBTN.height = 30;    // 높이
+	protocolBTN.spacing_H = 10;  // y 좌표 간격
 	protocolBTN.colCount = 8;
 
 	OnInitProtocolButton();
 
-	m_ClickedPos = new unsigned char *[protocolBTN.rowCount];
+	m_pt_ClickedPos = new unsigned char *[protocolBTN.rowCount];
 
 	for (int i = 0; i < protocolBTN.rowCount; i++) {
-		m_ClickedPos[i] = new unsigned char[protocolBTN.colCount];
-		memset(m_ClickedPos[i], 0, sizeof(unsigned char) * protocolBTN.colCount);
-		
-	} 
-
+		m_pt_ClickedPos[i] = new unsigned char[protocolBTN.colCount];
+		memset(m_pt_ClickedPos[i], 0, sizeof(unsigned char) * protocolBTN.colCount);
+	}
 	return CFormView::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
 }
-//--------------------------------------------------------------------------------------------
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CForm_Protocol::OnDestroy()
 {
 	CFormView::OnDestroy();
 
 	// Protocol Button	
-	if (m_ClickedPos != NULL) {
+	if (m_pt_ClickedPos != NULL) {
 		for (int i = 0; i < protocolBTN.rowCount; i++) {
-			delete[] m_ClickedPos[i];
-			m_ClickedPos[i] = NULL;
+			delete[] m_pt_ClickedPos[i];
+			m_pt_ClickedPos[i] = NULL;
 		}
-		delete[] m_ClickedPos;
+		delete[] m_pt_ClickedPos;
 	}
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -112,7 +110,7 @@ void CForm_Protocol::OnInitialUpdate()
 {
 	CFormView::OnInitialUpdate();
 }
-//--------------------------------------------------------------------------------------------
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CForm_Protocol::OnPaint()
 {
@@ -122,7 +120,7 @@ void CForm_Protocol::OnPaint()
 	OnDrawFixCaption(&dc, &r);
 	OnDrawProtocolButton(&dc, &r);	
 }
-//--------------------------------------------------------------------------------------------
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CForm_Protocol::OnInitFixCaptionButton()
 {
@@ -140,7 +138,7 @@ void CForm_Protocol::OnInitFixCaptionButton()
 		}
 	}
 }
-//--------------------------------------------------------------------------------------------
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CForm_Protocol::OnInitProtocolButton()
 {
@@ -158,7 +156,7 @@ void CForm_Protocol::OnInitProtocolButton()
 		}
 	}
 }
-//--------------------------------------------------------------------------------------------
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CForm_Protocol::OnDrawFixCaption(CDC *p_DC, CRect *p_R)
 {
@@ -168,17 +166,34 @@ void CForm_Protocol::OnDrawFixCaption(CDC *p_DC, CRect *p_R)
 		CString str;
 		str.Format(L"%s", caption.trainBTN_Caption.at(i).c_str());
 
+		// 글꼴 객체 선언
+		CFont font;
+
+		// 원하는 그림을 그리기 위해 DC를 얻는다.
+		//CClientDC dc(this);
+
+		// 원하는 속성을 지정하여 글꼴을 생성한다.
+		font.CreateFont(18, 0, 0, 0, FW_BOLD, 0, 0, 0, DEFAULT_CHARSET,
+			OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+			DEFAULT_PITCH | FF_SWISS, L"맑은 고딕");
+
+		// 생성된 글꼴을 사용하여 문자열을 출력하기 위해 해당 글꼴을 DC에 연결한다.
+		p_DC->SelectObject(&font);
+
 		//p_DC->FillSolidRect(&fixCaption.r[i], RGB(255, 255, 128)); 
 		//p_DC->Draw3dRect(&fixCaption.r[i], RGB(0, 0, 0), RGB(0, 0, 0));
-		p_DC->SetTextColor(RGB(0, 0, 128));
+		p_DC->SetTextColor(RGB(0, 255, 255));
 
 		p_DC->DrawText(str, &fixCaption.r[i], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
 		// 배경을 이전 모드로 설정한다.
 		p_DC->SetBkMode(old_mode);
+
+		// 글꼴 객체를 제거한다.
+		font.DeleteObject();
 	}
 }
-//--------------------------------------------------------------------------------------------
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CForm_Protocol::OnDrawProtocolButton(CDC *p_DC, CRect *p_R)
 {
@@ -186,41 +201,142 @@ void CForm_Protocol::OnDrawProtocolButton(CDC *p_DC, CRect *p_R)
 
 	for (int rowCnt = 0; rowCnt < protocolBTN.rowCount; rowCnt++) {
 		for (int colCnt = 0; colCnt < protocolBTN.colCount; colCnt++) {
-			int old_mode = p_DC->SetBkMode(TRANSPARENT);
-
 			pos = (protocolBTN.colCount * rowCnt) + colCnt;
 
 			CString str;
-			str.Format(L"Car0%d", colCnt);
-
-			if (1 == m_ClickedPos[rowCnt][colCnt]) {
-				p_DC->FillSolidRect(&protocolBTN.r[pos], RGB(200, 200, 100)); // 연두색
-				p_DC->Draw3dRect(&protocolBTN.r[pos], RGB(0, 0, 0), RGB(200, 200, 100));
-				p_DC->SetTextColor(RGB(255, 255, 255)); // 흰색
-
-				p_DC->DrawText(str, (CRect)protocolBTN.r[pos] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			str.Format(L"%s", caption.HB_BTN_Caption.at(pos).c_str());
+			if (!str.Compare(L"*")) {
+				// empth
 			}
 			else {
-				p_DC->FillSolidRect(&protocolBTN.r[pos], RGB(192, 192, 192)); // 회색
-				p_DC->Draw3dRect(&protocolBTN.r[pos], RGB(192, 192, 192), RGB(0, 0, 0));
-				p_DC->SetTextColor(RGB(0, 0, 0)); // 검정
+				int old_mode = p_DC->SetBkMode(TRANSPARENT);
 
-				p_DC->DrawText(str, &protocolBTN.r[pos], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				// 글꼴 객체 선언
+				CFont font;
+
+				// 원하는 그림을 그리기 위해 DC를 얻는다.
+				//CClientDC dc(this);
+
+				// 원하는 속성을 지정하여 글꼴을 생성한다.
+				font.CreateFont(18, 0, 0, 0, FW_BOLD, 0, 0, 0, DEFAULT_CHARSET,
+					OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
+					DEFAULT_PITCH | FF_SWISS, L"맑은 고딕");
+
+				// 생성된 글꼴을 사용하여 문자열을 출력하기 위해 해당 글꼴을 DC에 연결한다.
+				p_DC->SelectObject(&font);
+
+				if (1 == m_pt_ClickedPos[rowCnt][colCnt]) {
+					p_DC->FillSolidRect(&protocolBTN.r[pos], RGB(0, 50, 128)); // 눌림.
+					p_DC->Draw3dRect(&protocolBTN.r[pos], RGB(0, 200, 255), RGB(0, 0, 0));
+					p_DC->SetTextColor(RGB(255, 255, 255));
+
+					p_DC->DrawText(str, (CRect)protocolBTN.r[pos] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				}
+				else {
+					p_DC->FillSolidRect(&protocolBTN.r[pos], RGB(192, 192, 192)); // 안눌림.							
+					p_DC->Draw3dRect(&protocolBTN.r[pos], RGB(255, 255, 255), RGB(255, 255, 255));
+					p_DC->SetTextColor(RGB(0, 0, 0));
+
+					p_DC->DrawText(str, &protocolBTN.r[pos], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+				}
+
+				// 배경을 이전 모드로 설정한다.
+				p_DC->SetBkMode(old_mode);
+
+				// 글꼴 객체를 제거한다.
+				font.DeleteObject();
 			}
-
-			// 배경을 이전 모드로 설정한다.
-			p_DC->SetBkMode(old_mode);
 		}
 	}
 }
-//--------------------------------------------------------------------------------------------
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
+BOOL CForm_Protocol::OnEraseBkgnd(CDC *pDC)
+{
+	CRect rect;
+	GetClientRect(rect);
+	pDC->FillSolidRect(rect, RGB(0, 0, 0));
+	pDC->Draw3dRect(rect, RGB(0, 0, 0), RGB(0, 0, 0));
+
+	return true;
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	//std::thread t;
+	unsigned int _col = 0, _row = 0;
 
+	// Protocol button 범위 체크.	
+	bool bProtocolBTN = false;
+	short click_PT_BTN = -1;
+	short pos = 0;
 
+	for (int rowCnt = 0; rowCnt < protocolBTN.rowCount; rowCnt++) {
+		for (int colCnt = 0; colCnt < protocolBTN.colCount; colCnt++) {
+			pos = (protocolBTN.colCount * rowCnt) + colCnt;
+
+			if (PtInRect(&protocolBTN.r[pos], point)) {
+				CString str;
+				try { str.Format(L"%s", caption.HB_BTN_Caption.at(pos).c_str()); }
+				catch (std::out_of_range &e) {
+					str.Format(L"[Catch the std::out_of_range] %s", e.what());
+					AfxMessageBox(str);
+				}
+
+				if (!str.Compare(L"*")) return;
+
+				_row = rowCnt;
+				_col = colCnt;
+
+				bProtocolBTN = true;
+				click_PT_BTN = pos;
+			}
+		}
+	}
+
+	mp_PT_Grid = new CGridCtrl;
+	mp_PT_Grid->Create(CRect(10, 45, 1020, 800), this, IDC_PT_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
+
+	mp_PT_Grid->SetRowCount(32 + 2);
+	mp_PT_Grid->SetColumnCount(8 + 1); // 현시할 column 8개, fixed column 1개
+
+	mp_PT_Grid->SetFixedRowCount(2);
+	mp_PT_Grid->SetFixedColumnCount(1);
+
+	mp_PT_Grid->SetFixedBkColor(RGB(200, 200, 200));
+
+	// grid option
+	mp_PT_Grid->SetGridLineColor(RGB(128, 128, 255));
+	mp_PT_Grid->SetTrackFocusCell(true);
+	mp_PT_Grid->SetEditable(true);
+
+	mp_PT_Grid->EnableTitleTips(false);
+
+	CString str;
+
+	// Bit 7 ~ 0
+	for (int i = 1; i < 9; i++) {
+		str.Format(L"Bit %02d", 7 - (i - 1));
+		mp_PT_Grid->SetItemText(1, i, str);
+	}
+	// Bit 15 ~ 8
+	for (int i = 1; i < 9; i++) {
+		str.Format(L"Bit %02d", 16 - i);
+		mp_PT_Grid->SetItemText(0, i, str);
+	}
+	// Byte
+	for (int i = 2; i < 34; i++) {
+		int word = (i - 2) / 2;
+		str.Format(L"Byte %02d (W %02d)", i - 2, word);
+		mp_PT_Grid->SetItemText(i, 0, str);
+	}
+
+	// column width
+	for (int col = 1; col < 9; col++) {
+		mp_PT_Grid->SetColumnWidth(col, 114);
+	}
+
+	
 	CFormView::OnLButtonDown(nFlags, point);
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
