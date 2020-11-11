@@ -80,7 +80,7 @@ DWORD WINAPI SM_Thread_Run(void *ap_data)
 	while(true){
 		if (WaitForSingleObject(p_data->h_kill_event, 10) == WAIT_OBJECT_0) {
 			DbgLogW(L"[%08x] Thread Stop!\n", p_data->thread_id);
-			kill_flag = 1; // 1의 의미는 사용자가 스레드를 강제로 중지를 했다는 의미이다.							
+			kill_flag = 1; // 1의 의미는 사용자가 스레드를 강제로 중지를 했다는 의미이다.
 			break;
 		}
 

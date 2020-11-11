@@ -38,41 +38,44 @@ CString GetTextFormExcel(int a_Row, int a_Col, libxl::Sheet *ap_Excel){
 //--------------------------------------------------------------------------------------------
 
 // https://m.blog.naver.com/PostView.nhn?blogId=sinarn&logNo=130180639399&proxyReferer=https:%2F%2Fwww.google.com%2F
-// [설정] -> [고급] -> [문자집합] 항목이 아스키 코드로 설정인 경우...
-void DbgLog(LPCTSTR a_str, ...)
+void DbgLog(LPCSTR ap_str, ...)
 {
-    //va_list args;
-    //va_start(args, a_str);
+    va_list args;
+    
+    // 시작
+    va_start(args, ap_str);
 
-    //// "abc"가 들어오면 문자열은 크기는 3이지만 맨 마지막 위치한 곳에 \n을 추가 해야하기 때문에
-    //// 문자열의 크기는 4가 되야한다.
-    //int len = _vsctprintf(a_str, args) + 1; // _vstprintf_s for '\0'
-    //char *pBuf = (char *)malloc(sizeof(char) * len);
+    // "abc"가 들어오면 문자열은 크기는 3이지만 맨 마지막 위치한 곳에 '\0'을 추가 해야하기 때문에
+    // 문자열의 크기는 4가 되야한다.
+    // 가변인자로 이루어진 문자열의 크기를 구한다. (_vscprintf doesn't count terminating '\0')
+    int len = _vscprintf(ap_str, args) + 1; // _vscprintf for '\0'
 
-    //if (pBuf) {
-    //    // 문자열 크기가 4가 되어야 하지만 _vstprintf_s 반환 값이 3인 이유는 개행문자(\n) 전까지의 문자열을 의미함.
-    //    int size = _vstprintf_s(pBuf, len, a_str, args);
-    //    OutputDebugString(pBuf);
-    //    printf("[len %d] [size %d] %s", len, size, pBuf);
-    //    free(pBuf);
-    //}
+    // 위에서 구한 크기 +1만큼 pBuf에 메모리를 할당한다.
+    char *pBuf = (char *)malloc(sizeof(char) * len);    
 
-    //va_end(args);
+    if (pBuf) {
+        // 문자열을 pBuf에 입력한다.
+        // 문자열 크기가 4가 되어야 하지만 vsprintf() 반환 값이 3인 이유는 '\0' 전까지의 문자열을 의미함.
+        int size = vsprintf(pBuf, ap_str, args);
+        OutputDebugStringA(pBuf);        
+        printf("[len %d] [size %d] %s", len, size, pBuf);
+        free(pBuf);
+    }
+
+    va_end(args);
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-// [설정] -> [고급] -> [문자집합] 항목이 유니코드로 설정인 경우...
-void DbgLogW(LPCTSTR str, ...)
+void DbgLogW(LPCWSTR ap_str, ...)
 {
-    wchar_t *pCopy = '\0';
     va_list args;
-    va_start(args, str);
+    va_start(args, ap_str);
 
-    int len = _vsctprintf(str, args) + 1;
+    int len = _vscwprintf(ap_str, args) + 1;
     wchar_t *pBuf = (wchar_t *)malloc(sizeof(wchar_t) * len);
     
     if (pBuf) {
-        int size = vswprintf(pBuf, len, str, args);
+        int size = vswprintf(pBuf, len, ap_str, args);
         OutputDebugStringW(pBuf);
         wprintf(L"[len %d] [size %d] %s", len, size, pBuf);
                         

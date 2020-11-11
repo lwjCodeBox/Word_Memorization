@@ -362,7 +362,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 
 	// Thread all exit button;
 	if (point.x < 50 && point.y < 50) {
-		AfxMessageBox(L"Thread all exit button clicked");
+		AfxMessageBox(L"Thread all exit button clicked");		
 		Thread_Allstop();		
 	}
 
@@ -380,7 +380,7 @@ void CForm_HeartBit::Thread_Start(int a_row, int a_col)
 	int port = binarySearch(main->mp_Libxl->mvb_Addr, 120, find);
 			
 	ThreadData *p = new ThreadData;
-	p->h_wnd = m_hWnd;
+	p->h_wnd = CForm_HeartBit::m_hWnd; // 어떤 핸들인지 좀더 명확하게 표시.
 	
 	dataPtr.ClickedPos.push_back(num);
 	dataPtr.pThreadItemDataPtr.push_back(p);
@@ -444,8 +444,11 @@ afx_msg LRESULT CForm_HeartBit::On27001(WPARAM wParam, LPARAM lParam)
 			CloseHandle(p->h_kill_event); // 스레드가 종료되었기 때문에 스레드 이벤트 종료시킴.
 
 			// wParam == 0의 의미는 스스로 죽은 경우. (이 코드에서는 스스로 죽지 않는다. 이사님 코드 참고) 
-			if (wParam == 0) delete p;				
-			else p->h_thread = NULL;				
+			if (wParam == 0) 
+				delete p;				
+			else 
+				p->h_thread = NULL;	
+
 			break;
 		}
 		else {
