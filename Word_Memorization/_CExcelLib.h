@@ -11,10 +11,8 @@ class _CExcelLib
 {
 public:
 	_CExcelLib();
-
-	CString getExcelValue(int a_Row, int a_Col);
+	
 	CString getExclSheetName(int a_Sheet);
-	int getTotalNode();
 	bool Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data); // MVB 전체 초기화
 	bool Load_logical_Port_Adrs(); // MVB에서 사용하는 포트 주소를 엑셀에서 읽어옴.
 
@@ -46,27 +44,27 @@ private:
 	Sheet* getSheetByName(Book* book, const wchar_t* name); // 사용하고 있는 Sheet의 이름을 얻어옴.
 
 	bool ExcelCertified();
-	bool InitReadExcel(CString (*ap_ExcelList)[9]); // ap_ExcelList[100][2] == (*ap_ExcelList)[2] 같은 의미임
-	// Read DU Defautl1, 2, 3
+	// Read DU Defautl1, 2, 3 [ap_ExcelList[100][2] == (*ap_ExcelList)[2] 같은 의미임]
 	bool Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_Excel_DuDefault_2)[8], CString(*ap_Excel_DuDefault_3)[8]);
+	// BECU SDR/SD
+	bool Read_BECU_SDR_SD();
 
 public:
-	Book *m_Book;
-	Sheet *m_pSheet1;
+	Book *m_Book;	
 	Sheet *m_pSheet2; // logical_port_adrs Sheet
 	Sheet *m_pDU_Default_1, *m_pDU_Default_2, *m_pDU_Default_3; // du_Defatul1, 2, 3 Sheet
 
 	WORD mvb_Addr[120]; // myNode 총 갯수가 120개라서 배열의 크기를 120으로 잡음.
 	BYTE m_totalNodeCnt;
 	
-private:
-	CString m_ExcelList[18][9]; 
-	int m_TotalNode;
-	
+private:	
 	// Du Default1, 2, 3
 	CString m_Excel_DuDefault_1[32][8];
 	CString m_Excel_DuDefault_2[32][8];
 	CString m_Excel_DuDefault_3[32][8];
+
+	// BECU SDR/SD
+	
 
 }; 
 

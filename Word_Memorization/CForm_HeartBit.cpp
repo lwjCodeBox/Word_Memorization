@@ -380,7 +380,7 @@ void CForm_HeartBit::Thread_Start(int a_row, int a_col)
 	int port = binarySearch(main->mp_Libxl->mvb_Addr, 120, find);
 			
 	ThreadData *p = new ThreadData;
-	p->h_wnd = CForm_HeartBit::m_hWnd; // 어떤 핸들인지 좀더 명확하게 표시.
+	p->h_wnd = m_hWnd;
 	
 	dataPtr.ClickedPos.push_back(num);
 	dataPtr.pThreadItemDataPtr.push_back(p);

@@ -4,9 +4,9 @@
 _CExcelLib::_CExcelLib()
 {
 	 ExcelCertified();
-	 InitReadExcel(m_ExcelList);
 	 Read_DU_Default(m_Excel_DuDefault_1, m_Excel_DuDefault_2, m_Excel_DuDefault_3);
 }
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 Sheet* _CExcelLib::getSheetByName(Book* book, const wchar_t* name)
 {
@@ -21,6 +21,7 @@ Sheet* _CExcelLib::getSheetByName(Book* book, const wchar_t* name)
 	}
 	return 0;
 }
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 bool _CExcelLib::ExcelCertified()
 {
@@ -35,48 +36,13 @@ bool _CExcelLib::ExcelCertified()
 	AfxMessageBox(L"Can not found excel file");
 	return false;
 }
-
-
-bool _CExcelLib::InitReadExcel(CString(*ap_ExcelList)[9])
-{
-	libxl::Format* format = NULL;
-
-	m_pSheet1 = getSheetByName(m_Book, L"Sheet2");
-
-	if (m_pSheet1) {
-		int t_col_start = 2; // (열 시작 위치)
-		int t_col_end = 17;
-		int t_row_start = 2; // (행 시작 위치)
-		int t_row_end = 9;
-
-		for (int i = t_col_start; i < t_col_end + 1; i++) {
-			for (int j = t_row_start; j < t_row_end + 1; j++) {
-				ap_ExcelList[i - 2][9 - j] = m_pSheet1->readStr(i, j, &format);
-			}
-		}
-		
-		m_TotalNode = (int)m_pSheet1->readNum(2, 15, &format);
-
-		return true;
-	}
-
-	return false;
-}
-
-CString _CExcelLib::getExcelValue(int a_Row, int a_Col)
-{
-	return m_ExcelList[a_Row][a_Col];
-}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 CString _CExcelLib::getExclSheetName(int a_Sheet)
 {
 	return m_Book->getSheet(a_Sheet)->name();
 }
-
-int _CExcelLib::getTotalNode()
-{
-	return m_TotalNode;
-}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 bool _CExcelLib::Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data)
 {
@@ -92,19 +58,19 @@ bool _CExcelLib::Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data)
 
 		int t_mem_row_idx = 0;
 
-		unsigned short FCODE[5] = {0, 4, 8, 16, 32 };
+		unsigned short FCODE[5] = { 0, 4, 8, 16, 32 };
 
 		int readFcode = 0;
 
 		unsigned char arr[5] = { 1,2,3,4,5 };
 
-		
+
 		for (int node = 1; node < 6; node++) // 1 is myNode 
-		{		
+		{
 			for (int i = t_col_start; i < t_col_end + 1; i++)
 			{
 				readFcode = (int)m_pSheet2->readNum(i, 5, &format);
-				
+
 				if (readFcode != 0)
 				{
 					memset(&(ap_SM_Data->data[t_mem_row_idx][0]), 2, FCODE[readFcode]);
@@ -118,7 +84,7 @@ bool _CExcelLib::Load_logical_Port_Adrs(TSharedMemory *ap_SM_Data)
 
 	return false;
 }
-
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 bool _CExcelLib::Load_logical_Port_Adrs()
 {
@@ -158,7 +124,7 @@ bool _CExcelLib::Load_logical_Port_Adrs()
 	}
 	return false;
 }
-
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 bool _CExcelLib::Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_Excel_DuDefault_2)[8], CString(*ap_Excel_DuDefault_3)[8])
 {
@@ -198,4 +164,11 @@ bool _CExcelLib::Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_
 		return false;
 	}
 }
-//--------------------------------------------------------------------------------------------
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+bool _CExcelLib::Read_BECU_SDR_SD()
+{
+
+	return true;
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
