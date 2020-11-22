@@ -5,6 +5,8 @@
 #include "Word_Memorization.h"
 #include "CForm_Protocol.h"
 
+#include "CDeviceProtocol.h"
+
 // CForm_Protocol
 
 IMPLEMENT_DYNCREATE(CForm_Protocol, CFormView)
@@ -293,49 +295,12 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 		}
 	}
-
-	mp_PT_Grid = new CGridCtrl;
-	mp_PT_Grid->Create(CRect(10, 45, 1020, 800), this, IDC_PT_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
-
-	mp_PT_Grid->SetRowCount(32 + 2);
-	mp_PT_Grid->SetColumnCount(8 + 1); // 현시할 column 8개, fixed column 1개
-
-	mp_PT_Grid->SetFixedRowCount(2);
-	mp_PT_Grid->SetFixedColumnCount(1);
-
-	mp_PT_Grid->SetFixedBkColor(RGB(200, 200, 200));
-
-	// grid option
-	mp_PT_Grid->SetGridLineColor(RGB(128, 128, 255));
-	mp_PT_Grid->SetTrackFocusCell(true);
-	mp_PT_Grid->SetEditable(true);
-
-	mp_PT_Grid->EnableTitleTips(false);
-
-	CString str;
-
-	// Bit 7 ~ 0
-	for (int i = 1; i < 9; i++) {
-		str.Format(L"Bit %02d", 7 - (i - 1));
-		mp_PT_Grid->SetItemText(1, i, str);
-	}
-	// Bit 15 ~ 8
-	for (int i = 1; i < 9; i++) {
-		str.Format(L"Bit %02d", 16 - i);
-		mp_PT_Grid->SetItemText(0, i, str);
-	}
-	// Byte
-	for (int i = 2; i < 34; i++) {
-		int word = (i - 2) / 2;
-		str.Format(L"Byte %02d (W %02d)", i - 2, word);
-		mp_PT_Grid->SetItemText(i, 0, str);
-	}
-
-	// column width
-	for (int col = 1; col < 9; col++) {
-		mp_PT_Grid->SetColumnWidth(col, 114);
-	}
-
+	
+	CDeviceProtocol *pPopUp;
+	pPopUp = new CDeviceProtocol();
+	pPopUp->Create(IDD_PROTOCOL_EXCEL_DLG);
+	pPopUp->ShowWindow(SW_SHOW);
+	
 	
 	CFormView::OnLButtonDown(nFlags, point);
 }

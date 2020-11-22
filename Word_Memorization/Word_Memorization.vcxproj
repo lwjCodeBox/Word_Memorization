@@ -198,6 +198,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CDeviceProtocol.h" />
     <ClInclude Include="CForm_DuDefault_1.h" />
     <ClInclude Include="CForm_HeartBit.h" />
     <ClInclude Include="CForm_Protocol.h" />
@@ -216,6 +217,7 @@
     <ClInclude Include="_CExcelLib.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CDeviceProtocol.cpp" />
     <ClCompile Include="CForm_DuDefault_1.cpp" />
     <ClCompile Include="CForm_HeartBit.cpp" />
     <ClCompile Include="CForm_Protocol.cpp" />

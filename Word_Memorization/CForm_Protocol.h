@@ -6,8 +6,6 @@
 #include <iostream>
 #include <thread>
 
-#define IDC_PT_GRID		20001
-
 // CForm_Protocol form view
 
 class CForm_Protocol : public CFormView
@@ -42,8 +40,6 @@ private:
 	
 	TButtonRect fixCaption;
 	TButtonRect protocolBTN;
-
-	CGridCtrl *mp_PT_Grid = NULL;
 
 private:
 	void OnInitFixCaptionButton();

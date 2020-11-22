@@ -69,6 +69,9 @@
     <ClInclude Include="Thread\Multi_Thread.h">
       <Filter>Multi_Thread</Filter>
     </ClInclude>
+    <ClInclude Include="CDeviceProtocol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Word_Memorization.cpp">
@@ -127,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="Thread\Multi_Thread.cpp">
       <Filter>Multi_Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="CDeviceProtocol.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

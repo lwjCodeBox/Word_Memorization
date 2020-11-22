@@ -19,7 +19,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 한국어(대한민국) resources
+// Korean (Korea) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
@@ -160,6 +160,13 @@ BEGIN
     EDITTEXT        IDC_POPUP_EDIT,74,11,119,14,ES_AUTOHSCROLL
 END
 
+IDD_PROTOCOL_EXCEL_DLG DIALOGEX 0, 0, 691, 470
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -209,6 +216,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 57
     END
+
+    IDD_PROTOCOL_EXCEL_DLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 684
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 463
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -243,12 +258,17 @@ BEGIN
     0
 END
 
-#endif    // 한국어(대한민국) resources
+IDD_PROTOCOL_EXCEL_DLG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+#endif    // Korean (Korea) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// 영어(미국) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -336,7 +356,7 @@ BEGIN
     END
 END
 
-#endif    // 영어(미국) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

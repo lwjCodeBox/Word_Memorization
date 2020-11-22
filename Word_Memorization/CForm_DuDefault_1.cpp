@@ -98,17 +98,17 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 
 	if (mp_gridctrl == NULL) {
 		mp_gridctrl = new CGridCtrl;
-		mp_gridctrl->Create(CRect(10, 45, 1020, 800), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
+		mp_gridctrl->Create(CRect(10, 45, 1018, 800), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
 	}
 	else {
 		delete mp_gridctrl;
 		mp_gridctrl = NULL;
 
 		mp_gridctrl = new CGridCtrl;
-		mp_gridctrl->Create(CRect(10, 45, 1020, 835), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
+		mp_gridctrl->Create(CRect(10, 45, 1018, 800), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
 	}
 
-	mp_gridctrl->SetRowCount(32+2);
+	mp_gridctrl->SetRowCount(32 + 2);
 	mp_gridctrl->SetColumnCount(8 + 1); // 현시할 column 8개, fixed column 1개
 
 	mp_gridctrl->SetFixedRowCount(2);
@@ -124,15 +124,15 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	mp_gridctrl->EnableTitleTips(false);
 
 	CString str;
-	
+
 	// Bit 7 ~ 0
 	for (int i = 1; i < 9; i++) {
-		str.Format(L"Bit %02d", 7-(i - 1));
+		str.Format(L"Bit %02d", 7 - (i - 1));
 		mp_gridctrl->SetItemText(1, i, str);
 	}
 	// Bit 15 ~ 8
 	for (int i = 1; i < 9; i++) {
-		str.Format(L"Bit %02d", 16-i);
+		str.Format(L"Bit %02d", 16 - i);
 		mp_gridctrl->SetItemText(0, i, str);
 	}
 	// Byte
@@ -141,7 +141,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 		str.Format(L"Byte %02d (W %02d)", i - 2, word);
 		mp_gridctrl->SetItemText(i, 0, str);
 	}
-	
+
 	// column width
 	for (int col = 1; col < 9; col++) {
 		mp_gridctrl->SetColumnWidth(col, 114);
@@ -178,7 +178,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 		mp_gridctrl = NULL;
 
 		mp_gridctrl = new CGridCtrl;
-		mp_gridctrl->Create(CRect(10, 60, 1020, 850), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
+		mp_gridctrl->Create(CRect(10, 45, 1018, 800), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
 	}
 	
 	mp_gridctrl->SetRowCount(32 + 2);
@@ -247,7 +247,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 		mp_gridctrl = NULL;
 
 		mp_gridctrl = new CGridCtrl;
-		mp_gridctrl->Create(CRect(10, 60, 1020, 850), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
+		mp_gridctrl->Create(CRect(10, 45, 1018, 800), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
 	}
 
 	mp_gridctrl->SetRowCount(32 + 2);
