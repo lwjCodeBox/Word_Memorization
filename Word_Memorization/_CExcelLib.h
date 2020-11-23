@@ -5,6 +5,8 @@
 
 #include "CSharedMemory.h"
 
+#include <map>
+
 using namespace libxl;
 
 class _CExcelLib
@@ -31,15 +33,10 @@ public:
 		}
 		return L"err";
 	}
-
-	Sheet *GetSheet(WORD a_Addr)
-	{
-		if (a_Addr == 0x1A4)		return m_pDU_Default_1;
-		else if (a_Addr == 0x1A8)	return m_pDU_Default_2;
-		else if (a_Addr == 0x1AC)	return m_pDU_Default_3;
-		else return NULL;
-	}
-	
+	// 포트 주소에 맞는 시트 정보를 반환 map <key, value>
+	std::map<WORD, Sheet *> m_InitSheetMap();
+	std::map<WORD, Sheet *> sheetMap;
+		
 private:
 	Sheet* getSheetByName(Book* book, const wchar_t* name); // 사용하고 있는 Sheet의 이름을 얻어옴.
 
@@ -52,19 +49,29 @@ private:
 public:
 	Book *m_Book;	
 	Sheet *m_pSheet2; // logical_port_adrs Sheet
-	Sheet *m_pDU_Default_1, *m_pDU_Default_2, *m_pDU_Default_3; // du_Defatul1, 2, 3 Sheet
+
+	// du_Defatul1, 2, 3 Sheet
+	Sheet *m_pDU_Default_1, *m_pDU_Default_2, *m_pDU_Default_3; 
+	// EBCU
+	Sheet *mp_Sheet_EBCU_SDR1, *mp_Sheet_EBCU_SDR2, *mp_Sheet_EBCU_SDR3, *mp_Sheet_EBCU_SD;
+	// VVVF
+	Sheet *mp_Sheet_VVVF_SDR, *mp_Sheet_VVVF_SD1, *mp_Sheet_VVVF_SD2;
+
 
 	WORD mvb_Addr[120]; // myNode 총 갯수가 120개라서 배열의 크기를 120으로 잡음.
 	BYTE m_totalNodeCnt;
 	
-private:	
+private:
 	// Du Default1, 2, 3
 	CString m_Excel_DuDefault_1[32][8];
 	CString m_Excel_DuDefault_2[32][8];
 	CString m_Excel_DuDefault_3[32][8];
 
 	// BECU SDR/SD
-	
+	CString m_BECU_SDR1_xlsx[32][8];
+	CString m_BECU_SDR2_xlsx[32][8];
+	CString m_BECU_SDR3_xlsx[32][8];
+	CString m_BECU_SD_xlsx[32][8];
 
 }; 
 

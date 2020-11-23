@@ -29,8 +29,8 @@ void _GFG::_GFG_InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int 
 		ppSheet = &pExcel->m_pDU_Default_1;
 		(*ppSheet)->getMerge(5, 2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
 	*/
-	Sheet *pSheet = NULL;
-	pSheet = mainDlg->mp_Libxl->GetSheet(a_portAddr);
+	Sheet *pSheet = NULL;	
+	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
 
 	// Grid Setting
 	bool bMerge = false;
@@ -83,7 +83,7 @@ void _GFG::_GFG_SetWordFormatCell(int a_RowFirst, int a_RowLast, int a_ColFirst,
 		(*ppSheet)->getMerge(5, 2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
 	*/
 	Sheet *pSheet = NULL;
-	pSheet = mainDlg->mp_Libxl->GetSheet(a_portAddr);
+	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
 
 	// Draw Word Format 
 	bool bMerge = false;
@@ -126,11 +126,11 @@ void _GFG::_GFG_SetWordFormatCell(int a_RowFirst, int a_RowLast, int a_ColFirst,
 
 void _GFG::_GFG_SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, CGridCtrl *ap_grid)
 {
-	/*for (int row = a_RowFirst; row <= a_RowLast; row++) {
+	for (int row = a_RowFirst; row <= a_RowLast; row++) {
 		for (int col = a_ColFirst; col <= a_ColLast; col++) {
-			ap_grid->SetItemText(row, 9 - col, pExcel->GetDuDefaultValue(row - 2, col - 1, a_flag));
+			//ap_grid->SetItemText(row, 9 - col, pExcel->GetDuDefaultValue(row - 2, col - 1, a_flag));
 		}
-	}*/
+	}
 }
 //--------------------------------------------------------------------------------------------
 
@@ -144,7 +144,7 @@ void _GFG::_GFG_GetBitDataFormSM(int a_RowFirst, int a_RowLast, int a_ColFirst, 
 	(*ppSheet)->getMerge(5, 2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
 */
 	Sheet *pSheet = NULL;
-	pSheet = mainDlg->mp_Libxl->GetSheet(a_portAddr);
+	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
 
 	bool bMerge = false;
 
@@ -173,10 +173,7 @@ void _GFG::_GFG_GetBitDataFormSM(int a_RowFirst, int a_RowLast, int a_ColFirst, 
 				}
 			}
 		}
-	}
-
-	pSheet = NULL;
-	mainDlg = NULL;
+	}	
 }
 //--------------------------------------------------------------------------------------------
 
@@ -185,7 +182,7 @@ void _GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(int a_RowFirst, int a_RowLast, in
 	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 
 	Sheet *pSheet = NULL;
-	pSheet = mainDlg->mp_Libxl->GetSheet(a_portAddr);
+	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
 
 	bool bMerge = false;
 	bool oldMerge = false;
@@ -286,7 +283,7 @@ void _GFG::_GFG_GetBitDataFormSMTest(int a_RowFirst, int a_RowLast, int a_ColFir
 		(*ppSheet)->getMerge(5, 2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
 	*/
 	Sheet *pSheet = NULL;
-	pSheet = mainDlg->mp_Libxl->GetSheet(a_portAddr);
+	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
 
 	bool bMerge = false;
 
@@ -325,7 +322,7 @@ void _GFG::_GFG_SetMergeData(int a_GridRow, int a_GridColumn, WORD a_SetData, WO
 	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 
 	Sheet *pSheet = NULL;
-	pSheet = mainDlg->mp_Libxl->GetSheet(a_portAddr);
+	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
 
 	int mergeCount = _GFG_GetMergeCheck(a_GridRow, a_GridColumn, a_portAddr);
 
@@ -417,7 +414,7 @@ WORD _GFG::_GFG_GetMergeCheck(int a_Row, int a_Column, WORD a_portAddr)
 	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 
 	Sheet *pSheet = NULL;
-	pSheet = mainDlg->mp_Libxl->GetSheet(a_portAddr);
+	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
 
 	int row_first = 5, row_last = 36;
 	int col_first = 2, col_last = 9;

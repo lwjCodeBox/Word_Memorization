@@ -6,6 +6,7 @@
 #include "CDeviceProtocol.h"
 #include "afxdialogex.h"
 
+#include "Grid_Func_Group.h"
 
 // CDeviceProtocol dialog
 
@@ -88,15 +89,16 @@ BOOL CDeviceProtocol::OnInitDialog()
 	mp_PT_Grid->ClearCells(CCellRange(2, 1, 33, 8));
 	_GFG::_GFG_InitItemBkColor(33, 8, mp_PT_Grid);
 
+	WORD tPort = 0x28;
 	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	_GFG::_GFG_InitMakeGrid(5, 36, 2, 9, 0x1A4, mp_PT_Grid); // 비트 형식인지 병합한 형식인지 체크.
-	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, 0x1A4, mp_PT_Grid); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
+	_GFG::_GFG_InitMakeGrid(5, 36, 2, 9, tPort, mp_PT_Grid); // 비트 형식인지 병합한 형식인지 체크.
+	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, tPort, mp_PT_Grid); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
-	SetTextGrid(2, 33, 1, 8, m_flag);       // 그리드에 엑셀에 있는 텍스트 넣기. 
+	_GFG::_GFG_SetTextGrid(2, 33, 1, 8, mp_PT_Grid);       // 그리드에 엑셀에 있는 텍스트 넣기. 
 
-	_GFG::_GFG_GetBitDataFormSM(5, 36, 2, 9, 0x1A4, 0, mp_PT_Grid); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
-	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(5, 36, 2, 9, 0x1A4, 0, mp_PT_Grid); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
+	_GFG::_GFG_GetBitDataFormSM(5, 36, 2, 9, tPort, 0, mp_PT_Grid); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
+	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(5, 36, 2, 9, tPort, 0, mp_PT_Grid); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
 
 	//mp_PT_Grid->SetFocusCell(3, 1);
 	mp_PT_Grid->SetEditable(false);

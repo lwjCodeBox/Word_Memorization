@@ -4,7 +4,35 @@
 _CExcelLib::_CExcelLib()
 {
 	 ExcelCertified();
+
 	 Read_DU_Default(m_Excel_DuDefault_1, m_Excel_DuDefault_2, m_Excel_DuDefault_3);
+	 Read_BECU_SDR_SD();
+
+	 sheetMap = m_InitSheetMap();
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+std::map<WORD, Sheet *> _CExcelLib::m_InitSheetMap()
+{
+	std::map<WORD, Sheet *> m;
+
+	// Default1, 2, 3
+	m.insert(std::make_pair(0x1A4, m_pDU_Default_1));
+	m.insert(std::make_pair(0x1A8, m_pDU_Default_2));
+	m.insert(std::make_pair(0x1AC, m_pDU_Default_3));
+
+	// BECU SDR / SD
+	m.insert(std::make_pair(0x028, mp_Sheet_EBCU_SDR1));
+	m.insert(std::make_pair(0x038, mp_Sheet_EBCU_SDR2));
+	m.insert(std::make_pair(0x048, mp_Sheet_EBCU_SDR3));
+	m.insert(std::make_pair(0x010, mp_Sheet_EBCU_SD));
+
+	// VVVF SDR / SD
+	m.insert(std::make_pair(0x058, mp_Sheet_VVVF_SDR));
+	m.insert(std::make_pair(0x050, mp_Sheet_VVVF_SD1));
+	m.insert(std::make_pair(0x054, mp_Sheet_VVVF_SD2));
+
+	return m;
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -168,6 +196,35 @@ bool _CExcelLib::Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_
 
 bool _CExcelLib::Read_BECU_SDR_SD()
 {
+	libxl::Format *format = NULL;
+
+	int col_start = 2; // (열 시작 위치)
+	int col_end = 9;
+	int row_start = 5; // (행 시작 위치)
+	int row_end = 36;
+
+	mp_Sheet_EBCU_SDR1 = getSheetByName(m_Book, L"EBCU_SDR1");
+	mp_Sheet_EBCU_SDR2 = getSheetByName(m_Book, L"EBCU_SDR2");
+	mp_Sheet_EBCU_SDR3 = getSheetByName(m_Book, L"EBCU_SDR3");
+	mp_Sheet_EBCU_SD   = getSheetByName(m_Book, L"EBCU_SD");
+
+	if ((mp_Sheet_EBCU_SDR1 != NULL) && (mp_Sheet_EBCU_SDR2 != NULL) && 
+		(mp_Sheet_EBCU_SDR3 != NULL) && (mp_Sheet_EBCU_SD != NULL)) 
+	{
+		for (int i = row_start; i <= row_end; i++) {
+			for (int j = col_start; j <= col_end; j++) {
+				m_BECU_SDR1_xlsx[i - 5][9 - j] = mp_Sheet_EBCU_SDR1->readStr(i, j, &format);
+				m_BECU_SDR2_xlsx[i - 5][9 - j] = mp_Sheet_EBCU_SDR2->readStr(i, j, &format);
+				m_BECU_SDR3_xlsx[i - 5][9 - j] = mp_Sheet_EBCU_SDR3->readStr(i, j, &format);
+				m_BECU_SD_xlsx[i - 5][9 - j]   = mp_Sheet_EBCU_SD->readStr(i, j, &format);
+			}
+		}		
+		return true;
+	}
+	else {
+		AfxMessageBox(L"엑셀 BECU SDR / SD를 읽어오지 못했습니다.");
+		return false;
+	}
 
 	return true;
 }
