@@ -44,7 +44,7 @@ BOOL CDeviceProtocol::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	mp_PT_Grid = new CGridCtrl;
-	mp_PT_Grid->Create(CRect(10, 5, 1018, 760), this, IDC_PT_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
+	mp_PT_Grid->Create(CRect(10, 5, 1020, 761), this, IDC_PT_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER); // 10, 5, 1018, 760
 
 	mp_PT_Grid->SetRowCount(32 + 2);
 	mp_PT_Grid->SetColumnCount(8 + 1); // 현시할 column 8개, fixed column 1개
@@ -95,7 +95,7 @@ BOOL CDeviceProtocol::OnInitDialog()
 	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, tPort, mp_PT_Grid); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
-	_GFG::_GFG_SetTextGrid(2, 33, 1, 8, mp_PT_Grid);       // 그리드에 엑셀에 있는 텍스트 넣기. 
+	_GFG::_GFG_SetTextGrid(2, 33, 1, 8, tPort, mp_PT_Grid);       // 그리드에 엑셀에 있는 텍스트 넣기. 
 
 	_GFG::_GFG_GetBitDataFormSM(5, 36, 2, 9, tPort, 0, mp_PT_Grid); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
 	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(5, 36, 2, 9, tPort, 0, mp_PT_Grid); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
@@ -110,9 +110,9 @@ BOOL CDeviceProtocol::OnInitDialog()
 
 void CDeviceProtocol::OnClose()
 {
-	delete mp_PT_Grid;
-	
 	DestroyWindow();
+	
+	delete mp_PT_Grid;
 
 	CDialogEx::OnClose();
 }

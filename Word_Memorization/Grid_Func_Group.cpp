@@ -124,11 +124,13 @@ void _GFG::_GFG_SetWordFormatCell(int a_RowFirst, int a_RowLast, int a_ColFirst,
 }
 //--------------------------------------------------------------------------------------------
 
-void _GFG::_GFG_SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, CGridCtrl *ap_grid)
-{
+void _GFG::_GFG_SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_port, CGridCtrl *ap_grid)
+{		
+	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	
 	for (int row = a_RowFirst; row <= a_RowLast; row++) {
 		for (int col = a_ColFirst; col <= a_ColLast; col++) {
-			//ap_grid->SetItemText(row, 9 - col, pExcel->GetDuDefaultValue(row - 2, col - 1, a_flag));
+			ap_grid->SetItemText(row, col, mainDlg->mp_Libxl->GetDuDefaultValue(row+3, col+1, a_port));
 		}
 	}
 }
@@ -282,9 +284,7 @@ void _GFG::_GFG_GetBitDataFormSMTest(int a_RowFirst, int a_RowLast, int a_ColFir
 		ppSheet = &pExcel->m_pDU_Default_1;
 		(*ppSheet)->getMerge(5, 2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
 	*/
-	Sheet *pSheet = NULL;
-	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
-
+	
 	bool bMerge = false;
 
 	a_ColLast++;
@@ -310,10 +310,7 @@ void _GFG::_GFG_GetBitDataFormSMTest(int a_RowFirst, int a_RowLast, int a_ColFir
 				}
 			}
 		}
-	}
-
-	pSheet = NULL;
-	mainDlg = NULL;
+	}	
 }
 //--------------------------------------------------------------------------------------------
 

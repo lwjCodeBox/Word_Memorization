@@ -19,21 +19,15 @@ public:
 	bool Load_logical_Port_Adrs(); // MVB에서 사용하는 포트 주소를 엑셀에서 읽어옴.
 
 	// Du Default1, 2, 3
-	CString GetDuDefaultValue(int a_Row, int a_Col, int a_select) // a_select == 1 is duDefault 1...
+	CString GetDuDefaultValue(int a_Row, int a_Col, int a_PportAddr) // a_select == 1 is duDefault 1...
 	{
-		switch (a_select) {
-		case 1:
-			return m_Excel_DuDefault_1[a_Row][a_Col];
-			
-		case 2:
-			return m_Excel_DuDefault_2[a_Row][a_Col];
-
-		case 3:
-			return m_Excel_DuDefault_3[a_Row][a_Col];
-		}
-		return L"err";
+		// 그리드 컨트롤 기준으로 row, col범위가 들어온는데 
+		// 엑셀에 있는 범위에 맞게 읽어오려면 row+3 col+1 해야한다.
+		Sheet *pSheet = sheetMap.find(a_PportAddr)->second;
+		
+		return pSheet->readStr(a_Row, a_Col);		
 	}
-	// 포트 주소에 맞는 시트 정보를 반환 map <key, value>
+	// 포트 주소에 맞는 libxl::Sheet 정보를 반환 map <key, value>
 	std::map<WORD, Sheet *> m_InitSheetMap();
 	std::map<WORD, Sheet *> sheetMap;
 		

@@ -15,7 +15,7 @@ namespace _GFG {
 	void _GFG_SetWordFormatCell(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, CGridCtrl *ap_grid); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 
 	// 매개 변수 범위는 그리드 컨트롤 기준이다. 
-	void _GFG_SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, CGridCtrl *ap_grid);
+	void _GFG_SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_port, CGridCtrl *ap_grid);
 
 	// 매개 변수 범위는 기준은 엑셀 기준이다. (O)
 	void _GFG_GetBitDataFormSM(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid); 
