@@ -279,27 +279,33 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 
 			if (PtInRect(&protocolBTN.r[pos], point)) {
 				CString str;
-				try { str.Format(L"%s", caption.HB_BTN_Caption.at(pos).c_str()); }
+				str.Format(L"%s", caption.HB_BTN_Caption.at(pos).c_str());
+				
+				if (!str.Compare(L"*"))	return;
+
+				try {
+					_row = rowCnt;
+					_col = colCnt;
+
+					bProtocolBTN = true;
+					click_PT_BTN = pos;
+
+					// Protocol PopUp
+					CDeviceProtocol *pPopUp;
+					pPopUp = new CDeviceProtocol();
+					pPopUp->Create(IDD_PROTOCOL_EXCEL_DLG);
+					pPopUp->SetWindowTextW(str);
+					pPopUp->ShowWindow(SW_SHOW);
+
+					break;
+				}
 				catch (std::out_of_range &e) {
 					str.Format(L"[Catch the std::out_of_range] %s", e.what());
-					AfxMessageBox(str);
-				}
-
-				if (!str.Compare(L"*")) return;
-
-				_row = rowCnt;
-				_col = colCnt;
-
-				bProtocolBTN = true;
-				click_PT_BTN = pos;
+					AfxMessageBox(str); 
+				}						
 			}
 		}
 	}
-	
-	CDeviceProtocol *pPopUp;
-	pPopUp = new CDeviceProtocol();
-	pPopUp->Create(IDD_PROTOCOL_EXCEL_DLG);
-	pPopUp->ShowWindow(SW_SHOW);
 	
 	
 	CFormView::OnLButtonDown(nFlags, point);

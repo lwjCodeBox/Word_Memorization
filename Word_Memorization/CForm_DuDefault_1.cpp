@@ -156,7 +156,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, 0x1A4, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 	
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
-	SetTextGrid(2, 33, 1, 8, m_flag);       // 그리드에 엑셀에 있는 텍스트 넣기. 
+	_GFG::_GFG_SetTextGrid(2, 33, 1, 8, 0x1A4, mp_gridctrl);       // 그리드에 엑셀에 있는 텍스트 넣기. 
 
 	_GFG::_GFG_GetBitDataFormSM(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
 	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
@@ -229,7 +229,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, 0x1A8, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
-	SetTextGrid(2, 33, 1, 8, m_flag);       // 그리드에 엑셀에 있는 텍스트 넣기. 
+	_GFG::_GFG_SetTextGrid(2, 33, 1, 8, 0x1A8, mp_gridctrl);       // 그리드에 엑셀에 있는 텍스트 넣기. 
 
 	_GFG::_GFG_GetBitDataFormSM(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
 	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
@@ -298,7 +298,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, 0x1AC, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
-	SetTextGrid(2, 33, 1, 8, m_flag);       // 그리드에 엑셀에 있는 텍스트 넣기. 
+	_GFG::_GFG_SetTextGrid(2, 33, 1, 8, 0x1AC, mp_gridctrl);       // 그리드에 엑셀에 있는 텍스트 넣기. 
 
 	_GFG::_GFG_GetBitDataFormSM(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
 	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
