@@ -58,32 +58,31 @@ BOOL CDeviceProtocol::OnInitDialog()
 	mp_PT_Grid->SetGridLineColor(RGB(128, 128, 255));
 	mp_PT_Grid->SetTrackFocusCell(true);
 	mp_PT_Grid->SetEditable(true);
-
+	mp_PT_Grid->SetEditable(false);
 	mp_PT_Grid->EnableTitleTips(false);
 
 	CString str;
-
-	// Bit 7 ~ 0
+	
+	// bit
 	for (int i = 1; i < 9; i++) {
+		// column width
+		mp_PT_Grid->SetColumnWidth(i, 114);
+
+		// Bit 7 ~ 0
 		str.Format(L"Bit %02d", 7 - (i - 1));
 		mp_PT_Grid->SetItemText(1, i, str);
-	}
-	// Bit 15 ~ 8
-	for (int i = 1; i < 9; i++) {
+
+		// Bit 15 ~ 8
 		str.Format(L"Bit %02d", 16 - i);
 		mp_PT_Grid->SetItemText(0, i, str);
 	}
+		
 	// Byte
 	for (int i = 2; i < 34; i++) {
 		int word = (i - 2) / 2;
 		str.Format(L"Byte %02d (W %02d)", i - 2, word);
 		mp_PT_Grid->SetItemText(i, 0, str);
-	}
-
-	// column width
-	for (int col = 1; col < 9; col++) {
-		mp_PT_Grid->SetColumnWidth(col, 114);
-	}
+	}	
 
 	// 그리드 초기화
 	mp_PT_Grid->ClearCells(CCellRange(2, 1, 33, 8));
@@ -100,8 +99,7 @@ BOOL CDeviceProtocol::OnInitDialog()
 	_GFG::_GFG_GetBitDataFormSM(5, 36, 2, 9, tPort, 0, mp_PT_Grid); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
 	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(5, 36, 2, 9, tPort, 0, mp_PT_Grid); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
 
-	//mp_PT_Grid->SetFocusCell(3, 1);
-	mp_PT_Grid->SetEditable(false);
+	//mp_PT_Grid->SetFocusCell(3, 1);	
 	//mp_PT_Grid->set(true);
 
 	return TRUE;  

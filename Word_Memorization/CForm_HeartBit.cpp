@@ -293,19 +293,23 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 			
 			if (PtInRect(&heartBitBTN.r[pos], point)) {
 				CString str;
-				try { str.Format(L"%s", caption.HB_BTN_Caption.at(pos).c_str()); }
+				str.Format(L"%s", caption.HB_BTN_Caption.at(pos).c_str());
+
+				if (!str.Compare(L"*"))	return;
+
+				try {
+					_row = rowCnt;
+					_col = colCnt;
+
+					bHeartBitBTN = true;
+					click_HB_BTN = pos;
+
+					break;
+				}
 				catch (std::out_of_range &e) { 
 					str.Format(L"[Catch the std::out_of_range] %s", e.what());
 					AfxMessageBox(str); 
-				}
-
-				if (!str.Compare(L"*")) return;				
-				
-				_row = rowCnt;
-				_col = colCnt;
-
-				bHeartBitBTN = true;
-				click_HB_BTN = pos;								
+				}				
 			}			
 		}
 	}
