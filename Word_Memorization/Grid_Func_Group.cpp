@@ -31,7 +31,7 @@ void _GFG::_GFG_InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int 
 	*/
 	Sheet *pSheet = NULL;	
 	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
-
+	
 	// Grid Setting
 	bool bMerge = false;
 	int mergeCol_start = 0;

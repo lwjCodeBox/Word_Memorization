@@ -25,7 +25,10 @@ std::map<WORD, Sheet *> _CExcelLib::m_InitSheetMap()
 	m.insert(std::make_pair(0x028, mp_Sheet_EBCU_SDR1));
 	m.insert(std::make_pair(0x038, mp_Sheet_EBCU_SDR2));
 	m.insert(std::make_pair(0x048, mp_Sheet_EBCU_SDR3));
-	m.insert(std::make_pair(0x010, mp_Sheet_EBCU_SD));
+	m.insert(std::make_pair(0x010, mp_Sheet_EBCU_SD)); // EBCU SD1
+	m.insert(std::make_pair(0x020, mp_Sheet_EBCU_SD)); // EBCU SD2
+	m.insert(std::make_pair(0x030, mp_Sheet_EBCU_SD)); // EBCU SD3
+	m.insert(std::make_pair(0x040, mp_Sheet_EBCU_SD)); // EBCU SD4
 
 	// VVVF SDR / SD
 	m.insert(std::make_pair(0x058, mp_Sheet_VVVF_SDR));

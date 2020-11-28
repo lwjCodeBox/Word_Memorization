@@ -41,6 +41,8 @@ private:
 	TButtonRect fixCaption;
 	TButtonRect protocolBTN;
 
+	TMVB_Addr_Info portAddr;
+
 private:
 	void OnInitFixCaptionButton();
 	void OnInitProtocolButton();

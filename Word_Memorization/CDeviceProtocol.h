@@ -12,9 +12,11 @@ class CDeviceProtocol : public CDialogEx
 
 private:
 	CGridCtrl *mp_PT_Grid = NULL;
+	int m_port;
 
 public:
-	CDeviceProtocol(CWnd* pParent = nullptr);   // standard constructor
+	CDeviceProtocol(int a_port, CWnd* pParent = nullptr);   // standard constructor
+
 	virtual ~CDeviceProtocol();
 
 // Dialog Data
@@ -30,5 +32,4 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnClose();
-//	virtual BOOL Create(LPCTSTR lpszTemplateName, CWnd *pParentWnd = NULL);
 };

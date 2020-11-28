@@ -379,7 +379,7 @@ void CForm_HeartBit::Thread_Start(int a_row, int a_col)
 	CWordMemorizationDlg *main = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 	int node = a_col / 2;
 	int num = a_row * 10 + a_col;
-	int find = portAddr.mvb_addr[num];
+	int find = portAddr.used_on_HeartBit[num];
 
 	int port = binarySearch(main->mp_Libxl->mvb_Addr, 120, find);
 			

@@ -290,9 +290,12 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 					bProtocolBTN = true;
 					click_PT_BTN = pos;
 
+					int t_map_key = _row * 10 + _col;
+					int port = portAddr.used_on_Protocol.find(t_map_key)->second;
+					str.Format(L"%s [0x%02X]", str, port);
+
 					// Protocol PopUp
-					CDeviceProtocol *pPopUp;
-					pPopUp = new CDeviceProtocol();
+					CDeviceProtocol *pPopUp = new CDeviceProtocol(port);
 					pPopUp->Create(IDD_PROTOCOL_EXCEL_DLG);
 					pPopUp->SetWindowTextW(str);
 					pPopUp->ShowWindow(SW_SHOW);
