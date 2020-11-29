@@ -7,6 +7,7 @@ _CExcelLib::_CExcelLib()
 
 	 Read_DU_Default(m_Excel_DuDefault_1, m_Excel_DuDefault_2, m_Excel_DuDefault_3);
 	 Read_BECU_SDR_SD();
+	 Read_VVVF_SDR_SD();
 
 	 sheetMap = m_InitSheetMap();
 }
@@ -32,8 +33,16 @@ std::map<WORD, Sheet *> _CExcelLib::m_InitSheetMap()
 
 	// VVVF SDR / SD
 	m.insert(std::make_pair(0x058, mp_Sheet_VVVF_SDR));
-	m.insert(std::make_pair(0x050, mp_Sheet_VVVF_SD1));
-	m.insert(std::make_pair(0x054, mp_Sheet_VVVF_SD2));
+	m.insert(std::make_pair(0x050, mp_Sheet_VVVF_SD1)); // VVVF1 SD1
+	m.insert(std::make_pair(0x054, mp_Sheet_VVVF_SD2)); // VVVF1 SD2
+	m.insert(std::make_pair(0x060, mp_Sheet_VVVF_SD1)); // VVVF2 SD1
+	m.insert(std::make_pair(0x064, mp_Sheet_VVVF_SD2)); // VVVF2 SD2
+	m.insert(std::make_pair(0x070, mp_Sheet_VVVF_SD1)); // VVVF3 SD1
+	m.insert(std::make_pair(0x074, mp_Sheet_VVVF_SD2)); // VVVF3 SD2
+	m.insert(std::make_pair(0x080, mp_Sheet_VVVF_SD1)); // VVVF4 SD1
+	m.insert(std::make_pair(0x084, mp_Sheet_VVVF_SD2)); // VVVF4 SD2
+
+
 
 	return m;
 }
@@ -226,6 +235,38 @@ bool _CExcelLib::Read_BECU_SDR_SD()
 	}
 	else {
 		AfxMessageBox(L"엑셀 BECU SDR / SD를 읽어오지 못했습니다.");
+		return false;
+	}
+
+	return true;
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+bool _CExcelLib::Read_VVVF_SDR_SD()
+{
+	libxl::Format *format = NULL;
+
+	int col_start = 2; // (열 시작 위치)
+	int col_end = 9;
+	int row_start = 5; // (행 시작 위치)
+	int row_end = 36;
+
+	mp_Sheet_VVVF_SDR = getSheetByName(m_Book, L"VVVF_SDR");
+	mp_Sheet_VVVF_SD1 = getSheetByName(m_Book, L"VVVF_SD1");
+	mp_Sheet_VVVF_SD2 = getSheetByName(m_Book, L"VVVF_SD2");
+
+	if ((mp_Sheet_VVVF_SDR != NULL) && (mp_Sheet_VVVF_SD1 != NULL) && (mp_Sheet_VVVF_SD2 != NULL)) {
+		for (int i = row_start; i <= row_end; i++) {
+			for (int j = col_start; j <= col_end; j++) {
+				m_VVVF_SDR_xlsx[i - 5][9 - j] = mp_Sheet_VVVF_SDR->readStr(i, j, &format);
+				m_VVVF_SD1_xlsx[i - 5][9 - j] = mp_Sheet_VVVF_SD1->readStr(i, j, &format);
+				m_VVVF_SD2_xlsx[i - 5][9 - j] = mp_Sheet_VVVF_SD2->readStr(i, j, &format);
+			}
+		}
+		return true;
+	}
+	else {
+		AfxMessageBox(L"엑셀 VVVF SDR / SD를 읽어오지 못했습니다.");
 		return false;
 	}
 

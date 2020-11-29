@@ -30,16 +30,12 @@ void _GFG::_GFG_InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int 
 		(*ppSheet)->getMerge(5, 2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
 	*/
 	Sheet *pSheet = NULL;	
-	try {
-		//pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
-		pSheet = mainDlg->mp_Libxl->sheetMap.at(a_portAddr);
-	}
-	catch (std::out_of_range &e){
-		AfxMessageBox(L"Do not found Excel sheet (m_InitSheetMap())");
+	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
+
+	if (pSheet == NULL) {
+		AfxMessageBox(L"Do not found Excel sheet (_GFG_InitMakeGrid() - m_InitSheetMap())");
 		return;
 	}
-
-	
 
 	// Grid Setting
 	bool bMerge = false;
@@ -90,6 +86,11 @@ void _GFG::_GFG_SetWordFormatCell(int a_RowFirst, int a_RowLast, int a_ColFirst,
 	*/
 	Sheet *pSheet = NULL;
 	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
+
+	if (pSheet == NULL) {
+		AfxMessageBox(L"Do not found Excel sheet (_GFG_SetWordFormatCell() - m_InitSheetMap())");
+		return;
+	}
 
 	// Draw Word Format 
 	bool bMerge = false;
@@ -151,6 +152,11 @@ void _GFG::_GFG_GetBitDataFormSM(int a_RowFirst, int a_RowLast, int a_ColFirst, 
 	Sheet *pSheet = NULL;
 	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
 
+	if (pSheet == NULL) {
+		AfxMessageBox(L"Do not found Excel sheet (_GFG_GetBitDataFormSM() - m_InitSheetMap())");
+		return;
+	}
+
 	bool bMerge = false;
 
 	a_ColLast++;
@@ -188,6 +194,11 @@ void _GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(int a_RowFirst, int a_RowLast, in
 
 	Sheet *pSheet = NULL;
 	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
+
+	if (pSheet == NULL) {
+		AfxMessageBox(L"Do not found Excel sheet (_GFG_GetMoreThanTwoBitsOfDataFormSM() - m_InitSheetMap())");
+		return;
+	}
 
 	bool bMerge = false;
 	bool oldMerge = false;

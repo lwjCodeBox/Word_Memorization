@@ -37,8 +37,8 @@ private:
 	bool ExcelCertified();
 	// Read DU Defautl1, 2, 3 [ap_ExcelList[100][2] == (*ap_ExcelList)[2] 같은 의미임]
 	bool Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_Excel_DuDefault_2)[8], CString(*ap_Excel_DuDefault_3)[8]);
-	// BECU SDR/SD
-	bool Read_BECU_SDR_SD();
+	bool Read_BECU_SDR_SD(); // BECU SDR/SD
+	bool Read_VVVF_SDR_SD(); // VVVF SDR/SD
 
 public:
 	Book *m_Book;	
@@ -66,6 +66,11 @@ private:
 	CString m_BECU_SDR2_xlsx[32][8];
 	CString m_BECU_SDR3_xlsx[32][8];
 	CString m_BECU_SD_xlsx[32][8];
+
+	// VVVF SDR/SD
+	CString m_VVVF_SDR_xlsx[32][8];
+	CString m_VVVF_SD1_xlsx[32][8];
+	CString m_VVVF_SD2_xlsx[32][8];
 
 }; 
 
