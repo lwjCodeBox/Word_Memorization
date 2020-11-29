@@ -292,6 +292,7 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 
 					int t_map_key = _row * 10 + _col;
 					int port = portAddr.used_on_Protocol.find(t_map_key)->second;
+
 					str.Format(L"%s [0x%02X]", str, port);
 
 					// Protocol PopUp

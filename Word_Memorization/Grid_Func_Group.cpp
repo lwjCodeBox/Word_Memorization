@@ -30,8 +30,17 @@ void _GFG::_GFG_InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int 
 		(*ppSheet)->getMerge(5, 2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
 	*/
 	Sheet *pSheet = NULL;	
-	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
+	try {
+		//pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
+		pSheet = mainDlg->mp_Libxl->sheetMap.at(a_portAddr);
+	}
+	catch (std::out_of_range &e){
+		AfxMessageBox(L"Do not found Excel sheet (m_InitSheetMap())");
+		return;
+	}
+
 	
+
 	// Grid Setting
 	bool bMerge = false;
 	int mergeCol_start = 0;
@@ -67,9 +76,6 @@ void _GFG::_GFG_InitMakeGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int 
 			}
 		}
 	}
-
-	pSheet = NULL;
-	mainDlg = NULL;
 }
 //--------------------------------------------------------------------------------------------
 
@@ -118,9 +124,6 @@ void _GFG::_GFG_SetWordFormatCell(int a_RowFirst, int a_RowLast, int a_ColFirst,
 			}
 		}
 	}
-
-	pSheet = NULL;
-	mainDlg = NULL;
 }
 //--------------------------------------------------------------------------------------------
 

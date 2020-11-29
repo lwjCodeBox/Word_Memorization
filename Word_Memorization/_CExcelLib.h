@@ -24,7 +24,7 @@ public:
 		// 그리드 컨트롤 기준으로 row, col범위가 들어온는데 
 		// 엑셀에 있는 범위에 맞게 읽어오려면 row+3 col+1 해야한다.
 		Sheet *pSheet = sheetMap.find(a_PportAddr)->second;
-		
+
 		return pSheet->readStr(a_Row, a_Col);		
 	}
 	// 포트 주소에 맞는 libxl::Sheet 정보를 반환 map <key, value>
