@@ -297,7 +297,8 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 						str.Format(L"%s [0x%02X]", str, port);
 					}
 					catch (std::out_of_range &e) {
-						AfxMessageBox(L"Do not found Excel sheet");
+						str.Format(L"Do not found Excel sheet [%s]", e.what());
+						AfxMessageBox(str);
 						return;
 					}
 

@@ -107,8 +107,11 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 		mp_gridctrl = new CGridCtrl;
 		mp_gridctrl->Create(CRect(10, 45, 1018, 800), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
 	}
+	
+	unsigned short fcode = 4;
+	unsigned short rowCount = 2 << fcode;
 
-	mp_gridctrl->SetRowCount(32 + 2);
+	mp_gridctrl->SetRowCount(rowCount + 2);
 	mp_gridctrl->SetColumnCount(8 + 1); // 현시할 column 8개, fixed column 1개
 
 	mp_gridctrl->SetFixedRowCount(2);
@@ -125,41 +128,38 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 
 	CString str;
 
-	// Bit 7 ~ 0
-	for (int i = 1; i < 9; i++) {
-		str.Format(L"Bit %02d", 7 - (i - 1));
-		mp_gridctrl->SetItemText(1, i, str);
-	}
 	// Bit 15 ~ 8
-	for (int i = 1; i < 9; i++) {
-		str.Format(L"Bit %02d", 16 - i);
-		mp_gridctrl->SetItemText(0, i, str);
+	// Bit 7 ~ 0
+	for (int col = 1; col < 9; col++) {
+		str.Format(L"Bit %02d", 16 - col);
+		mp_gridctrl->SetItemText(0, col, str);
+
+		str.Format(L"Bit %02d", 7 - (col - 1));
+		mp_gridctrl->SetItemText(1, col, str);
+
+		mp_gridctrl->SetColumnWidth(col, 114); // column width
 	}
+
 	// Byte
-	for (int i = 2; i < 34; i++) {
+	for (int i = 2; i < rowCount + 2; i++) {
 		int word = (i - 2) / 2;
 		str.Format(L"Byte %02d (W %02d)", i - 2, word);
 		mp_gridctrl->SetItemText(i, 0, str);
 	}
-
-	// column width
-	for (int col = 1; col < 9; col++) {
-		mp_gridctrl->SetColumnWidth(col, 114);
-	}
-	
+		
 	// 그리드 초기화
-	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
-	_GFG::_GFG_InitItemBkColor(33, 8, mp_gridctrl);
+	mp_gridctrl->ClearCells(CCellRange(2, 1, rowCount + 1, 8));
+	_GFG::_GFG_InitItemBkColor(rowCount + 1, 8, mp_gridctrl);
 	
 	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	_GFG::_GFG_InitMakeGrid(5, 36, 2, 9, 0x1A4, mp_gridctrl); // 비트 형식인지 병합한 형식인지 체크.
-	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, 0x1A4, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
+	_GFG::_GFG_InitMakeGrid(fcode, 0x1A4, mp_gridctrl); // 비트 형식인지 병합한 형식인지 체크.
+	_GFG::_GFG_SetWordFormatCell(fcode, 0x1A4, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 	
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
-	_GFG::_GFG_SetTextGrid(2, 33, 1, 8, 0x1A4, mp_gridctrl);       // 그리드에 엑셀에 있는 텍스트 넣기. 
+	_GFG::_GFG_SetTextGrid(fcode, rowCount + 1, 1, 8, 0x1A4, mp_gridctrl);       // 그리드에 엑셀에 있는 텍스트 넣기. 
 
-	_GFG::_GFG_GetBitDataFormSM(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
-	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(5, 36, 2, 9, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
+	_GFG::_GFG_GetBitDataFormSM(fcode, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
+	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(fcode, 0x1A4, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
 
 	//mp_gridctrl->SetFocusCell(3, 1);
 	mp_gridctrl->SetEditable(false);
@@ -181,7 +181,10 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 		mp_gridctrl->Create(CRect(10, 45, 1018, 800), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
 	}
 	
-	mp_gridctrl->SetRowCount(32 + 2);
+	unsigned short fcode = 4;
+	unsigned short rowCount = 2 << fcode;
+
+	mp_gridctrl->SetRowCount(rowCount + 2);
 	mp_gridctrl->SetColumnCount(8 + 1); // 현시할 column 8개, fixed column 1개
 
 	mp_gridctrl->SetFixedRowCount(2);
@@ -198,41 +201,38 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 
 	CString str;
 
-	// Bit 7 ~ 0
-	for (int i = 1; i < 9; i++) {
-		str.Format(L"Bit %02d", 7 - (i - 1));
-		mp_gridctrl->SetItemText(1, i, str);
-	}
 	// Bit 15 ~ 8
-	for (int i = 1; i < 9; i++) {
-		str.Format(L"Bit %02d", 16 - i);
-		mp_gridctrl->SetItemText(0, i, str);
+	// Bit 7 ~ 0
+	for (int col = 1; col < 9; col++) {
+		str.Format(L"Bit %02d", 16 - col);
+		mp_gridctrl->SetItemText(0, col, str);
+
+		str.Format(L"Bit %02d", 7 - (col - 1));
+		mp_gridctrl->SetItemText(1, col, str);
+
+		mp_gridctrl->SetColumnWidth(col, 114); // column width
 	}
+
 	// Byte
-	for (int i = 2; i < 34; i++) {
+	for (int i = 2; i < rowCount + 2; i++) {
 		int word = (i - 2) / 2;
 		str.Format(L"Byte %02d (W %02d)", i - 2, word);
 		mp_gridctrl->SetItemText(i, 0, str);
 	}
 
-	// column width
-	for (int col = 1; col < 9; col++) {
-		mp_gridctrl->SetColumnWidth(col, 114);
-	}
-
 	// 그리드 초기화
-	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
-	_GFG::_GFG_InitItemBkColor(33, 8, mp_gridctrl);
+	mp_gridctrl->ClearCells(CCellRange(2, 1, rowCount + 1, 8));
+	_GFG::_GFG_InitItemBkColor(rowCount + 1, 8, mp_gridctrl);
 
 	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	_GFG::_GFG_InitMakeGrid(5, 36, 2, 9, 0x1A8, mp_gridctrl); // 비트 형식인지 병합한 형식인지 체크.             
-	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, 0x1A8, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
+	_GFG::_GFG_InitMakeGrid(fcode, 0x1A8, mp_gridctrl); // 비트 형식인지 병합한 형식인지 체크.             
+	_GFG::_GFG_SetWordFormatCell(fcode, 0x1A8, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
-	_GFG::_GFG_SetTextGrid(2, 33, 1, 8, 0x1A8, mp_gridctrl);       // 그리드에 엑셀에 있는 텍스트 넣기. 
+	_GFG::_GFG_SetTextGrid(2, rowCount + 1, 1, 8, 0x1A8, mp_gridctrl);       // 그리드에 엑셀에 있는 텍스트 넣기. 
 
-	_GFG::_GFG_GetBitDataFormSM(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
-	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(5, 36, 2, 9, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
+	_GFG::_GFG_GetBitDataFormSM(fcode, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
+	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(fcode, 0x1A8, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
 }
 //--------------------------------------------------------------------------------------------
 
@@ -250,7 +250,10 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 		mp_gridctrl->Create(CRect(10, 45, 1018, 800), this, IDC_GRID, WS_CHILD | WS_VISIBLE | WS_BORDER);
 	}
 
-	mp_gridctrl->SetRowCount(32 + 2);
+	unsigned short fcode = 4;
+	unsigned short rowCount = 2 << fcode;
+
+	mp_gridctrl->SetRowCount(rowCount + 2);
 	mp_gridctrl->SetColumnCount(8 + 1); // 현시할 column 8개, fixed column 1개
 
 	mp_gridctrl->SetFixedRowCount(2);
@@ -267,41 +270,38 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 
 	CString str;
 
-	// Bit 7 ~ 0
-	for (int i = 1; i < 9; i++) {
-		str.Format(L"Bit %02d", 7 - (i - 1));
-		mp_gridctrl->SetItemText(1, i, str);
-	}
 	// Bit 15 ~ 8
-	for (int i = 1; i < 9; i++) {
-		str.Format(L"Bit %02d", 16 - i);
-		mp_gridctrl->SetItemText(0, i, str);
+	// Bit 7 ~ 0
+	for (int col = 1; col < 9; col++) {
+		str.Format(L"Bit %02d", 16 - col);
+		mp_gridctrl->SetItemText(0, col, str);
+
+		str.Format(L"Bit %02d", 7 - (col - 1));
+		mp_gridctrl->SetItemText(1, col, str);
+
+		mp_gridctrl->SetColumnWidth(col, 114); // column width
 	}
+
 	// Byte
-	for (int i = 2; i < 34; i++) {
+	for (int i = 2; i < rowCount + 2; i++) {
 		int word = (i - 2) / 2;
 		str.Format(L"Byte %02d (W %02d)", i - 2, word);
 		mp_gridctrl->SetItemText(i, 0, str);
 	}
 
-	// column width
-	for (int col = 1; col < 9; col++) {
-		mp_gridctrl->SetColumnWidth(col, 114);
-	}
-
 	// 그리드 초기화
-	mp_gridctrl->ClearCells(CCellRange(2, 1, 33, 8));
-	_GFG::_GFG_InitItemBkColor(33, 8, mp_gridctrl);
+	mp_gridctrl->ClearCells(CCellRange(2, 1, rowCount + 1, 8));
+	_GFG::_GFG_InitItemBkColor(rowCount + 1, 8, mp_gridctrl);
 
 	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	_GFG::_GFG_InitMakeGrid(5, 36, 2, 9, 0x1AC, mp_gridctrl); // 비트 형식인지 병합한 형식인지 체크.                    
-	_GFG::_GFG_SetWordFormatCell(5, 36, 2, 9, 0x1AC, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
+	_GFG::_GFG_InitMakeGrid(fcode, 0x1AC, mp_gridctrl); // 비트 형식인지 병합한 형식인지 체크.                    
+	_GFG::_GFG_SetWordFormatCell(fcode, 0x1AC, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.
-	_GFG::_GFG_SetTextGrid(2, 33, 1, 8, 0x1AC, mp_gridctrl);       // 그리드에 엑셀에 있는 텍스트 넣기. 
+	_GFG::_GFG_SetTextGrid(2, rowCount + 1, 1, 8, 0x1AC, mp_gridctrl);       // 그리드에 엑셀에 있는 텍스트 넣기. 
 
-	_GFG::_GFG_GetBitDataFormSM(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
-	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(5, 36, 2, 9, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
+	_GFG::_GFG_GetBitDataFormSM(fcode, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
+	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(fcode, 0x1AC, 0, mp_gridctrl); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
 }
 //--------------------------------------------------------------------------------------------
 
