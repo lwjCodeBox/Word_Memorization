@@ -20,6 +20,99 @@ void _GFG::_GFG_InitItemBkColor(int a_rowLast, int a_colLast, CGridCtrl *ap_grid
 }
 //--------------------------------------------------------------------------------------------
 
+void _GFG::_GFG_InitMakeGrid_Test(unsigned short a_fcode, WORD a_portAddr, CGridCtrl *ap_grid)
+{
+	/* 2중 포인터로 할 경우...
+		Sheet **ppSheet = NULL;
+		ppSheet = &pExcel->m_pDU_Default_1;
+		(*ppSheet)->getMerge(5, 2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
+	*/
+	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	Sheet *pSheet = NULL;
+	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
+
+	if (pSheet == NULL) {
+		AfxMessageBox(L"Do not found Excel sheet (_GFG_InitMakeGrid() - m_InitSheetMap())");
+		return;
+	}
+
+	// Grid Setting	
+	int mergeCol_start = 0;
+	int mergeCol_finish = 0;
+	unsigned short rowLast = (2 << a_fcode) + 5; // 엑셀 읽어오는 시작 지점이 5이기 때문에 +5를 함.
+	bool bMerge = false;
+
+	for (int row = 5; row < rowLast; NULL) {
+		int gridRow = row - 3;
+		int mergeSize = (int)pSheet->readNum(row, 10);
+
+		if (mergeSize) { // 1바이트 이상 병합이된 경우.
+			// 엑셀 10열에 표기한 숫자 만큼 병합. (more than 1 byte)
+			ap_grid->MergeCells(CCellRange(gridRow, 1, gridRow + mergeSize - 1, 8));
+			
+			// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅.
+			ap_grid->SetItemText(gridRow, 1, pSheet->readStr(row, 2));
+
+			//int port = binarySearch(mp_Libxl->mvb_Addr, 120, a_PortAddr); // 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다. // int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
+			//port += mp_Libxl->m_totalNodeCnt * a_Node;
+
+			//DWORD smData = mainDlg->GetWordDataFromSM(a_portAddr, a_node, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
+	
+			//if (!bMerge && col < 10) {
+			//	// 비트 체크.
+			//	BYTE bitPos = 7 - (col - 2); // 2 ~ 10
+
+			//	BYTE rowPos = row - 3; // 5 ~ 36
+			//	if (rowPos % 2 == 0) bitPos += 8;
+
+			//	BYTE colPos = col - 1;
+
+			//	// 그리드에 색상 적용.
+			//	if (IsBitCheck16(smData, bitPos)) {
+			//		ap_grid->SetItemBkColour(rowPos, colPos, RCLICK_RGB);
+			//	}
+			//}
+			// 병합한 사이즈 만큼 다음 열로 넘어감.
+			row += mergeSize;		
+		}
+		else { 
+			for (int col = 2; col <= 9 + 1; col++) {
+				bMerge = pSheet->getMerge(row, col, 0, 0, 0, 0);
+
+				// 병합이 되었다면...
+				if (bMerge) {
+					if (mergeCol_finish == 0) {
+						mergeCol_start = col - 1;
+						mergeCol_finish = col - 2;
+					}
+					mergeCol_finish++;
+				}
+				// 병합이 안되어 있다면...
+				else {
+					// 병합된 크기 만큼 병합.
+					if (mergeCol_finish) {
+						// 엑셀에 병합된 셀(비트)만큼 그리드에도 병합. (less than 1 byte)
+						ap_grid->MergeCells(CCellRange(gridRow, mergeCol_start, gridRow, mergeCol_finish));
+					
+						// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅.
+						ap_grid->SetItemText(gridRow, mergeCol_start, pSheet->readStr(row, mergeCol_start + 1));
+
+						mergeCol_start = 0;
+						mergeCol_finish = 0;
+					}	
+					else {
+						// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅. (1 bit)
+						ap_grid->SetItemText(gridRow, col - 1, pSheet->readStr(row, col));
+					}
+					
+				}
+			}
+			row++;
+		}		
+	}	
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
 void _GFG::_GFG_InitMakeGrid(unsigned short a_fcode, WORD a_portAddr, CGridCtrl *ap_grid)
 {
 	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
