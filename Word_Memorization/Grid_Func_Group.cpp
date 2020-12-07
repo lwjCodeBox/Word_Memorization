@@ -43,73 +43,120 @@ void _GFG::_GFG_InitMakeGrid_Test(unsigned short a_fcode, WORD a_portAddr, WORD 
 	unsigned short rowLast = (2 << a_fcode) + 5; // 엑셀 읽어오는 시작 지점이 5이기 때문에 +5를 함.
 	bool bMerge = false;
 
+	CString gridBuf;
+
 	for (int row = 5; row < rowLast; NULL) {
 		int gridRow = row - 3;
 		int mergeSize = (int)pSheet->readNum(row, 10);
 
+		int mvbIndex = binarySearch(p_ExcelLib->mvb_Addr, 120, a_portAddr);
+		mvbIndex += p_ExcelLib->m_totalNodeCnt * a_node;
+		
 		if (mergeSize) { // 1바이트 이상 병합이된 경우.
+			// 공유 메모리에서 데이터 가져옴.
+			int smData = 0;
+			memcpy(&smData, &mainDlg->m_pData->data[mvbIndex][gridRow - 2], mergeSize);
+
+			// ((BYTE *)&smData)[0] 0번째 부터 한 바이트 씩 데이터가 저장되는데 4바이트(int) 자료형에 
+			// 넣기 때문에 1바이트짜리 데이터를 현시하려면 32만큼 오른쪽 시프트를 해야한다.
+			int rShift = 8 << (4 - mergeSize);
+			smData = smData >> rShift;
+
 			// 엑셀 10열에 표기한 숫자 만큼 병합. (more than 1 byte)
 			ap_grid->MergeCells(CCellRange(gridRow, 1, gridRow + mergeSize - 1, 8));
-			
+
+			// 값이 0이면 흰색, 값이 0이 아니라면 연한 노랑색.
+			if (smData) ap_grid->SetItemBkColour(gridRow, 1, LDCLICK_RGB);						
+			else ap_grid->SetItemBkColour(gridRow, 1, WHITE_RGB);
+						
 			// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅.
-			ap_grid->SetItemText(gridRow, 1, pSheet->readStr(row, 2));
+			gridBuf.Format(L"%s >> [0x%04X][%d]", pSheet->readStr(row, 2), smData, smData);
+			ap_grid->SetItemText(gridRow, 1, gridBuf);
 
-			// 공유 메모리에서 데이터 가져옴.
-			int port = binarySearch(p_ExcelLib->mvb_Addr, 120, a_portAddr);
-			port += p_ExcelLib->m_totalNodeCnt * a_node;
-			//memcpy();
-			
-
-			DWORD smData = mainDlg->GetWordDataFromSM(a_portAddr, a_node, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
-	
-			//if (!bMerge && col < 10) {
-			//	// 비트 체크.
-			//	BYTE bitPos = 7 - (col - 2); // 2 ~ 10
-
-			//	BYTE rowPos = row - 3; // 5 ~ 36
-			//	if (rowPos % 2 == 0) bitPos += 8;
-
-			//	BYTE colPos = col - 1;
-
-			//	// 그리드에 색상 적용.
-			//	if (IsBitCheck16(smData, bitPos)) {
-			//		ap_grid->SetItemBkColour(rowPos, colPos, RCLICK_RGB);
-			//	}
-			//}
-			// 병합한 사이즈 만큼 다음 열로 넘어감.
-			row += mergeSize;		
+			// 다음 행으로 넘어감.
+			row += mergeSize;							
 		}
 		else { 
-			for (int col = 2; col <= 9 + 1; col++) {
-				bMerge = pSheet->getMerge(row, col, 0, 0, 0, 0);
+			for (int col = 2; col < 9 + 1; NULL) {
+				int mergeCnt = 0;
 
-				// 병합이 되었다면...
-				if (bMerge) {
-					if (mergeCol_finish == 0) {
-						mergeCol_start = col - 1;
-						mergeCol_finish = col - 2;
-					}
-					mergeCol_finish++;
-				}
-				// 병합이 안되어 있다면...
-				else {
-					// 병합된 크기 만큼 병합.
-					if (mergeCol_finish) {
-						// 엑셀에 병합된 셀(비트)만큼 그리드에도 병합. (less than 1 byte)
-						ap_grid->MergeCells(CCellRange(gridRow, mergeCol_start, gridRow, mergeCol_finish));
-					
-						// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅.
-						ap_grid->SetItemText(gridRow, mergeCol_start, pSheet->readStr(row, mergeCol_start + 1));
+				bool b = false;
 
-						mergeCol_start = 0;
-						mergeCol_finish = 0;
-					}	
-					else {
-						// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅. (1 bit)
-						ap_grid->SetItemText(gridRow, col - 1, pSheet->readStr(row, col));
-					}
-					
-				}
+				int c = 2;
+				int d = 3;
+				b = pSheet->merge(6, &row, &row, &c, &d);
+
+				c = 4;
+				d = 5;
+				b = pSheet->merge(6, &row, &row, &c, &d);
+
+				c = 6;
+				d = 7;
+				b = pSheet->merge(6, &row, &row, &c, &d);
+
+				return;
+
+				
+				////bMerge = pSheet->getMerge(row, col, 0, 0, 0, 0);
+				//while (pSheet->getMerge(row, col, 0, 0, 0, 0)) {
+				//	col++;
+				//	mergeCnt++;															
+				//}
+
+				//if (mergeCnt) {
+				//	ap_grid->MergeCells(CCellRange(gridRow, col - 1 - mergeCnt, gridRow, col - 2));
+				//	
+				//	// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅. (1 bit)
+				//	ap_grid->SetItemText(gridRow, col - mergeCnt - 1, pSheet->readStr(row, col - mergeCnt));
+				//}
+				//else {
+				//	// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅. (1 bit)
+				//	ap_grid->SetItemText(gridRow, col - 1, pSheet->readStr(row, col));
+
+				//	col++;
+				//}
+				 
+				
+				
+
+				
+				//bMerge = pSheet->getMerge(row, col, 0, 0, 0, 0);
+				//
+				//if (bMerge) { // 병합이 되었다면...
+				//	if (mergeCol_finish == 0) {
+				//		mergeCol_start = col - 1;
+				//		mergeCol_finish = col - 2;
+				//	}
+				//	mergeCol_finish++;
+				//}				
+				//else { // 병합이 안되어 있다면...
+				//	// 병합된 크기 만큼 병합.
+				//	if (mergeCol_finish) {
+				//		// 엑셀에 병합된 셀(비트)만큼 그리드에도 병합. (less than 1 byte)
+				//		ap_grid->MergeCells(CCellRange(gridRow, mergeCol_start, gridRow, mergeCol_finish));
+				//	
+				//		// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅.
+				//		ap_grid->SetItemText(gridRow, mergeCol_start, pSheet->readStr(row, mergeCol_start + 1));
+
+				//		mergeCol_start = 0;
+				//		mergeCol_finish = 0;
+				//	}	
+				//	else {							
+				//		// 공유 메모리에서 데이터 가져옴.
+				//		unsigned char smDataBit = 0;
+				//		memcpy(&smDataBit, &mainDlg->m_pData->data[mvbIndex][gridRow - 2], 1);
+
+				//		// 값이 0이면 흰색, 값이 0이 아니라면 연한 노랑색.
+				//		if ((smDataBit >> (col - 2)) & 0x1)
+
+				//		// 값이 0이면 흰색, 값이 0이 아니라면 라임색.
+				//		if (smDataBit) ap_grid->SetItemBkColour(gridRow, col - 1, RCLICK_RGB);
+				//		else ap_grid->SetItemBkColour(gridRow, col - 1, WHITE_RGB);
+
+				//		// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅. (1 bit)
+				//		ap_grid->SetItemText(gridRow, col - 1, pSheet->readStr(row, col));						
+				//	}					
+				//}
 			}
 			row++;
 		}		
