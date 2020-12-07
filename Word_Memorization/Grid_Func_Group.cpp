@@ -20,7 +20,7 @@ void _GFG::_GFG_InitItemBkColor(int a_rowLast, int a_colLast, CGridCtrl *ap_grid
 }
 //--------------------------------------------------------------------------------------------
 
-void _GFG::_GFG_InitMakeGrid_Test(unsigned short a_fcode, WORD a_portAddr, CGridCtrl *ap_grid)
+void _GFG::_GFG_InitMakeGrid_Test(unsigned short a_fcode, WORD a_portAddr, WORD a_node, CGridCtrl *ap_grid)
 {
 	/* 2중 포인터로 할 경우...
 		Sheet **ppSheet = NULL;
@@ -28,6 +28,7 @@ void _GFG::_GFG_InitMakeGrid_Test(unsigned short a_fcode, WORD a_portAddr, CGrid
 		(*ppSheet)->getMerge(5, 2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
 	*/
 	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	_CExcelLib *p_ExcelLib = (_CExcelLib *)mainDlg->mp_Libxl;
 	Sheet *pSheet = NULL;
 	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
 
@@ -53,10 +54,13 @@ void _GFG::_GFG_InitMakeGrid_Test(unsigned short a_fcode, WORD a_portAddr, CGrid
 			// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅.
 			ap_grid->SetItemText(gridRow, 1, pSheet->readStr(row, 2));
 
-			//int port = binarySearch(mp_Libxl->mvb_Addr, 120, a_PortAddr); // 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다. // int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
-			//port += mp_Libxl->m_totalNodeCnt * a_Node;
+			// 공유 메모리에서 데이터 가져옴.
+			int port = binarySearch(p_ExcelLib->mvb_Addr, 120, a_portAddr);
+			port += p_ExcelLib->m_totalNodeCnt * a_node;
+			//memcpy();
+			
 
-			//DWORD smData = mainDlg->GetWordDataFromSM(a_portAddr, a_node, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
+			DWORD smData = mainDlg->GetWordDataFromSM(a_portAddr, a_node, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
 	
 			//if (!bMerge && col < 10) {
 			//	// 비트 체크.

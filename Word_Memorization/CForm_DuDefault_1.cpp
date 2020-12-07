@@ -152,7 +152,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	_GFG::_GFG_InitItemBkColor(rowCount + 1, 8, mp_gridctrl);
 	
 	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	_GFG::_GFG_InitMakeGrid_Test(fcode, 0x1A4, mp_gridctrl); // 비트 형식인지 병합한 형식인지 체크.
+	_GFG::_GFG_InitMakeGrid_Test(fcode, 0x1A4, 0, mp_gridctrl); // 비트 형식인지 병합한 형식인지 체크.
 	// (x)_GFG::_GFG_SetWordFormatCell(fcode, 0x1A4, mp_gridctrl); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 	
 	// 매개 변수 범위는 그리드 컨트롤 기준이다.

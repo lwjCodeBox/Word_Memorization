@@ -11,7 +11,7 @@ namespace _GFG {
 	void _GFG_InitItemBkColor(int a_rowLast, int a_colLast, CGridCtrl *ap_grid); // (O)
 
 	// 매개 변수 범위는 기준은 엑셀 기준이다. (0)
-	void _GFG_InitMakeGrid_Test(unsigned short a_fcode, WORD a_portAddr, CGridCtrl *ap_grid); // 비트 형식인지 병합한 형식인지 체크.
+	void _GFG_InitMakeGrid_Test(unsigned short a_fcode, WORD a_portAddr, WORD a_node, CGridCtrl *ap_grid); // 비트 형식인지 병합한 형식인지 체크.
 	void _GFG_InitMakeGrid(unsigned short a_fcode, WORD a_portAddr, CGridCtrl *ap_grid); // 비트 형식인지 병합한 형식인지 체크.
 	void _GFG_SetWordFormatCell(unsigned short a_fcode, WORD a_portAddr, CGridCtrl *ap_grid); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
 
