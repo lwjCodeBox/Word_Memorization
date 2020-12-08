@@ -12,8 +12,8 @@
 
 IMPLEMENT_DYNAMIC(CDeviceProtocol, CDialogEx)
 
-CDeviceProtocol::CDeviceProtocol(int a_port, CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_PROTOCOL_EXCEL_DLG, pParent), m_port(a_port)
+CDeviceProtocol::CDeviceProtocol(int a_port, int a_node, CWnd* pParent /*=nullptr*/)
+	: CDialogEx(IDD_PROTOCOL_EXCEL_DLG, pParent), m_port(a_port), m_node(a_node)
 {
 	
 }
@@ -75,7 +75,7 @@ BOOL CDeviceProtocol::OnInitDialog()
 		str.Format(L"Bit %02d", 7 - (col - 1));
 		mp_PT_Grid->SetItemText(1, col, str);
 
-		mp_PT_Grid->SetColumnWidth(col, 114); // column width
+		mp_PT_Grid->SetColumnWidth(col, 113); // column width
 	}
 
 	// Byte
@@ -83,21 +83,23 @@ BOOL CDeviceProtocol::OnInitDialog()
 		int word = (i - 2) / 2;
 		str.Format(L"Byte %02d (W %02d)", i - 2, word);
 		mp_PT_Grid->SetItemText(i, 0, str);
+
+		if (word % 2 == 0) {
+			mp_PT_Grid->SetItemBkColour(i, 0, (RGB(200, 120, 160)));
+		}
+		else {
+			mp_PT_Grid->SetItemBkColour(i, 0, (RGB(130, 130, 200)));
+		}
 	}
 
 	// 그리드 초기화
 	mp_PT_Grid->ClearCells(CCellRange(2, 1, rowCount + 1, 8));
 	_GFG::_GFG_InitItemBkColor(rowCount + 1, 8, mp_PT_Grid);
 
-	// 매개 변수 범위는 기준은 엑셀 기준이다.
-	_GFG::_GFG_InitMakeGrid(fcode, m_port, mp_PT_Grid); // 비트 형식인지 병합한 형식인지 체크.
-	_GFG::_GFG_SetWordFormatCell(fcode, m_port, mp_PT_Grid); // 병합한 형태이면 병합한 모양에 맞게 그리드에 그리기.
+	// 그리드 매핑.
+	_GFG::_GFG_InitMakeGrid(fcode, m_port, m_node, mp_PT_Grid);
 
-	// 매개 변수 범위는 그리드 컨트롤 기준이다.
-	_GFG::_GFG_SetTextGrid(2, rowCount + 1, 1, 8, m_port, mp_PT_Grid);       // 그리드에 엑셀에 있는 텍스트 넣기. 
-
-	_GFG::_GFG_GetBitDataFormSM(fcode, m_port, 0, mp_PT_Grid); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 비트 형식
-	_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(fcode, m_port, 0, mp_PT_Grid); // 데이터 체크를 해서 0이 아닌 값이 있으면 그리드 셀 색 변경 - 병합된 형식.
+	mp_PT_Grid->SetEditable(false);
 
 	return TRUE;  
 }

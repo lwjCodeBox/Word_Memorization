@@ -12,10 +12,12 @@ class CDeviceProtocol : public CDialogEx
 
 private:
 	CGridCtrl *mp_PT_Grid = NULL;
+	
 	int m_port;
+	int m_node;
 
 public:
-	CDeviceProtocol(int a_port, CWnd* pParent = nullptr);   // standard constructor
+	CDeviceProtocol(int a_port, int a_node, CWnd* pParent = nullptr);   // standard constructor
 
 	virtual ~CDeviceProtocol();
 

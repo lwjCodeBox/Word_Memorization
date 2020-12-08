@@ -273,6 +273,7 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 	short click_PT_BTN = -1;
 	short pos = 0;
 	int port = 0;
+	int node = 0;
 
 	for (int rowCnt = 0; rowCnt < protocolBTN.rowCount; rowCnt++) {
 		for (int colCnt = 0; colCnt < protocolBTN.colCount; colCnt++) {
@@ -294,7 +295,8 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 					try {
 						int t_map_key = _row * 10 + _col;
 						port = portAddr.used_on_Protocol.at(t_map_key); // find(t_map_key)->second;
-						str.Format(L"%s [0x%02X]", str, port);
+						node = (_col + 2) / 2;
+						str.Format(L"%s [port : 0x%02X] [node : %d]", str, port, node);
 					}
 					catch (std::out_of_range &e) {
 						str.Format(L"Do not found Excel sheet [%s]", e.what());
@@ -303,7 +305,7 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 					}
 
 					// Protocol PopUp
-					CDeviceProtocol *pPopUp = new CDeviceProtocol(port);
+					CDeviceProtocol *pPopUp = new CDeviceProtocol(port, node);
 					pPopUp->Create(IDD_PROTOCOL_EXCEL_DLG);
 					pPopUp->SetWindowTextW(str);
 					pPopUp->ShowWindow(SW_SHOW);

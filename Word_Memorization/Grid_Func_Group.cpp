@@ -20,7 +20,7 @@ void _GFG::_GFG_InitItemBkColor(int a_rowLast, int a_colLast, CGridCtrl *ap_grid
 }
 //--------------------------------------------------------------------------------------------
 
-void _GFG::_GFG_InitMakeGrid_Test(unsigned short a_fcode, WORD a_portAddr, WORD a_node, CGridCtrl *ap_grid)
+void _GFG::_GFG_InitMakeGrid(unsigned short a_fcode, WORD a_portAddr, WORD a_node, CGridCtrl *ap_grid)
 {
 	/* 2중 포인터로 할 경우...
 		Sheet **ppSheet = NULL;
@@ -77,368 +77,66 @@ void _GFG::_GFG_InitMakeGrid_Test(unsigned short a_fcode, WORD a_portAddr, WORD 
 			row += mergeSize;							
 		}
 		else { 
-			for (int col = 2; col < 9 + 1; NULL) {
-				int mergeCnt = 0;
+			// 공유 메모리에서 데이터 가져옴.
+			unsigned char smData = 0;
+			memcpy(&smData, &mainDlg->m_pData->data[mvbIndex][gridRow - 2], 1);
 
-				bool b = false;
-
-				int c = 2;
-				int d = 3;
-				b = pSheet->merge(6, &row, &row, &c, &d);
-
-				c = 4;
-				d = 5;
-				b = pSheet->merge(6, &row, &row, &c, &d);
-
-				c = 6;
-				d = 7;
-				b = pSheet->merge(6, &row, &row, &c, &d);
-
-				return;
-
+			int mergeCnt;
+			// 병합된 사이즈 만큼 다음 col 값 증가.
+			for (int col = 2; col < 10; col += mergeCnt) {
+				int gridCol = col - 1;
+				mergeCnt = 0;
 				
-				////bMerge = pSheet->getMerge(row, col, 0, 0, 0, 0);
-				//while (pSheet->getMerge(row, col, 0, 0, 0, 0)) {
-				//	col++;
-				//	mergeCnt++;															
-				//}
+				// 병합된 사이즈 측정.
+				while (pSheet->readBlank(row, col + 1 + mergeCnt, NULL)) {
+					mergeCnt++;					
+				}
+					
+				// 그리드 컨트롤 병합.
+				ap_grid->MergeCells(CCellRange(gridRow, gridCol, gridRow, gridCol + mergeCnt));
 
-				//if (mergeCnt) {
-				//	ap_grid->MergeCells(CCellRange(gridRow, col - 1 - mergeCnt, gridRow, col - 2));
-				//	
-				//	// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅. (1 bit)
-				//	ap_grid->SetItemText(gridRow, col - mergeCnt - 1, pSheet->readStr(row, col - mergeCnt));
-				//}
-				//else {
-				//	// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅. (1 bit)
-				//	ap_grid->SetItemText(gridRow, col - 1, pSheet->readStr(row, col));
+				// 병합이 되지 않은 경우.				
+				if (0 == mergeCnt) {					
+					BYTE rShift = 9 - col;
+					// 값이 0이면 흰색, 값이 0이 아니라면 연한 노랑색.					
+					if ((smData >> rShift) & 0x01)
+						ap_grid->SetItemBkColour(gridRow, gridCol, RCLICK_RGB);
+					else
+						ap_grid->SetItemBkColour(gridRow, gridCol, WHITE_RGB);	
 
-				//	col++;
-				//}
-				 
-				
-				
+					// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅.
+					ap_grid->SetItemText(gridRow, gridCol, pSheet->readStr(row, col));
+				}
+				// 병합된 경우.
+				else {
+					BYTE _rShift = 9 - (col + mergeCnt);//9 - col + mergeCnt;
+					BYTE bitSet = 0;
 
-				
-				//bMerge = pSheet->getMerge(row, col, 0, 0, 0, 0);
-				//
-				//if (bMerge) { // 병합이 되었다면...
-				//	if (mergeCol_finish == 0) {
-				//		mergeCol_start = col - 1;
-				//		mergeCol_finish = col - 2;
-				//	}
-				//	mergeCol_finish++;
-				//}				
-				//else { // 병합이 안되어 있다면...
-				//	// 병합된 크기 만큼 병합.
-				//	if (mergeCol_finish) {
-				//		// 엑셀에 병합된 셀(비트)만큼 그리드에도 병합. (less than 1 byte)
-				//		ap_grid->MergeCells(CCellRange(gridRow, mergeCol_start, gridRow, mergeCol_finish));
-				//	
-				//		// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅.
-				//		ap_grid->SetItemText(gridRow, mergeCol_start, pSheet->readStr(row, mergeCol_start + 1));
+					for (int i = 0; i <= mergeCnt; i++) {
+						bitSet = bitSet | (1 << i);
+					}
 
-				//		mergeCol_start = 0;
-				//		mergeCol_finish = 0;
-				//	}	
-				//	else {							
-				//		// 공유 메모리에서 데이터 가져옴.
-				//		unsigned char smDataBit = 0;
-				//		memcpy(&smDataBit, &mainDlg->m_pData->data[mvbIndex][gridRow - 2], 1);
+					BYTE data = smData >> _rShift;
+					data &= bitSet;
+					if (data)
+						ap_grid->SetItemBkColour(gridRow, gridCol, RCLICK_RGB);					
+					else 
+						ap_grid->SetItemBkColour(gridRow, gridCol, WHITE_RGB);					
 
-				//		// 값이 0이면 흰색, 값이 0이 아니라면 연한 노랑색.
-				//		if ((smDataBit >> (col - 2)) & 0x1)
+					// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅.
+					CString str;
+					str.Format(L"%s >> [0x%02X][%d]", pSheet->readStr(row, col), data, data);
+					ap_grid->SetItemText(gridRow, gridCol, str);
+				}
 
-				//		// 값이 0이면 흰색, 값이 0이 아니라면 라임색.
-				//		if (smDataBit) ap_grid->SetItemBkColour(gridRow, col - 1, RCLICK_RGB);
-				//		else ap_grid->SetItemBkColour(gridRow, col - 1, WHITE_RGB);
-
-				//		// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅. (1 bit)
-				//		ap_grid->SetItemText(gridRow, col - 1, pSheet->readStr(row, col));						
-				//	}					
-				//}
+				// col 증가.
+				col++;								
 			}
 			row++;
 		}		
 	}	
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-void _GFG::_GFG_InitMakeGrid(unsigned short a_fcode, WORD a_portAddr, CGridCtrl *ap_grid)
-{
-	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
-
-	/* 2중 포인터로 할 경우...
-		Sheet **ppSheet = NULL;
-		ppSheet = &pExcel->m_pDU_Default_1;
-		(*ppSheet)->getMerge(5, 2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
-	*/
-	Sheet *pSheet = NULL;	
-	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
-
-	if (pSheet == NULL) {
-		AfxMessageBox(L"Do not found Excel sheet (_GFG_InitMakeGrid() - m_InitSheetMap())");
-		return;
-	}
-
-	// Grid Setting	
-	int mergeCol_start = 0;
-	int mergeCol_finish = 0;
-	unsigned short rowLast = (2 << a_fcode) + 5; // 엑셀 읽어오는 시작 지점이 5이기 때문에 +5를 함.
-	bool bMerge = false;
-
-	for (int row = 5; row < rowLast; row++) {
-		for (int col = 2; col <= 9 + 1; col++) {
-			if (pSheet != NULL) // 모든 프로토콜이 완성되지 않아서 잠시 이 조건을 걸어 줌.
-				bMerge = pSheet->getMerge(row, col, 0, 0, 0, 0);	
-
-			// 병합이 되었다면...
-			if (bMerge) {
-				if (mergeCol_finish == 0) {
-					mergeCol_start = col - 1;
-					mergeCol_finish = col - 2;
-				}
-				mergeCol_finish++;
-			}
-			// 병합이 안되어 있다면...
-			else {
-				// 일반 비트 형식 
-				if (0 == mergeCol_finish) {}
-				// 병합된 크기 만큼 병합.
-				else {
-					int t_row = row - 3;
-					ap_grid->MergeCells(CCellRange(t_row, mergeCol_start, t_row, mergeCol_finish));
-
-					mergeCol_start = 0;
-					mergeCol_finish = 0;
-				}
-			}
-		}
-	}
-}
-//--------------------------------------------------------------------------------------------
-
-void _GFG::_GFG_SetWordFormatCell(unsigned short a_fcode, WORD a_portAddr, CGridCtrl *ap_grid)
-{
-	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
-
-	/* 2중 포인터로 할 경우...
-		Sheet **ppSheet = NULL;
-		ppSheet = &pExcel->m_pDU_Default_1;
-		(*ppSheet)->getMerge(5, 2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
-	*/
-	Sheet *pSheet = NULL;
-	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
-
-	if (pSheet == NULL) {
-		AfxMessageBox(L"Do not found Excel sheet (_GFG_SetWordFormatCell() - m_InitSheetMap())");
-		return;
-	}
-
-	// Draw Word Format 	
-	int mergeCount = 0;
-	unsigned short rowLast = (2 << a_fcode) + 5; // 엑셀 읽어오는 시작 지점이 5이기 때문에 +5를 함.
-	bool bMerge = false;
-
-	for (int row = 5; row < rowLast; row++) {
-		for (int col = 2; col <= 9 + 1; col++) {
-			if (pSheet != NULL) // 모든 프로토콜이 완성되지 않아서 잠시 이 조건을 걸어 줌.
-				bMerge = pSheet->getMerge(row, col, 0, 0, 0, 0);
-
-			// 병합이 되었다면...
-			if (bMerge) {
-				mergeCount++;
-			}
-
-			// Check Word Fomat
-			if (mergeCount == 16) {
-				// 엑셀 범위 세팅.
-				int t_row_first = 5, t_row_last = rowLast;
-				int t_col_first = 2, t_col_last = 9 - 1;
-
-				pSheet->getMerge(row, 2, &t_row_first, &t_row_last, &t_col_first, &t_col_last); // _row, _col, &row_first, &row_last, &col_first, &col_last		
-				// 처음 행과 마지막 행을 비교하는 이유는 바이트 형식이면 두 변수(t_row_first, t_row_last)의 값이 같게 되지만 워드 형식이면 두 변수의 값이 다르다.
-				if (t_row_first != t_row_last) {
-					int t_row_f = t_row_first - 3;
-					int t_row_l = t_row_last - 3;
-					ap_grid->MergeCells(CCellRange(t_row_f, 1, t_row_l, 8));
-				}
-				mergeCount = 0;
-			}
-		}
-	}
-}
-//--------------------------------------------------------------------------------------------
-
-void _GFG::_GFG_SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_port, CGridCtrl *ap_grid)
-{		
-	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
-	
-	for (int row = a_RowFirst; row <= a_RowLast; row++) {
-		for (int col = a_ColFirst; col <= a_ColLast; col++) {
-			ap_grid->SetItemText(row, col, mainDlg->mp_Libxl->GetDuDefaultValue(row+3, col+1, a_port));
-		}
-	}
-}
-//--------------------------------------------------------------------------------------------
-
-void _GFG::_GFG_GetBitDataFormSM(unsigned short a_fcode, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid)
-{
-	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
-
-/* 2중 포인터로 할 경우...
-	Sheet **ppSheet = NULL;
-	ppSheet = &pExcel->m_pDU_Default_1;
-	(*ppSheet)->getMerge(5, 2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last
-*/
-	Sheet *pSheet = NULL;
-	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
-
-	if (pSheet == NULL) {
-		AfxMessageBox(L"Do not found Excel sheet (_GFG_GetBitDataFormSM() - m_InitSheetMap())");
-		return;
-	}
-
-	unsigned short rowLast = (2 << a_fcode) + 5; // 엑셀 읽어오는 시작 지점이 5이기 때문에 +5를 함.
-	bool bMerge = false;
-
-	for (int row = 5; row < rowLast; row++) {
-		WORD smData = mainDlg->GetWordDataFromSM(a_portAddr, a_node, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
-
-		for (int col = 2; col <= 9 + 1; col++) {
-			if (pSheet != NULL) // 모든 프로토콜이 완성되지 않아서 잠시 이 조건을 걸어 줌.
-				bMerge = pSheet->getMerge(row, col, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last	
-
-			// 병합이 안되어 있다면...
-			if (!bMerge && col < 10) {
-				// 비트 체크.
-				BYTE bitPos = 7 - (col - 2); // 2 ~ 10
-
-				BYTE rowPos = row - 3; // 5 ~ 36
-				if (rowPos % 2 == 0) bitPos += 8;
-
-				BYTE colPos = col - 1;
-
-				// 그리드에 색상 적용.
-				if (IsBitCheck16(smData, bitPos)) {
-					ap_grid->SetItemBkColour(rowPos, colPos, RCLICK_RGB);
-				}
-			}
-		}
-	}	
-}
-//--------------------------------------------------------------------------------------------
-
-void _GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(unsigned short a_fcode, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid)
-{
-	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
-
-	Sheet *pSheet = NULL;
-	pSheet = mainDlg->mp_Libxl->sheetMap.find(a_portAddr)->second;
-
-	if (pSheet == NULL) {
-		AfxMessageBox(L"Do not found Excel sheet (_GFG_GetMoreThanTwoBitsOfDataFormSM() - m_InitSheetMap())");
-		return;
-	}
-
-	bool bMerge = false;
-	bool oldMerge = false;
-
-	unsigned short rowLast = (2 << a_fcode) + 5; // 엑셀 읽어오는 시작 지점이 5이기 때문에 +5를 함.
-	int mergeCount = 0;
-	int startRow = 0, startCol = 0;
-	
-	for (int row = 5; row <= rowLast; row++) {
-		WORD smData = mainDlg->GetWordDataFromSM(a_portAddr, a_node, (row - 5) / 2); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
-
-		for (int col = 2; col <= 9 + 1; col++) {
-			bMerge = pSheet->getMerge(row, col, 0, 0, 0, 0);
-
-			// 병합이 되었다면...
-			if (bMerge) {
-				oldMerge = true;
-				mergeCount++;
-
-				if (mergeCount == 1) {
-					startRow = row - 3;
-					startCol = col - 1;
-				}
-			}
-
-			if (oldMerge && !bMerge) {
-				CString gridText;
-
-				if (mergeCount == 16) {
-					// 엑셀 범위 세팅.
-					int t_row_first = 5, t_row_last = rowLast;
-					int t_col_first = 2, t_col_last = 9 - 1;
-					
-					bool bMerge = pSheet->getMerge(row, 2, &t_row_first, &t_row_last, &t_col_first, &t_col_last); // _row, _col, &row_first, &row_last, &col_first, &col_last		
-					// 처음 행과 마지막 행을 비교하는 이유는 바이트 형식이면 두 변수(t_row_first, t_row_last)의 값이 같게 되지만 워드 형식이면 두 변수의 값이 다르다.
-					if (t_row_first != t_row_last) {
-						// 워드						
-						if (smData) {
-							ap_grid->SetItemBkColour(startRow, startCol, PINK_COLOR);
-						}
-						gridText.Format(L"%s >> [%04X] [%d]", GetTextFormExcel(startRow, startCol, pSheet), smData, smData);
-						ap_grid->SetItemText(startRow, startCol, gridText);
-					}
-					else {
-						// 바이트
-						unsigned char t_HByte = smData >> 8;
-						unsigned char t_LByte = smData & 0xFF;
-						bool bh = pSheet->getMerge(row, 9, 0, 0, 0, 0);								
-						bool bl = pSheet->getMerge(row + 1, 9, 0, 0, 0, 0);
-
-						// 여기서 부터 진행... 2020.11.30
-						if (bh) {
-							ap_grid->SetItemBkColour(startRow, startCol, LIGHTYELLOW_COLOR);
-							gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(startRow, startCol, pSheet), t_HByte, t_HByte);
-							ap_grid->SetItemText(startRow, startCol, gridText);
-						}
-						
-						if (bl) {
-							ap_grid->SetItemBkColour(startRow + 1, startCol, LIGHTYELLOW_COLOR);
-							gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(startRow + 1, startCol, pSheet), t_LByte, t_LByte);
-							ap_grid->SetItemText(startRow + 1, startCol, gridText);
-						}
-						/*if (0 != t_HByte)
-							ap_grid->SetItemBkColour(startRow, startCol, LIGHTYELLOW_COLOR);
-						if (0 != t_LByte)
-							ap_grid->SetItemBkColour(startRow + 1, startCol, LIGHTYELLOW_COLOR);
-
-						gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(startRow, startCol, pSheet), t_HByte, t_HByte);
-						ap_grid->SetItemText(startRow, startCol, gridText);
-
-						gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(startRow + 1, startCol, pSheet), t_LByte, t_LByte);
-						ap_grid->SetItemText(startRow + 1, startCol, gridText);*/
-						
-					}
-
-					oldMerge = false;
-					mergeCount = 0;
-				}				
-				else if (mergeCount >= 2 && mergeCount <= 7){
-					BYTE t_smData = mainDlg->GetByteDataFromSM(a_portAddr, a_node, row - 5);
-					char t_bitPos = 8 - startCol;
-					
-					int move = t_bitPos - mergeCount + 1;
-					int t_datacheck = ((int)pow(2, mergeCount)-1) & (t_smData >> move);
-					
-					if(0 != t_datacheck)
-						ap_grid->SetItemBkColour(startRow, startCol, AQUA_COLOR);
-
-					gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(startRow, startCol, pSheet), t_datacheck, t_datacheck);
-					ap_grid->SetItemText(startRow, startCol, gridText);
-
-					oldMerge = false;
-					mergeCount = 0;
-				}
-			}
-		}
-	}
-}
-//--------------------------------------------------------------------------------------------
 
 // 나중에 삭제 할 코드임.
 void _GFG::_GFG_GetBitDataFormSMTest(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid)
