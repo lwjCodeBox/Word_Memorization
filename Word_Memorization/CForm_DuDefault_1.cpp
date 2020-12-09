@@ -119,11 +119,11 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 
 	mp_gridctrl->SetFixedBkColor(RGB(200, 200, 200));
 
-	// grid option
 	mp_gridctrl->SetGridLineColor(RGB(128, 128, 255));
+	
+	// grid option	
 	mp_gridctrl->SetTrackFocusCell(true);
-	mp_gridctrl->SetEditable(true);
-
+	mp_gridctrl->SetEditable(false); // 셀 더블 클릭 하면 내용 수정할 수 없도록 막음.
 	mp_gridctrl->EnableTitleTips(false);
 
 	CString str;
@@ -161,8 +161,7 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 	// 그리드 매핑.
 	_GFG::_GFG_InitMakeGrid(fcode, 0x1A4, 0, mp_gridctrl);
 		
-	//mp_gridctrl->SetFocusCell(3, 1);
-	mp_gridctrl->SetEditable(false);
+	//mp_gridctrl->SetFocusCell(3, 1);	
 	//mp_gridctrl->set(true);
 }
 //--------------------------------------------------------------------------------------------
@@ -191,12 +190,11 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 	mp_gridctrl->SetFixedColumnCount(1);
 
 	mp_gridctrl->SetFixedBkColor(RGB(200, 200, 200));
-
-	// grid option
 	mp_gridctrl->SetGridLineColor(RGB(128, 128, 255));
+	
+	// grid option	
 	mp_gridctrl->SetTrackFocusCell(true);
-	mp_gridctrl->SetEditable(true);
-
+	mp_gridctrl->SetEditable(false); // 셀 더블 클릭 하면 내용 수정할 수 없도록 막음.
 	mp_gridctrl->EnableTitleTips(false);
 
 	CString str;
@@ -260,12 +258,11 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 	mp_gridctrl->SetFixedColumnCount(1);
 
 	mp_gridctrl->SetFixedBkColor(RGB(200, 200, 200));
-
-	// grid option
 	mp_gridctrl->SetGridLineColor(RGB(128, 128, 255));
-	mp_gridctrl->SetTrackFocusCell(true);
-	mp_gridctrl->SetEditable(true);
 
+	// grid option	
+	mp_gridctrl->SetTrackFocusCell(true);
+	mp_gridctrl->SetEditable(false); // 셀 더블 클릭 하면 내용 수정할 수 없도록 막음.
 	mp_gridctrl->EnableTitleTips(false);
 
 	CString str;

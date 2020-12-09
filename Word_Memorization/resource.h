@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by WordMemorization.rc
+// Microsoft Visual C++에서 생성한 포함 파일입니다.
+// WordMemorization.rc에서 사용되고 있습니다.
 //
 #define IDD_SETDATA_POPUP               8
 #define IDC_TAB1                        100
@@ -20,6 +20,8 @@
 #define IDC_BUTTON1                     1016
 #define IDC_SETMVB_ADDR                 1017
 #define IDC_DFS_DEFAULT_2               1017
+#define IDC_BUTTON14                    1017
+#define IDC_PAGE_UP_BTN                 1017
 #define IDC_SETMVB_PORT                 1018
 #define IDC_SETMVB_WORD                 1018
 #define IDC_DFS_DEFAULT_3               1018
@@ -30,6 +32,7 @@
 #define IDC_SETMVB_ADDR2                1021
 #define IDC_POPUP_EDIT                  1021
 #define IDC_SETMVB_TM_PORT1             1022
+#define IDC_PAGE_DOWN_BTN               1022
 #define IDC_BUTTON2                     1023
 #define IDC_BUTTON3                     1024
 #define IDC_BUTTON4                     1025
@@ -77,7 +80,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        156
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1022
+#define _APS_NEXT_CONTROL_VALUE         1023
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

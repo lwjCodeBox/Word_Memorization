@@ -305,7 +305,7 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 					}
 
 					// Protocol PopUp
-					CDeviceProtocol *pPopUp = new CDeviceProtocol(port, node);
+					CDeviceProtocol *pPopUp = new CDeviceProtocol(caption.HB_BTN_Caption.at(pos).c_str(), port, node);
 					pPopUp->Create(IDD_PROTOCOL_EXCEL_DLG);
 					pPopUp->SetWindowTextW(str);
 					pPopUp->ShowWindow(SW_SHOW);
@@ -319,8 +319,7 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 		}
 	}
-	
-	
+		
 	CFormView::OnLButtonDown(nFlags, point);
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

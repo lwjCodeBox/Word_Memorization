@@ -29,14 +29,15 @@ public:
 	}
 	// 포트 주소에 맞는 libxl::Sheet 정보를 반환 map <key, value>
 	std::map<WORD, Sheet *> m_InitSheetMap();
-	std::map<WORD, Sheet *> sheetMap;
+	std::map<WORD, Sheet *> sheetMap;	
 		
 private:
 	Sheet* getSheetByName(Book* book, const wchar_t* name); // 사용하고 있는 Sheet의 이름을 얻어옴.
 
 	bool ExcelCertified();
-	// Read DU Defautl1, 2, 3 [ap_ExcelList[100][2] == (*ap_ExcelList)[2] 같은 의미임]
-	bool Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_Excel_DuDefault_2)[8], CString(*ap_Excel_DuDefault_3)[8]);
+	
+	bool Read_DU_Default(); // Read DU Defautl1, 2, 3 CString str[ap_ExcelList[100][2] == CString str(*ap_ExcelList)[2] 같은 의미임]
+	bool Read_DCU_SDR_SD(); // DCU SDR/SD
 	bool Read_BECU_SDR_SD(); // BECU SDR/SD
 	bool Read_VVVF_SDR_SD(); // VVVF SDR/SD
 
@@ -46,32 +47,15 @@ public:
 
 	// du_Defatul1, 2, 3 Sheet
 	Sheet *m_pDU_Default_1, *m_pDU_Default_2, *m_pDU_Default_3; 
-	// EBCU
+	// DCU Sheet
+	Sheet *mp_Sheet_DCU_SDR, *mp_Sheet_DCU_SD;
+	// EBCU Sheet
 	Sheet *mp_Sheet_EBCU_SDR1, *mp_Sheet_EBCU_SDR2, *mp_Sheet_EBCU_SDR3, *mp_Sheet_EBCU_SD;
-	// VVVF
+	// VVVF Sheet
 	Sheet *mp_Sheet_VVVF_SDR, *mp_Sheet_VVVF_SD1, *mp_Sheet_VVVF_SD2;
+	
 
 
 	WORD mvb_Addr[120]; // myNode 총 갯수가 120개라서 배열의 크기를 120으로 잡음.
 	BYTE m_totalNodeCnt;
-	
-private:
-	// Du Default1, 2, 3
-	CString m_Excel_DuDefault_1[32][8];
-	CString m_Excel_DuDefault_2[32][8];
-	CString m_Excel_DuDefault_3[32][8];
-
-	// BECU SDR/SD
-	CString m_BECU_SDR1_xlsx[32][8];
-	CString m_BECU_SDR2_xlsx[32][8];
-	CString m_BECU_SDR3_xlsx[32][8];
-	CString m_BECU_SD_xlsx[32][8];
-
-	// VVVF SDR/SD
-	CString m_VVVF_SDR_xlsx[32][8];
-	CString m_VVVF_SD1_xlsx[32][8];
-	CString m_VVVF_SD2_xlsx[32][8];
-
 }; 
-
- 

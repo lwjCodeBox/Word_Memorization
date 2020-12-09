@@ -7,12 +7,12 @@
 #include <vector>
 #include <map>
 
-#define RCLICK_RGB		RGB(0, 255, 128)
-#define LDCLICK_RGB		RGB(255, 255, 204)
+#define RCLICK_RGB		RGB(0, 255, 128) // bit
+#define LDCLICK_RGB		RGB(255, 255, 204) 
 #define WHITE_RGB		RGB(255, 255, 255)
 
-#define LIGHTYELLOW_COLOR		RGB(255, 255, 204)
-#define ORANGE_COLOR			RGB(255, 200, 100)
+#define LIGHTYELLOW_COLOR		RGB(255, 255, 204) // 2bit ~ 7bit
+#define ORANGE_COLOR			RGB(255, 200, 100) // Byte or Word
 #define AQUA_COLOR				RGB(0, 255, 255)
 #define PINK_COLOR				RGB(255, 210, 230)
 
@@ -45,7 +45,8 @@ struct TCaption
 												  {4, L"bMCI"}, {5, L"bMC2"}, {6, L"bMC1"}, {7, L"bDTC"} };
 	// Main Screen Button Caption.
 	std::map<int, std::wstring> srcBTN_Caption{ {0, L"Protocol"}, {1, L"HeartBit"}, {2, L"DU Default"}, {3, L"MyNode"}, {4, L"SetMVB"} };
-	// HeartBit Screen Button Caption.
+	
+	// HeartBit Screen Button Caption. (protocol 화면에서도 사용함.)
 	std::map<int, std::wstring> HB_BTN_Caption{ // *의 의미는 사용하지 않는 버튼이라는 의미이다. 
 		// VAC
 		{ 0, L"VAC1"}, { 1, L"VAC3"}, { 2, L"VAC1"}, { 3, L"VAC3"}, { 4, L"VAC3"}, { 5, L"VAC1"}, { 6, L"VAC3"}, { 7, L"VAC1"}, 
@@ -89,12 +90,12 @@ struct TMVB_Addr_Info
 		{ 00, 0x0B0}, { 01, 0x0F0}, { 02, 0x0B0}, { 03, 0x0F0}, { 04, 0x0F0}, { 05, 0x0B0}, { 06, 0x0F0}, { 07, 0x0B0},
 		{ 10, 0x0B4}, { 11, 0x0F4}, { 12, 0x0B4}, { 13, 0x0F4}, { 14, 0x0F4}, { 15, 0x0B4}, { 16, 0x0F4}, { 17, 0x0B4},
 		// DCU		    			  			    			  			    			  			    
-		{ 20, 0x0D0}, { 21, 0x0E0}, { 22, 0x0D0}, { 23, 0x0E0}, { 24, 0x0D0}, { 25, 0x0D0}, { 26, 0x0E0}, { 27, 0x0D0},
+		{ 20, 0x0D0}, { 21, 0x0E0}, { 22, 0x0D0}, { 23, 0x0E0}, { 24, 0x0E0}, { 25, 0x0D0}, { 26, 0x0E0}, { 27, 0x0D0},
 		{ 30, 0x0D4}, { 31, 0x0E4}, { 32, 0x0D4}, { 33, 0x0E4}, { 34, 0x0E4}, { 35, 0x0D4}, { 36, 0x0E4}, { 37, 0x0D4},
 		// ECU		    			  			    			  			    			  			    
 		{ 40, 0x010}, { 41, 0x030}, { 42, 0x010}, { 43, 0x030}, { 44, 0x030}, { 45, 0x010}, { 46, 0x030}, { 47, 0x010},
 		{ 50, 0x020}, { 51, 0x040}, { 52, 0x020}, { 53, 0x040}, { 54, 0x040}, { 55, 0x020}, { 56, 0x040}, { 57, 0x020},
-		// VVVF		    			  			    			  			    			  
+					  // VVVF		    			  			    			  			    			  
 					  { 61, 0x070}, { 62, 0x050}, { 63, 0x070}, { 64, 0x070}, { 65, 0x050}, { 66, 0x070},
 					  { 71, 0x080}, { 72, 0x060}, { 73, 0x080}, { 74, 0x080}, { 75, 0x060}, { 76, 0x080},
 		// AAU		  
@@ -112,16 +113,17 @@ struct TMVB_Addr_Info
 		{140, 0x154},																					  {147, 0x154},
 		// EVR																							  
 		{150, 0x180},																					  {157, 0x180},
-		// BC	
+					  // BC	
 					  {161, 0x09C}, {162, 0x09C},							  {165, 0x09C}, {166, 0x09C}				
 	};
+
 	std::map<int, int> used_on_Protocol{ // *의 의미는 사용하지 않는 버튼이라는 의미이다. 
 		//// VAC
 		//{ 00, 0x0B0}, { 01, 0x0F0}, { 02, 0x0B0}, { 03, 0x0F0}, { 04, 0x0F0}, { 05, 0x0B0}, { 06, 0x0F0}, { 07, 0x0B0},
 		//{ 10, 0x0B4}, { 11, 0x0F4}, { 12, 0x0B4}, { 13, 0x0F4}, { 14, 0x0F4}, { 15, 0x0B4}, { 16, 0x0F4}, { 17, 0x0B4},
-		//// DCU		    			  			    			  			    			  			    
-		//{ 20, 0x0D0}, { 21, 0x0E0}, { 22, 0x0D0}, { 23, 0x0E0}, { 24, 0x0D0}, { 25, 0x0D0}, { 26, 0x0E0}, { 27, 0x0D0},
-		//{ 30, 0x0D4}, { 31, 0x0E4}, { 32, 0x0D4}, { 33, 0x0E4}, { 34, 0x0E4}, { 35, 0x0D4}, { 36, 0x0E4}, { 37, 0x0D4},
+		// DCU	
+		{ 20, 0x0FC}, { 21, 0x0FC}, { 22, 0x0FC}, { 23, 0x0FC}, { 24, 0x0FC}, { 25, 0x0FC}, { 26, 0x0FC}, { 27, 0x0FC},
+		{ 30, 0x0FC}, { 31, 0x0FC}, { 32, 0x0FC}, { 33, 0x0FC}, { 34, 0x0FC}, { 35, 0x0FC}, { 36, 0x0FC}, { 37, 0x0FC},
 		// ECU		    			  			    			  			    			  			    
 		{ 40, 0x028}, { 41, 0x028}, { 42, 0x028}, { 43, 0x028}, { 44, 0x028}, { 45, 0x028}, { 46, 0x028}, { 47, 0x028},
 		{ 50, 0x028}, { 51, 0x028}, { 52, 0x028}, { 53, 0x028}, { 54, 0x028}, { 55, 0x028}, { 56, 0x028}, { 57, 0x028},
@@ -143,7 +145,7 @@ struct TMVB_Addr_Info
 		//{140, 0x154},																					  {147, 0x154},
 		//// EVR																							  
 		//{150, 0x180},																					  {157, 0x180},
-		//// BC	
+		            // BC	
 		//			{161, 0x09C}, {162, 0x09C},							  {165, 0x09C}, {166, 0x09C}
 	};
 
@@ -164,4 +166,7 @@ CString GetTextFormExcel(int a_Row, int a_Col, libxl::Sheet *ap_Excel);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 void DbgLog(LPCSTR ap_str, ...);
 void DbgLogW(LPCWSTR ap_str, ...);
+
+//char *DbgLog(LPCSTR ap_str, ...);
+wchar_t *DbgLogW_P(LPCWSTR ap_str, ...);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

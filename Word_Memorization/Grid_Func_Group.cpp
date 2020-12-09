@@ -66,7 +66,7 @@ void _GFG::_GFG_InitMakeGrid(unsigned short a_fcode, WORD a_portAddr, WORD a_nod
 			ap_grid->MergeCells(CCellRange(gridRow, 1, gridRow + mergeSize - 1, 8));
 
 			// 값이 0이면 흰색, 값이 0이 아니라면 연한 노랑색.
-			if (smData) ap_grid->SetItemBkColour(gridRow, 1, LDCLICK_RGB);						
+			if (smData) ap_grid->SetItemBkColour(gridRow, 1, ORANGE_COLOR);
 			else ap_grid->SetItemBkColour(gridRow, 1, WHITE_RGB);
 						
 			// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅.
@@ -119,7 +119,7 @@ void _GFG::_GFG_InitMakeGrid(unsigned short a_fcode, WORD a_portAddr, WORD a_nod
 					BYTE data = smData >> _rShift;
 					data &= bitSet;
 					if (data)
-						ap_grid->SetItemBkColour(gridRow, gridCol, RCLICK_RGB);					
+						ap_grid->SetItemBkColour(gridRow, gridCol, LIGHTYELLOW_COLOR);
 					else 
 						ap_grid->SetItemBkColour(gridRow, gridCol, WHITE_RGB);					
 

@@ -5,7 +5,8 @@ _CExcelLib::_CExcelLib()
 {
 	 ExcelCertified();
 
-	 Read_DU_Default(m_Excel_DuDefault_1, m_Excel_DuDefault_2, m_Excel_DuDefault_3);
+	 Read_DU_Default();
+	 Read_DCU_SDR_SD();
 	 Read_BECU_SDR_SD();
 	 Read_VVVF_SDR_SD();
 
@@ -22,17 +23,31 @@ std::map<WORD, Sheet *> _CExcelLib::m_InitSheetMap()
 	m.insert(std::make_pair(0x1A8, m_pDU_Default_2));
 	m.insert(std::make_pair(0x1AC, m_pDU_Default_3));
 
+	// DCU SDR / SD
+	m.insert(std::make_pair(0x0FC, mp_Sheet_DCU_SDR));
+
+	m.insert(std::make_pair(0x0D0, mp_Sheet_DCU_SD)); // L_DCU SD_M 1
+	m.insert(std::make_pair(0x0D4, mp_Sheet_DCU_SD)); // R_DCU SD_M 1
+	m.insert(std::make_pair(0x0D8, mp_Sheet_DCU_SD)); // L_DCU SD_S 1
+	m.insert(std::make_pair(0x0DC, mp_Sheet_DCU_SD)); // R_DCU SD_S 1
+	m.insert(std::make_pair(0x0E0, mp_Sheet_DCU_SD)); // L_DCU SD_M 2
+	m.insert(std::make_pair(0x0E4, mp_Sheet_DCU_SD)); // R_DCU SD_M 2	
+	m.insert(std::make_pair(0x0E8, mp_Sheet_DCU_SD)); // L_DCU SD_S 2
+	m.insert(std::make_pair(0x0EC, mp_Sheet_DCU_SD)); // R_DCU SD_S 2
+
 	// BECU SDR / SD
 	m.insert(std::make_pair(0x028, mp_Sheet_EBCU_SDR1));
 	m.insert(std::make_pair(0x038, mp_Sheet_EBCU_SDR2));
 	m.insert(std::make_pair(0x048, mp_Sheet_EBCU_SDR3));
+
 	m.insert(std::make_pair(0x010, mp_Sheet_EBCU_SD)); // EBCU SD1
 	m.insert(std::make_pair(0x020, mp_Sheet_EBCU_SD)); // EBCU SD2
 	m.insert(std::make_pair(0x030, mp_Sheet_EBCU_SD)); // EBCU SD3
 	m.insert(std::make_pair(0x040, mp_Sheet_EBCU_SD)); // EBCU SD4
-
+	
 	// VVVF SDR / SD
 	m.insert(std::make_pair(0x058, mp_Sheet_VVVF_SDR));
+
 	m.insert(std::make_pair(0x050, mp_Sheet_VVVF_SD1)); // VVVF1 SD1
 	m.insert(std::make_pair(0x054, mp_Sheet_VVVF_SD2)); // VVVF1 SD2
 	m.insert(std::make_pair(0x060, mp_Sheet_VVVF_SD1)); // VVVF2 SD1
@@ -42,8 +57,7 @@ std::map<WORD, Sheet *> _CExcelLib::m_InitSheetMap()
 	m.insert(std::make_pair(0x080, mp_Sheet_VVVF_SD1)); // VVVF4 SD1
 	m.insert(std::make_pair(0x084, mp_Sheet_VVVF_SD2)); // VVVF4 SD2
 
-
-
+	
 	return m;
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -166,7 +180,7 @@ bool _CExcelLib::Load_logical_Port_Adrs()
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-bool _CExcelLib::Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_Excel_DuDefault_2)[8], CString(*ap_Excel_DuDefault_3)[8])
+bool _CExcelLib::Read_DU_Default()
 {
 	libxl::Format *format = NULL;
 
@@ -180,23 +194,15 @@ bool _CExcelLib::Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_
 	m_pDU_Default_3 = getSheetByName(m_Book, L"du_default3");
 
 	if ((m_pDU_Default_1 != NULL) && (m_pDU_Default_2 != NULL) && (m_pDU_Default_3 != NULL)) {
+		/*
 		for (int i = row_start; i <= row_end; i++) {
 			for (int j = col_start; j <= col_end; j++) {
 				ap_Excel_DuDefault_1[i - 5][9 - j] = m_pDU_Default_1->readStr(i, j, &format);
-			}
-		}
-
-		for (int i = row_start; i <= row_end; i++) {
-			for (int j = col_start; j <= col_end; j++) {
 				ap_Excel_DuDefault_2[i - 5][9 - j] = m_pDU_Default_2->readStr(i, j, &format);
-			}
-		}
-
-		for (int i = row_start; i <= row_end; i++) {
-			for (int j = col_start; j <= col_end; j++) {
 				ap_Excel_DuDefault_3[i - 5][9 - j] = m_pDU_Default_3->readStr(i, j, &format);
 			}
 		}
+		*/
 		return true;
 	}
 	else {
@@ -208,13 +214,6 @@ bool _CExcelLib::Read_DU_Default(CString(*ap_Excel_DuDefault_1)[8], CString(*ap_
 
 bool _CExcelLib::Read_BECU_SDR_SD()
 {
-	libxl::Format *format = NULL;
-
-	int col_start = 2; // (열 시작 위치)
-	int col_end = 9;
-	int row_start = 5; // (행 시작 위치)
-	int row_end = 36;
-
 	mp_Sheet_EBCU_SDR1 = getSheetByName(m_Book, L"EBCU_SDR1");
 	mp_Sheet_EBCU_SDR2 = getSheetByName(m_Book, L"EBCU_SDR2");
 	mp_Sheet_EBCU_SDR3 = getSheetByName(m_Book, L"EBCU_SDR3");
@@ -222,15 +221,7 @@ bool _CExcelLib::Read_BECU_SDR_SD()
 
 	if ((mp_Sheet_EBCU_SDR1 != NULL) && (mp_Sheet_EBCU_SDR2 != NULL) && 
 		(mp_Sheet_EBCU_SDR3 != NULL) && (mp_Sheet_EBCU_SD != NULL)) 
-	{
-		for (int i = row_start; i <= row_end; i++) {
-			for (int j = col_start; j <= col_end; j++) {
-				m_BECU_SDR1_xlsx[i - 5][9 - j] = mp_Sheet_EBCU_SDR1->readStr(i, j, &format);
-				m_BECU_SDR2_xlsx[i - 5][9 - j] = mp_Sheet_EBCU_SDR2->readStr(i, j, &format);
-				m_BECU_SDR3_xlsx[i - 5][9 - j] = mp_Sheet_EBCU_SDR3->readStr(i, j, &format);
-				m_BECU_SD_xlsx[i - 5][9 - j]   = mp_Sheet_EBCU_SD->readStr(i, j, &format);
-			}
-		}		
+	{	
 		return true;
 	}
 	else {
@@ -238,31 +229,17 @@ bool _CExcelLib::Read_BECU_SDR_SD()
 		return false;
 	}
 
-	return true;
+	return false;
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 bool _CExcelLib::Read_VVVF_SDR_SD()
 {
-	libxl::Format *format = NULL;
-
-	int col_start = 2; // (열 시작 위치)
-	int col_end = 9;
-	int row_start = 5; // (행 시작 위치)
-	int row_end = 36;
-
 	mp_Sheet_VVVF_SDR = getSheetByName(m_Book, L"VVVF_SDR");
 	mp_Sheet_VVVF_SD1 = getSheetByName(m_Book, L"VVVF_SD1");
 	mp_Sheet_VVVF_SD2 = getSheetByName(m_Book, L"VVVF_SD2");
 
-	if ((mp_Sheet_VVVF_SDR != NULL) && (mp_Sheet_VVVF_SD1 != NULL) && (mp_Sheet_VVVF_SD2 != NULL)) {
-		for (int i = row_start; i <= row_end; i++) {
-			for (int j = col_start; j <= col_end; j++) {
-				m_VVVF_SDR_xlsx[i - 5][9 - j] = mp_Sheet_VVVF_SDR->readStr(i, j, &format);
-				m_VVVF_SD1_xlsx[i - 5][9 - j] = mp_Sheet_VVVF_SD1->readStr(i, j, &format);
-				m_VVVF_SD2_xlsx[i - 5][9 - j] = mp_Sheet_VVVF_SD2->readStr(i, j, &format);
-			}
-		}
+	if ((mp_Sheet_VVVF_SDR != NULL) && (mp_Sheet_VVVF_SD1 != NULL) && (mp_Sheet_VVVF_SD2 != NULL)) {		
 		return true;
 	}
 	else {
@@ -270,6 +247,23 @@ bool _CExcelLib::Read_VVVF_SDR_SD()
 		return false;
 	}
 
-	return true;
+	return false;
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+bool _CExcelLib::Read_DCU_SDR_SD()
+{
+	mp_Sheet_DCU_SDR = getSheetByName(m_Book, L"DCU_SDR");
+	mp_Sheet_DCU_SD = getSheetByName(m_Book, L"DCU_SD");
+
+	if ((mp_Sheet_DCU_SDR != NULL) && (mp_Sheet_DCU_SD != NULL)) {		
+		return true;
+	}
+	else {
+		AfxMessageBox(L"엑셀 DCU SDR / SD를 읽어오지 못했습니다.");
+		return false;
+	}
+
+	return false;
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

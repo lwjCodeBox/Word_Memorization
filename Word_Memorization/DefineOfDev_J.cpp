@@ -85,3 +85,21 @@ void DbgLogW(LPCWSTR ap_str, ...)
     va_end(args);
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+wchar_t *DbgLogW_P(LPCWSTR ap_str, ...)
+{
+    va_list args;
+    va_start(args, ap_str);
+
+    int len = _vscwprintf(ap_str, args) + 1;
+    wchar_t *pBuf = (wchar_t *)malloc(sizeof(wchar_t) * len);
+
+    if (pBuf) {
+        int size = vswprintf(pBuf, len, ap_str, args);                
+    }
+
+    va_end(args);
+
+    return pBuf;
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

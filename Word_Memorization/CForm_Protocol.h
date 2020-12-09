@@ -50,8 +50,6 @@ private:
 	void OnDrawFixCaption(CDC *p_DC, CRect *p_R);
 	void OnDrawProtocolButton(CDC *p_DC, CRect *p_R);
 
-	void VAC_Device();
-
 public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext = NULL);
 	virtual void OnInitialUpdate();
@@ -60,5 +58,3 @@ public:
 	afx_msg void OnDestroy();
 	afx_msg BOOL OnEraseBkgnd(CDC *pDC);
 };
-
-

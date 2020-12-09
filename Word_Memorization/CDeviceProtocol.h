@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GridCtrl_src_new/GridCtrl.h"
+#include "_CExcelLib.h"
 
 #define IDC_PT_GRID		20001
 
@@ -13,11 +14,14 @@ class CDeviceProtocol : public CDialogEx
 private:
 	CGridCtrl *mp_PT_Grid = NULL;
 	
+	CString m_deviceName;
 	int m_port;
 	int m_node;
+	
+	unsigned char m_page = 0;
 
 public:
-	CDeviceProtocol(int a_port, int a_node, CWnd* pParent = nullptr);   // standard constructor
+	CDeviceProtocol(CString a_device, int a_port, int a_node, CWnd* pParent = nullptr);   // standard constructor
 
 	virtual ~CDeviceProtocol();
 
@@ -31,7 +35,12 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 
+private:
+	void CreateGrid(int a_port, int a_node);
+
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnClose();
+	afx_msg void OnBnClickedPageDownBtn();
+	afx_msg void OnBnClickedPageUpBtn();
 };

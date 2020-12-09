@@ -364,36 +364,40 @@ void CForm_SetMVB::OnBnClickedButton3()
 
 		mp_ScrSetMVB_Grid->SetFixedBkColor(RGB(200, 200, 200));
 
-		// grid option
 		mp_ScrSetMVB_Grid->SetGridLineColor(RGB(128, 128, 255));
-		mp_ScrSetMVB_Grid->SetTrackFocusCell(true);
-		mp_ScrSetMVB_Grid->SetEditable(true);
 
+		// grid option		
+		mp_ScrSetMVB_Grid->SetTrackFocusCell(true);
+		mp_ScrSetMVB_Grid->SetEditable(false); // 셀 더블 클릭 하면 내용 수정할 수 없도록 막음.
 		mp_ScrSetMVB_Grid->EnableTitleTips(false);
 
 		CString str;
 
-		// Bit 7 ~ 0
-		for (int i = 1; i < 9; i++) {
-			str.Format(L"Bit %02d", 7 - (i - 1));
-			mp_ScrSetMVB_Grid->SetItemText(1, i, str);
-		}
 		// Bit 15 ~ 8
-		for (int i = 1; i < 9; i++) {
-			str.Format(L"Bit %02d", 16 - i);
-			mp_ScrSetMVB_Grid->SetItemText(0, i, str);
+		// Bit 7 ~ 0
+		for (int col = 1; col < 9; col++) {
+			str.Format(L"Bit %02d", 16 - col);
+			mp_ScrSetMVB_Grid->SetItemText(0, col, str);
+
+			str.Format(L"Bit %02d", 7 - (col - 1));
+			mp_ScrSetMVB_Grid->SetItemText(1, col, str);
+
+			mp_ScrSetMVB_Grid->SetColumnWidth(col, 114); // column width
 		}
+
 		// Byte
 		for (int i = 2; i < 34; i++) {
 			int word = (i - 2) / 2;
 			str.Format(L"Byte %02d (W %02d)", i - 2, word);
 			mp_ScrSetMVB_Grid->SetItemText(i, 0, str);
-		}
 
-		// column width
-		for (int col = 1; col < 9; col++) {
-			mp_ScrSetMVB_Grid->SetColumnWidth(col, 114);
-		}
+			if (word % 2 == 0) {
+				mp_ScrSetMVB_Grid->SetItemBkColour(i, 0, (RGB(200, 120, 160)));
+			}
+			else {
+				mp_ScrSetMVB_Grid->SetItemBkColour(i, 0, (RGB(130, 130, 200)));
+			}
+		}		
 	}
 
 	// 그리드 초기화
