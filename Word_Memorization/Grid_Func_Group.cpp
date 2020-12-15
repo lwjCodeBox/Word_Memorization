@@ -262,7 +262,7 @@ void _GFG::_GFG_SetMergeData(int a_GridRow, int a_GridColumn, WORD a_SetData, WO
 		gridText.Format(L"%s >> [%02X] [%d]", GetTextFormExcel(a_GridRow, a_GridColumn, pSheet), data, data);
 		ap_grid->SetItemText(a_GridRow, a_GridColumn, gridText);
 	}
-
+	
 	ap_grid->RedrawCell(a_GridRow, a_GridColumn);
 
 	pSheet = NULL;
