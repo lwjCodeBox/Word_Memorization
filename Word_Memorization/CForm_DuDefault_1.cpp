@@ -429,9 +429,10 @@ void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 {
 	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
 		
-	if (pItem->iRow == 0 || pItem->iRow == 1 || pItem->iColumn == 0) return; // fix cells
+	if (pItem->iRow == 0 || pItem->iRow == 1) return; // fix cells
+	if (pItem->iColumn == 0 || pItem->iColumn == 9) return; // Unused cells in column.
 		
-	//  0이 아니라면 병합된 셀을 의미 하기 떄문에 병합된 셀에서 우클릭을 할 경우 이 함수를 리턴해 버린다. 
+	// 0이 아니라면 병합된 셀을 의미 하기 때문에 병합된 셀에서 우클릭을 할 경우 이 함수를 리턴해 버린다. 
 	if (IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag) != 0) return;
 
 	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
@@ -477,8 +478,9 @@ void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult
 {
 	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
 	
-	if (pItem->iRow == 0 || pItem->iRow == 1 || pItem->iColumn == 0) return; // fix cells
-	
+	if (pItem->iRow == 0 || pItem->iRow == 1) return; // fix cells
+	if (pItem->iColumn == 0 || pItem->iColumn == 9) return; // Unused cells in column.
+
 	//  0이라면 병합되지 않은 셀을 의미 하기 떄문에 병합되지 않은 셀을 더블 클릭하면 리턴한다. 
 	if (IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag) == 0) return;
 
@@ -510,8 +512,6 @@ void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult
 	pDataPopUp = new CSetDataPopUp(pItem->iRow, pItem->iColumn, portAddr, 0, mp_gridctrl);
 	pDataPopUp->Create(IDD_SETDATA_POPUP);
 	pDataPopUp->ShowWindow(5); // 5 is SH_SHOWS
-
-	//mp_gridctrl->RedrawCell(pItem->iRow, pItem->iColumn);
 }
 //--------------------------------------------------------------------------------------------
 

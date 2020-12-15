@@ -17,7 +17,7 @@ void CSharedMemory::Init_SharedMemory()
 
 	m_handle = OpenFileMapping(FILE_MAP_ALL_ACCESS, NULL, L"HM_SHARED_MEMORY_MVB_SIMULATOR");
 	if (m_handle != NULL) {
-		AfxMessageBox(L"기존에 사용하는 공유 메모리가 존재 합니다.");
+		//AfxMessageBox(L"기존에 사용하는 공유 메모리가 존재 합니다.");
 		return;
 	}
 

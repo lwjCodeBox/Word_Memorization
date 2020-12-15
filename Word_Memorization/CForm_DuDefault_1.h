@@ -95,5 +95,3 @@ public:
 	virtual BOOL DestroyWindow();	
 	afx_msg void OnBnClickedDfsDefault3();
 };
-
-

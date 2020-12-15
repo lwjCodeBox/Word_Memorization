@@ -6,6 +6,7 @@ _CExcelLib::_CExcelLib()
 	 ExcelCertified();
 
 	 Read_DU_Default();
+	 Read_VAC_SDR_SD();
 	 Read_DCU_SDR_SD();
 	 Read_BECU_SDR_SD();
 	 Read_VVVF_SDR_SD();
@@ -22,6 +23,15 @@ std::map<WORD, Sheet *> _CExcelLib::m_InitSheetMap()
 	m.insert(std::make_pair(0x1A4, m_pDU_Default_1));
 	m.insert(std::make_pair(0x1A8, m_pDU_Default_2));
 	m.insert(std::make_pair(0x1AC, m_pDU_Default_3));
+
+	// VAC SDR /SD
+	m.insert(std::make_pair(0x0B8, mp_Sheet_VAC_SDR)); // VAC SDR1, 2
+	m.insert(std::make_pair(0x0BC, mp_Sheet_VAC_SDR)); // VAC SDR3, 4
+
+	m.insert(std::make_pair(0x0B0, mp_Sheet_VAC_SD)); // VAC SD1
+	m.insert(std::make_pair(0x0B4, mp_Sheet_VAC_SD)); // VAC SD2
+	m.insert(std::make_pair(0x0F0, mp_Sheet_VAC_SD)); // VAC SD3
+	m.insert(std::make_pair(0x0F4, mp_Sheet_VAC_SD)); // VAC SD4
 
 	// DCU SDR / SD
 	m.insert(std::make_pair(0x0FC, mp_Sheet_DCU_SDR));
@@ -209,6 +219,24 @@ bool _CExcelLib::Read_DU_Default()
 		AfxMessageBox(L"엑셀 sheet du_default1, du_default2, du_default3 중에 하나를 읽어오지 못했습니다.");
 		return false;
 	}
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+bool _CExcelLib::Read_VAC_SDR_SD()
+{
+	mp_Sheet_VAC_SDR = getSheetByName(m_Book, L"VAC_SDR");
+	mp_Sheet_VAC_SD = getSheetByName(m_Book, L"VAC_SD");
+
+	if ((mp_Sheet_VAC_SDR != NULL) && (mp_Sheet_VAC_SD != NULL))
+	{
+		return true;
+	}
+	else {
+		AfxMessageBox(L"엑셀 VAC SDR / SD를 읽어오지 못했습니다.");
+		return false;
+	}
+
+	return false;
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 

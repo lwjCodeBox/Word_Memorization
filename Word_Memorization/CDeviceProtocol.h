@@ -7,7 +7,7 @@
 
 // CDeviceProtocol dialog
 
-class CDeviceProtocol : public CDialogEx
+class CDeviceProtocol : public CDialogEx, private _CExcelLib
 {
 	DECLARE_DYNAMIC(CDeviceProtocol)
 
@@ -15,7 +15,7 @@ private:
 	CGridCtrl *mp_PT_Grid = NULL;
 	
 	CString m_deviceName;
-	int m_port;
+	short m_port;
 	int m_node;
 	
 	unsigned char m_page = 0;
@@ -32,6 +32,8 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	afx_msg void OnGridClick(NMHDR *pNotifyStruct, LRESULT *);
+	afx_msg void OnGridDblClick(NMHDR *pNotifyStruct, LRESULT *);
 
 	DECLARE_MESSAGE_MAP()
 
