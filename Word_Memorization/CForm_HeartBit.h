@@ -39,9 +39,6 @@ private:
 	TButtonRect fixCaption;
 	TButtonRect heartBitBTN;
 		
-	//today-del
-	//int m_thread_count = -1; // -1의 의미는 스레드를 하나라도 생성하지 않았다는 의미이다.
-
 public: 
 	TMVB_Addr_Info portAddr;
 	TDataPtr dataPtr;

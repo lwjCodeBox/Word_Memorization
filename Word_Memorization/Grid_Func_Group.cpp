@@ -8,7 +8,7 @@
 
 #include <math.h>
 
-//--------------------------------------------------------------------------------------------
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void _GFG::_GFG_InitItemBkColor(int a_rowLast, int a_colLast, CGridCtrl *ap_grid)
 {
@@ -18,7 +18,7 @@ void _GFG::_GFG_InitItemBkColor(int a_rowLast, int a_colLast, CGridCtrl *ap_grid
 		}
 	}
 }
-//--------------------------------------------------------------------------------------------
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void _GFG::_GFG_InitMakeGrid(unsigned short a_fcode, WORD a_portAddr, WORD a_node, CGridCtrl *ap_grid)
 {
@@ -53,28 +53,45 @@ void _GFG::_GFG_InitMakeGrid(unsigned short a_fcode, WORD a_portAddr, WORD a_nod
 		mvbIndex += p_ExcelLib->m_totalNodeCnt * a_node;
 		
 		if (mergeSize) { // 1바이트 이상 병합이된 경우.
-			// 공유 메모리에서 데이터 가져옴.
-			int smData = 0;
-			memcpy(&smData, &mainDlg->m_pData->data[mvbIndex][gridRow - 2], mergeSize);
+			if (1 == mergeSize) { // 1Byte
+				// 공유 메모리에서 데이터 가져옴.
+				unsigned char smData8 = 0;
+				memcpy(&smData8, &mainDlg->m_pData->data[mvbIndex][gridRow - 2], mergeSize);
 
-			// ((BYTE *)&smData)[0] 0번째 부터 한 바이트 씩 데이터가 저장되는데 4바이트(int) 자료형에 
-			// 넣기 때문에 1바이트짜리 데이터를 현시하려면 32만큼 오른쪽 시프트를 해야한다.
-			int rShift = 8 << (4 - mergeSize);
-			smData = smData >> rShift;
+				// 엑셀 10열에 표기한 숫자 만큼 병합. (more than 1 byte)
+				ap_grid->MergeCells(CCellRange(gridRow, 1, gridRow + mergeSize - 1, 8));
 
-			// 엑셀 10열에 표기한 숫자 만큼 병합. (more than 1 byte)
-			ap_grid->MergeCells(CCellRange(gridRow, 1, gridRow + mergeSize - 1, 8));
+				// 값이 0이면 흰색, 값이 0이 아니라면 연한 노랑색.
+				if (smData8) ap_grid->SetItemBkColour(gridRow, 1, ORANGE_COLOR);
+				else ap_grid->SetItemBkColour(gridRow, 1, WHITE_RGB);
 
-			// 값이 0이면 흰색, 값이 0이 아니라면 연한 노랑색.
-			if (smData) ap_grid->SetItemBkColour(gridRow, 1, ORANGE_COLOR);
-			else ap_grid->SetItemBkColour(gridRow, 1, WHITE_RGB);
-						
-			// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅.
-			gridBuf.Format(L"%s >> [0x%04X][%d]", pSheet->readStr(row, 2), smData, smData);
-			ap_grid->SetItemText(gridRow, 1, gridBuf);
+				// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅.
+				gridBuf.Format(L"%s >> [0x%02X][%d]", pSheet->readStr(row, 2), smData8, smData8);
+				ap_grid->SetItemText(gridRow, 1, gridBuf);			
+			}
+			else if (2 == mergeSize) { // 2Byte
+				// 공유 메모리에서 데이터 가져옴.
+				unsigned short smData16 = 0;
+				memcpy(&((BYTE *)&smData16)[1], &mainDlg->m_pData->data[mvbIndex][gridRow - 2], 1);
+				memcpy(&((BYTE *)&smData16)[0], &mainDlg->m_pData->data[mvbIndex][gridRow - 1], 1);
+
+				// 엑셀 10열에 표기한 숫자 만큼 병합. (more than 1 byte)
+				ap_grid->MergeCells(CCellRange(gridRow, 1, gridRow + mergeSize - 1, 8));
+
+				// 값이 0이면 흰색, 값이 0이 아니라면 연한 노랑색.
+				if (smData16) ap_grid->SetItemBkColour(gridRow, 1, ORANGE_COLOR);
+				else ap_grid->SetItemBkColour(gridRow, 1, WHITE_RGB);
+
+				// 엑셀에서 가져온 문자열을 그리드 컨트롤에 세팅.
+				gridBuf.Format(L"%s >> [0x%04X][%d]", pSheet->readStr(row, 2), smData16, smData16);
+				ap_grid->SetItemText(gridRow, 1, gridBuf);
+			}
+			else { // 3Byte or 4Byte
+				// 3바이트나 4바이트짜리 데이터를 처리 할때 작업하려고 남김.
+			}
 
 			// 다음 행으로 넘어감.
-			row += mergeSize;							
+			row += mergeSize;								
 		}
 		else { 
 			// 공유 메모리에서 데이터 가져옴.
@@ -136,7 +153,7 @@ void _GFG::_GFG_InitMakeGrid(unsigned short a_fcode, WORD a_portAddr, WORD a_nod
 		}		
 	}	
 }
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 // 나중에 삭제 할 코드임.
 void _GFG::_GFG_GetBitDataFormSMTest(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid)
@@ -176,7 +193,7 @@ void _GFG::_GFG_GetBitDataFormSMTest(int a_RowFirst, int a_RowLast, int a_ColFir
 		}
 	}	
 }
-//--------------------------------------------------------------------------------------------
+///-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void _GFG::_GFG_SetMergeData(int a_GridRow, int a_GridColumn, WORD a_SetData, WORD a_portAddr, BYTE a_node, CGridCtrl *ap_grid)
 {
@@ -268,7 +285,7 @@ void _GFG::_GFG_SetMergeData(int a_GridRow, int a_GridColumn, WORD a_SetData, WO
 	pSheet = NULL;
 	mainDlg = NULL;
 }
-//--------------------------------------------------------------------------------------------
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 WORD _GFG::_GFG_GetMergeCheck(int a_Row, int a_Column, WORD a_portAddr)
 {
@@ -319,4 +336,4 @@ WORD _GFG::_GFG_GetMergeCheck(int a_Row, int a_Column, WORD a_portAddr)
 	pSheet = NULL;
 	return -1;	
 }
-//--------------------------------------------------------------------------------------------
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

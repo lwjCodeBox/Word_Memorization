@@ -268,8 +268,6 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	unsigned int _col = 0, _row = 0;
 
-	// Protocol button 범위 체크.	
-	bool bProtocolBTN = false;
 	short click_PT_BTN = -1;
 	short pos = 0;
 	int port = 0;
@@ -289,7 +287,6 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 					_row = rowCnt;
 					_col = colCnt;
 
-					bProtocolBTN = true;
 					click_PT_BTN = pos;
 
 					try {
@@ -303,9 +300,17 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 						AfxMessageBox(str);
 						return;
 					}
+											
+					// 안눌림 -> 눌림
+					m_pt_ClickedPos[_row][_col] = true;
+					CClientDC dc(this);
 
-					// Protocol PopUp
-					CDeviceProtocol *pPopUp = new CDeviceProtocol(caption.HB_BTN_Caption.at(pos).c_str(), port, node);
+					wchar_t *p_wchar = DbgLogW_P(L"%s", caption.HB_BTN_Caption.at(pos).c_str());
+					SetButtonON_OFF(m_pt_ClickedPos[_row][_col], p_wchar, protocolBTN.r[pos], &dc);
+					free(p_wchar);
+
+					// Create Protocol PopUp
+					CDeviceProtocol *pPopUp = new CDeviceProtocol(&m_pt_ClickedPos[_row][_col], caption.HB_BTN_Caption.at(pos).c_str(), port, node);
 					pPopUp->Create(IDD_PROTOCOL_EXCEL_DLG);
 					pPopUp->SetWindowTextW(str);
 					pPopUp->ShowWindow(SW_SHOW);
@@ -322,4 +327,4 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 		
 	CFormView::OnLButtonDown(nFlags, point);
 }
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

@@ -3,15 +3,20 @@
 
 _CExcelLib::_CExcelLib()
 {
-	 ExcelCertified();
+	ExcelCertified();
 
-	 Read_DU_Default();
-	 Read_VAC_SDR_SD();
-	 Read_DCU_SDR_SD();
-	 Read_BECU_SDR_SD();
-	 Read_VVVF_SDR_SD();
+	// ÀåÄ¡ ÁÖ¼Ò¸¦ ¿¢¼¿¿¡¼­ ÀÐ¾î¿Í¼­ ÀúÀåÇÔ.
+	Load_logical_Port_Adrs();
 
-	 sheetMap = m_InitSheetMap();
+	Read_DU_Default();
+	Read_VAC_SDR_SD();
+	Read_DCU_SDR_SD();
+	Read_BECU_SDR_SD();
+	Read_VVVF_SDR_SD();
+
+	// ¿¢¼¿ Ãß°¡ 3
+
+	sheetMap = m_InitSheetMap();
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -67,7 +72,7 @@ std::map<WORD, Sheet *> _CExcelLib::m_InitSheetMap()
 	m.insert(std::make_pair(0x080, mp_Sheet_VVVF_SD1)); // VVVF4 SD1
 	m.insert(std::make_pair(0x084, mp_Sheet_VVVF_SD2)); // VVVF4 SD2
 
-	
+	// ¿¢¼¿ Ãß°¡ 1
 	return m;
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

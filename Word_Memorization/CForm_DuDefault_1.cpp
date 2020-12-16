@@ -87,12 +87,9 @@ void CForm_DuDefault_1::OnInitialUpdate()
 //--------------------------------------------------------------------------------------------
 
 void CForm_DuDefault_1::OnBnClickedDfsDefault1()
-{
-	//CWordMemorizationDlg mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
-	
-	//if (m_flag == 1) return;
-
-	m_flag = 1;
+{	
+	if (0x1A4 == m_port) return;
+	m_port = 0x1A4;
 
 	//memset(clicked, 0, sizeof(clicked));
 
@@ -167,10 +164,9 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault1()
 //--------------------------------------------------------------------------------------------
 
 void CForm_DuDefault_1::OnBnClickedDfsDefault2()
-{
-	//if (m_flag == 2) return;
-
-	m_flag = 2;
+{		
+	if (0x1A8 == m_port) return;
+	m_port = 0x1A8;
 
 	if (mp_gridctrl != NULL) {
 		delete mp_gridctrl;
@@ -236,9 +232,8 @@ void CForm_DuDefault_1::OnBnClickedDfsDefault2()
 
 void CForm_DuDefault_1::OnBnClickedDfsDefault3()
 {
-	//if (m_flag == 3) return;
-
-	m_flag = 3;
+	if (0x1AC == m_port) return;
+	m_port = 0x1AC;
 
 	if (mp_gridctrl != NULL) {
 		delete mp_gridctrl;
@@ -313,163 +308,34 @@ BOOL CForm_DuDefault_1::DestroyWindow()
 }
 //--------------------------------------------------------------------------------------------
 
-#ifdef Edit_and_ListControl_Sample_CODE
-HBRUSH CForm_DuDefault_1::OnCtlColor(CDC *pDC, CWnd *pWnd, UINT nCtlColor)
-{
-	HBRUSH hbr = CFormView::OnCtlColor(pDC, pWnd, nCtlColor);
-	
-	// 갱신되는 컨트롤의 ID를 얻는다.
-	int control_id = pWnd->GetDlgCtrlID();
-	// 컨트롤의 ID가 내가 원하는 ID인지 체크한다.
-	if (control_id >= 10000 && control_id <= 10992) {
-		// Focus를 가진 윈도우의 핸들 값을 얻는다.
-		HWND cur_focus = ::GetFocus();
-		// 현재 그림을 그리는 컨트롤과 핸들이 일치하는지 체크한다.
-		if (cur_focus == pWnd->m_hWnd) {
-			// 이전에 focus를 가지고 있던 윈도우가 있다면 해당 윈도우를 갱신하도록
-			// InvalidateRect 함수를 호출합니다.
-			if (mh_old_focus != cur_focus) {
-				if (mh_old_focus != NULL) ::InvalidateRect(mh_old_focus, NULL, TRUE);
-				// 현재 컨트롤의 핸들을 기억시킨다.
-				mh_old_focus = cur_focus;
-			}
-			// 입력 상태에 있는 컨트롤은 텍스트 색상을 밝게 표시한다.
-			pDC->SetTextColor(RGB(0, 255, 255));
-		}
-		else {
-			// 입력 상태가 아닌 컨트롤은 텍스트 색상을 어둡게 표시한다.
-			pDC->SetTextColor(RGB(0, 168, 168));
-		}
-		// 텍스트의 배경 색상을 설정한다.
-		pDC->SetBkColor(RGB(0, 0, 128));
-		// Edit 컨트롤의 배경색으로 사용할 Brush 핸들 값을 반환한다.
-		return mh_edit_bk_brush;
-	}
-	return hbr;
-}
-#endif
-
-#ifdef Edit_and_ListControl_Sample_CODE
-// https://lafirr.tistory.com/5
-void CForm_DuDefault_1::OnCustomdrawList(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	COLORREF text_color = 0;
-	COLORREF bg_color = RGB(255, 255, 255);
-	
-		NMLVCUSTOMDRAW *lplvcd = reinterpret_cast<NMLVCUSTOMDRAW *>(pNMHDR);
-		*pResult = 0;
-
-		switch (lplvcd->nmcd.dwDrawStage) {
-		case CDDS_PREPAINT:
-			*pResult = CDRF_NOTIFYITEMDRAW;
-			return;
-
-			// 배경 혹은 텍스트를 수정한다.
-		case CDDS_ITEMPREPAINT:
-			// 1번째 열 빨간색, 2번째 열 녹색, 3번째 이하는 파란색의 글자색을 갖는다.
-			if (lplvcd->nmcd.dwItemSpec == 0) text_color = RGB(255, 0, 0);
-			else if (lplvcd->nmcd.dwItemSpec == 1) text_color = RGB(0, 255, 0);
-			else text_color = RGB(0, 0, 255);
-			lplvcd->clrText = text_color;
-			*pResult = CDRF_NOTIFYITEMDRAW;
-			return;
-
-			// 서브 아이템의 배경 혹은 텍스트를 수정한다.
-		case CDDS_SUBITEM | CDDS_PREPAINT | CDDS_ITEM:
-			if (lplvcd->iSubItem != 0) {
-				// 1번째 행이라면...
-				if (lplvcd->iSubItem == 1) {
-					text_color = RGB(0, 127, 127);
-					bg_color = RGB(255, 255, 255);
-				}
-				else {
-					text_color = RGB(255, 255, 255);
-					if (lplvcd->nmcd.dwItemSpec == 0) bg_color = RGB(255, 0, 102);
-					else if (lplvcd->nmcd.dwItemSpec == 1) bg_color = RGB(255, 0, 0);
-					else bg_color = RGB(0, 102 - (int)lplvcd->nmcd.dwItemSpec,
-						204 - (int)lplvcd->nmcd.dwItemSpec * 2);
-				}
-				lplvcd->clrText = text_color;
-				lplvcd->clrTextBk = bg_color;
-			}
-			*pResult = CDRF_NEWFONT;
-			return;
-		}
-	
-
-
-	/* 한 줄씩 다른 색으로 칠하기
-		NMLVCUSTOMDRAW *pLVCD = reinterpret_cast<NMLVCUSTOMDRAW *>(pNMHDR);
-		*pResult = 0;
-
-		if (CDDS_PREPAINT == pLVCD->nmcd.dwDrawStage)
-		{
-			*pResult = CDRF_NOTIFYITEMDRAW;
-		}
-		else if (CDDS_ITEMPREPAINT == pLVCD->nmcd.dwDrawStage)
-		{
-			if ((pLVCD->nmcd.dwItemSpec % 2) == 0)
-			{
-				pLVCD->clrText = RGB(0, 0, 0);
-				pLVCD->clrTextBk = RGB(230, 230, 230);
-			}
-			else
-			{
-				pLVCD->clrText = RGB(255, 0, 0);
-				pLVCD->clrTextBk = RGB(255, 255, 255);
-			}
-			*pResult = CDRF_DODEFAULT;
-		}
-	*/
-}
-#endif
-
-// bit format
+// Bit format
 void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 {
 	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
-		
-	if (pItem->iRow == 0 || pItem->iRow == 1) return; // fix cells
-	if (pItem->iColumn == 0 || pItem->iColumn == 9) return; // Unused cells in column.
-		
-	// 0이 아니라면 병합된 셀을 의미 하기 때문에 병합된 셀에서 우클릭을 할 경우 이 함수를 리턴해 버린다. 
-	if (IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag) != 0) return;
-
 	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
-	_CExcelLib *p_ExcelLib = (_CExcelLib *)mainDlg->mp_Libxl;
+	Sheet *pSheet = mainDlg->mp_Libxl->sheetMap.find(m_port)->second;
 
-	WORD portAddr = 0;
-	switch (m_flag) {
-	case 1:
-		portAddr = 0x1A4;	break;
-	case 2:
-		portAddr = 0x1A8;	break;
-	case 3:
-		portAddr = 0x1AC;	break;
-	}
-	
-	// 120의 의미는 myNode의 총 갯수를 의미 한다. 계산 법은 다음과 같다.
-	// int dataSize = sizeof(p_ExcelLib->mvb_Addr) / sizeof(WORD);
-	int t_port = binarySearch(p_ExcelLib->mvb_Addr, 120, portAddr);
-	WORD t_WordPos = (pItem->iRow - 2) / 2;
-	WORD smData = mainDlg->GetWordDataFromSM(portAddr, 0, t_WordPos); // (WORD a_PortAddr, BYTE a_Node, BYTE a_Word)
-	
-	BYTE colPos = 7 - (pItem->iColumn - 1);
-	if (pItem->iRow % 2 == 0) colPos += 8;
+	if (pItem->iRow == 0 || pItem->iRow == 1) return; // fix cells
+	if (pItem->iColumn == 0 || pItem->iColumn == 9) return; // Unused cells in column.	
+	if (pSheet->getMerge(pItem->iRow + 3, pItem->iColumn + 1, 0, 0, 0, 0)) return; // 병합된 셀인지 체크.
 
-	mainDlg->SetBitDataToSM(portAddr, 0, t_WordPos, colPos, smData);
+	int mvbIndex = binarySearch(mainDlg->mp_Libxl->mvb_Addr, 120, m_port);
+	mvbIndex += mainDlg->mp_Libxl->m_totalNodeCnt * 0; // myNode라서 0을 곱함.
 
-	// Returns cell background color
-	if (mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != RCLICK_RGB) {
+	// 공유 메모리에서 데이터 가져옴.
+	unsigned char data_8bit;
+	memcpy(&data_8bit, &mainDlg->m_pData->data[mvbIndex][pItem->iRow - 2], 1);
+
+	// 공유 메모리에 데이터 세팅.
+	unsigned char x = 7 - (pItem->iColumn - 1);
+	data_8bit ^= 0x1 << x;
+	memset(&mainDlg->m_pData->data[mvbIndex][pItem->iRow - 2], data_8bit, 1);
+
+	// 셀색 변경.
+	if ((data_8bit >> x) & 0x1)
 		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, RCLICK_RGB);
-	}
 	else
-		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, WHITE_RGB);
-
-	mp_gridctrl->RedrawCell(pItem->iRow, pItem->iColumn);
-
-	p_ExcelLib = NULL;
-	mainDlg = NULL;
+		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, WHITE_RGB);	
 }
 //--------------------------------------------------------------------------------------------
 
@@ -477,166 +343,16 @@ void CForm_DuDefault_1::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 {
 	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
-	
+	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
+	Sheet *pSheet = mainDlg->mp_Libxl->sheetMap.find(m_port)->second;
+
 	if (pItem->iRow == 0 || pItem->iRow == 1) return; // fix cells
 	if (pItem->iColumn == 0 || pItem->iColumn == 9) return; // Unused cells in column.
-
-	//  0이라면 병합되지 않은 셀을 의미 하기 떄문에 병합되지 않은 셀을 더블 클릭하면 리턴한다. 
-	if (IsMergeCheck(pItem->iRow, pItem->iColumn, m_flag) == 0) return;
-
-	/*if (mp_gridctrl->GetCell(pItem->iRow, pItem->iColumn)->GetBackClr() != LDCLICK_RGB) {
-		
-		CString cStr = GetTextFormExcel(pItem->iRow, pItem->iColumn, *ppSheet);
-		wchar_t *wtext = cStr.GetBuffer(cStr.GetLength()); 
-
-		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, LDCLICK_RGB);
-	}
-	else {
-		mp_gridctrl->SetItemBkColour(pItem->iRow, pItem->iColumn, WHITE_RGB);
-	}*/
-	//5, 36, 2, 9, 0x1A4, mp_gridctrl
-
-	WORD portAddr = 0;
-	switch (m_flag) {
-	case 1:
-		portAddr = 0x1A4;	break;
-	case 2:
-		portAddr = 0x1A8;	break;
-	case 3:
-		portAddr = 0x1AC;	break;
-	}
-
-	//_GFG::_GFG_GetMoreThanTwoBitsOfDataFormSM(pItem->iRow + 3, pItem->iRow + 1, 2, 9, portAddr, 0, mp_gridctrl);
+	if (!pSheet->getMerge(pItem->iRow + 3, pItem->iColumn + 1, 0, 0, 0, 0)) return; // 병합된 셀인지 체크.
 	
 	CSetDataPopUp *pDataPopUp;
-	pDataPopUp = new CSetDataPopUp(pItem->iRow, pItem->iColumn, portAddr, 0, mp_gridctrl);
+	pDataPopUp = new CSetDataPopUp(pItem->iRow, pItem->iColumn, m_port, 0, mp_gridctrl);
 	pDataPopUp->Create(IDD_SETDATA_POPUP);
 	pDataPopUp->ShowWindow(5); // 5 is SH_SHOWS
-}
-//--------------------------------------------------------------------------------------------
-
-int CForm_DuDefault_1::IsMergeCheck(int a_Row, int a_Column, int a_flag)
-{
-	Sheet **ppSheet = NULL;
-
-	if (a_flag == 1)	  ppSheet = &pExcel->m_pDU_Default_1;
-	else if (a_flag == 2) ppSheet = &pExcel->m_pDU_Default_2;
-	else if (a_flag == 3) ppSheet = &pExcel->m_pDU_Default_3;
-
-	int row_first = 5, row_last = 36;
-	int col_first = 2, col_last = 9;
-
-	bool bMerge = false;
-	int mergeCount = 0;
-
-	col_last++;
-
-	for (int col = a_Column+1; col <= col_last; col++) {
-		bMerge = (*ppSheet)->getMerge(a_Row+3, col, 0, 0, 0, 0);
-
-		// 병합이 되었다면...
-		if (bMerge) mergeCount++;
-		else {
-			ppSheet = NULL;
-			return mergeCount;
-		}
-
-		// Check Word Fomat
-		if (mergeCount == 8) {
-			// 짝수가 나오면 워드 단위로 읽고 홀수가 나오면 클릭한 위치의 다음 행의 병합 상태는 체크 하지 않는다.
-			// 그래야 클릭한 셀이 바이트 단위 인지 워드 단위 인지 알 수 있다.
-			unsigned char rowPos = a_Row % 2;
-
-			col_last--; // 엑셀 범위를 맞추기 위해서 다시 하나 감소시킨다. 
-
-			(*ppSheet)->getMerge(a_Row + 4, 2, &row_first, &row_last, &col_first, &col_last); // +4를 하는 이유는 클릭한 행의 아래 행에 위치한 엑셀을 읽어 오기 위함이다.
-			// 처음 행과 마지막 행을 비교하는 이유는 바이트 형식이면 두 변수(t_row_first, t_row_last)의 값이 같게 되지만 워드 형식이면 두 변수의 값이 다르다.
-			if ((row_first != row_last) && (rowPos == 0)) {
-				return 16; // 워드 포멧
-			}
-			else {
-				ppSheet = NULL;
-				return mergeCount;
-			}
-		}
-	}
-
-	// 조건에 맞지 않게 동작했다면 아래 코드를 타게됨.
-	ppSheet = NULL;
-	return -1;
-}
-//--------------------------------------------------------------------------------------------
-
-void CForm_DuDefault_1::IsDataCheck(int a_Row, int a_Column)
-{
-	// Grid Setting
-	bool bMerge = false;
-	int mergeCol_start = 0;
-	int mergeCol_finish = 0;
-
-	// Shared Memory Data Check
-	//BYTE l_byte, h_byte;
-	int dataSize = sizeof(pExcel->mvb_Addr) / sizeof(WORD);
-	int t_port = binarySearch(pExcel->mvb_Addr, dataSize, 0x1A4);
-	unsigned char data;
-
-	// for()문의 조건 범위 기준은 엘셀의 읽어올 위치를 기준으로 잡고 설정함
-	for (int row = 0; row <= a_Row; row++) {
-		for (int col = 0; col <= a_Column; col++) {
-			bMerge = pExcel->m_pDU_Default_1->getMerge(row+5, col+2, 0, 0, 0, 0); // row, col, &row_first, &row_last, &col_first, &col_last			
-
-			// 병합이 되었다면...
-			if (bMerge) {
-				if (mergeCol_finish == 0) {
-					mergeCol_start = col - 1;
-					mergeCol_finish = col - 2;
-				}
-				mergeCol_finish++;
-			}
-			// 병합이 안되어 있다면...
-			else {
-				// 일반 비트 형식 
-				if (0 == mergeCol_finish) {
-					int pos = row - 5;
-					data = mp_MainDlg->m_pData->data[t_port][pos];
-
-					int shift = 7 % (col - 2);
-
-					if (((data >> shift) & 0x01) == 0x01)
-						mp_gridctrl->SetItemBkColour(row, col, RCLICK_RGB);
-				}
-				// 병합된 크기 만큼 병합.
-				else {
-					int t_row = row - 3;
-					mp_gridctrl->MergeCells(CCellRange(t_row, mergeCol_start, t_row, mergeCol_finish));
-
-					mp_gridctrl->SetItemBkColour(t_row, mergeCol_start, LDCLICK_RGB);
-
-					mergeCol_start = 0;
-					mergeCol_finish = 0;
-				}
-			}
-		}
-	}
-}
-//--------------------------------------------------------------------------------------------
-
-void CForm_DuDefault_1::SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag)
-{
-	for (int row = a_RowFirst; row <= a_RowLast; row++) {
-		for (int col = a_ColFirst; col <= a_ColLast; col++) {
-			mp_gridctrl->SetItemText(row, 9 - col, pExcel->GetDuDefaultValue(row - 2, col - 1, a_flag));
-		}
-	}
-}
-//--------------------------------------------------------------------------------------------
-
-void CForm_DuDefault_1::InitItemBkColor(int a_rowLast, int a_colLast)
-{
-	for (int row = 2; row <= a_rowLast; row++) {
-		for (int col = 1; col <= a_colLast; col++) {
-			mp_gridctrl->SetItemBkColour(row, col, WHITE_RGB);
-		}
-	}
 }
 //--------------------------------------------------------------------------------------------

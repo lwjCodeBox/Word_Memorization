@@ -13,24 +13,24 @@
 
 IMPLEMENT_DYNAMIC(CDeviceProtocol, CDialogEx)
 
-CDeviceProtocol::CDeviceProtocol(CString a_device, int a_port, int a_node, CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_PROTOCOL_EXCEL_DLG, pParent), m_deviceName(a_device), m_port(a_port), m_node(a_node)
+CDeviceProtocol::CDeviceProtocol(BYTE *ap_IsClickedPos, CString a_device, int a_port, int a_node, CWnd* pParent /*=nullptr*/)
+	: CDialogEx(IDD_PROTOCOL_EXCEL_DLG, pParent), /*mp_click(ap_IsClickedPos),*/ m_deviceName(a_device), m_port(a_port), m_node(a_node)
 {
-	
+	*mp_click = ap_IsClickedPos;
 }
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 CDeviceProtocol::~CDeviceProtocol()
 {
 	
 }
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CDeviceProtocol::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 }
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 BEGIN_MESSAGE_MAP(CDeviceProtocol, CDialogEx)
 	ON_WM_CLOSE()	
@@ -54,17 +54,22 @@ BOOL CDeviceProtocol::OnInitDialog()
 
 	return TRUE;  
 }
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CDeviceProtocol::OnClose()
 {
+	if (mp_click) 
+		**mp_click = 0;
+	else 
+		**mp_click = 1;
+
 	DestroyWindow();
 	
 	delete mp_PT_Grid;
 
 	CDialogEx::OnClose();
 }
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CDeviceProtocol::CreateGrid(int a_port, int a_node)
 {
@@ -131,7 +136,7 @@ void CDeviceProtocol::CreateGrid(int a_port, int a_node)
 	// 그리드 매핑.
 	_GFG::_GFG_InitMakeGrid(fcode, m_port, m_node, mp_PT_Grid);
 }
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CDeviceProtocol::OnBnClickedPageDownBtn()
 {		
@@ -224,7 +229,7 @@ void CDeviceProtocol::OnBnClickedPageDownBtn()
 
 	CreateGrid(m_port, m_node);
 }
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CDeviceProtocol::OnBnClickedPageUpBtn()
 {
@@ -317,21 +322,21 @@ void CDeviceProtocol::OnBnClickedPageUpBtn()
 
 	CreateGrid(m_port, m_node);
 }
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 // Bit format
 void CDeviceProtocol::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 {
 	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
 	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
-	Sheet *pSheet = sheetMap.find(m_port)->second;
-
+	Sheet *pSheet = _CExcelLib::sheetMap.find(m_port)->second;
+	
 	if (pItem->iRow == 0 || pItem->iRow == 1) return; // fix cells
 	if (pItem->iColumn == 0 || pItem->iColumn == 9) return; // Unused cells in column.	
 	if (pSheet->getMerge(pItem->iRow + 3, pItem->iColumn + 1, 0, 0, 0, 0)) return; // 병합된 셀인지 체크.
 	
-	int mvbIndex = binarySearch(mainDlg->mp_Libxl->mvb_Addr, 120, m_port);
-	mvbIndex += mainDlg->mp_Libxl->m_totalNodeCnt * m_node;
+	int mvbIndex = binarySearch(_CExcelLib::mvb_Addr, 120, m_port);
+	mvbIndex += _CExcelLib::m_totalNodeCnt * m_node;
 	
 	// 공유 메모리에서 데이터 가져옴.
 	unsigned char data_8bit;
@@ -346,16 +351,16 @@ void CDeviceProtocol::OnGridClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 	if ((data_8bit >> x) & 0x1)	
 		mp_PT_Grid->SetItemBkColour(pItem->iRow, pItem->iColumn, RCLICK_RGB);
 	else 
-		mp_PT_Grid->SetItemBkColour(pItem->iRow, pItem->iColumn, WHITE_RGB);
+		mp_PT_Grid->SetItemBkColour(pItem->iRow, pItem->iColumn, WHITE_RGB);	
 }
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 // Merge Cell
 void CDeviceProtocol::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/)
 {
 	NM_GRIDVIEW *pItem = (NM_GRIDVIEW *)pNotifyStruct;
 	CWordMemorizationDlg *mainDlg = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
-	Sheet *pSheet = sheetMap.find(m_port)->second;
+	Sheet *pSheet = _CExcelLib::sheetMap.find(m_port)->second;
 
 	if (pItem->iRow == 0 || pItem->iRow == 1) return; // fix cells
 	if (pItem->iColumn == 0 || pItem->iColumn == 9) return; // Unused cells in column.
@@ -366,4 +371,4 @@ void CDeviceProtocol::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/
 	pDataPopUp->Create(IDD_SETDATA_POPUP);
 	pDataPopUp->ShowWindow(5); // 5 is SH_SHOWS	
 }
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

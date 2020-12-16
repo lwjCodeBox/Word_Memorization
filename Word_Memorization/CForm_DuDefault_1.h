@@ -35,37 +35,15 @@ public:
 
 private:
 	CWordMemorizationDlg *mp_MainDlg;
-
 	CGridCtrl *mp_gridctrl = NULL;
 
 	int m_row, m_column;
 	int m_fixedRowCnt, m_fixedColumnCnt;
 
 	// Excel
-	_CExcelLib *pExcel;
- 
-	// du_default 버튼들중에서 어떤 버튼을 클릭했는지 구별하기 위한 변수 1이면 du default1, 2이면 du default2, 3이면 du default3
-	int m_flag = 0; 
-	
-#ifdef Edit_and_ListControl_Sample_CODE
-private:
-	CEdit **mp_cedit;
-	CEdit **mp_fixedRow;
-	CEdit **mp_fixedColumn;
+	_CExcelLib *pExcel; 
+	WORD m_port = 0;
 
-	// Original Code
-	HBRUSH mh_edit_bk_brush = NULL;
-	HWND mh_old_focus = NULL;
-
-	// fixed row, column color
-	HBRUSH mh_bk_fixed_row_col = NULL;
-	// normal row,  column color
-	HBRUSH mh_bk_edit_row_col = NULL;
-
-	void Clear_EditCtrl();
-	void Create_EditCtrl(int a_Row, int a_Column);
-
-#endif
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	afx_msg void OnGridClick(NMHDR *pNotifyStruct, LRESULT *);
@@ -73,19 +51,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 
-public:
-#ifdef Edit_and_ListControl_Sample_CODE
-	afx_msg HBRUSH OnCtlColor(CDC *pDC, CWnd *pWnd, UINT nCtlColor);
-	afx_msg void OnCustomdrawList(NMHDR *pNMHDR, LRESULT *pResult);
-#endif	
-
 private:
-	int IsMergeCheck(int a_Row, int a_Column, int a_flag);
-	void IsDataCheck(int a_Row, int a_Column);
-	void InitItemBkColor(int a_rowLast, int a_colLast);
-
-	// 매개 변수 범위는 그리드 컨트롤 기준이다.
-	void SetTextGrid(int a_RowFirst, int a_RowLast, int a_ColFirst, int a_ColLast, int a_flag);
 
 public:
 	virtual BOOL Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT &rect, CWnd *pParentWnd, UINT nID, CCreateContext *pContext = NULL);

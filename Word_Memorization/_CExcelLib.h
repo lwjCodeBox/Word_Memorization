@@ -41,8 +41,12 @@ private:
 	bool Read_DCU_SDR_SD(); // DCU SDR/SD
 	bool Read_BECU_SDR_SD(); // BECU SDR/SD
 	bool Read_VVVF_SDR_SD(); // VVVF SDR/SD
+	// 엑셀 추가 2
 
 public:
+	WORD mvb_Addr[120]; // myNode 총 갯수가 120개라서 배열의 크기를 120으로 잡음.
+	WORD m_totalNodeCnt;
+
 	Book *m_Book;	
 	Sheet *m_pSheet2; // logical_port_adrs Sheet
 
@@ -56,9 +60,6 @@ public:
 	Sheet *mp_Sheet_EBCU_SDR1, *mp_Sheet_EBCU_SDR2, *mp_Sheet_EBCU_SDR3, *mp_Sheet_EBCU_SD;
 	// VVVF Sheet
 	Sheet *mp_Sheet_VVVF_SDR, *mp_Sheet_VVVF_SD1, *mp_Sheet_VVVF_SD2;
-	
 
-
-	WORD mvb_Addr[120]; // myNode 총 갯수가 120개라서 배열의 크기를 120으로 잡음.
-	BYTE m_totalNodeCnt;
+	// 엑셀 추가 4	
 }; 
