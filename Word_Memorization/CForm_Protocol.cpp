@@ -310,7 +310,7 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 					free(p_wchar);
 
 					// Create Protocol PopUp
-					CDeviceProtocol *pPopUp = new CDeviceProtocol(&m_pt_ClickedPos[_row][_col], caption.HB_BTN_Caption.at(pos).c_str(), port, node);
+					CDeviceProtocol *pPopUp = new CDeviceProtocol(/*&m_pt_ClickedPos[_row][_col], */caption.HB_BTN_Caption.at(pos).c_str(), port, node);
 					pPopUp->Create(IDD_PROTOCOL_EXCEL_DLG);
 					pPopUp->SetWindowTextW(str);
 					pPopUp->ShowWindow(SW_SHOW);

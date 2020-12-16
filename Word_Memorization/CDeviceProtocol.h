@@ -19,9 +19,9 @@ private:
 	int m_node;
 	
 	unsigned char m_page = 0;
-	BYTE **mp_click;
+	/*BYTE **mp_click;*/
 public:
-	CDeviceProtocol(BYTE *ap_IsClickedPos, CString a_device, int a_port, int a_node, CWnd* pParent = nullptr);   // standard constructor
+	CDeviceProtocol(/*BYTE *ap_IsClickedPos, */CString a_device, int a_port, int a_node, CWnd* pParent = nullptr);   // standard constructor
 
 	virtual ~CDeviceProtocol();
 
