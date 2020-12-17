@@ -302,15 +302,15 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 					}
 											
 					// 안눌림 -> 눌림
-					m_pt_ClickedPos[_row][_col] = true;
 					CClientDC dc(this);
+					m_pt_ClickedPos[_row][_col] = true;
 
 					wchar_t *p_wchar = DbgLogW_P(L"%s", caption.HB_BTN_Caption.at(pos).c_str());
 					SetButtonON_OFF(m_pt_ClickedPos[_row][_col], p_wchar, protocolBTN.r[pos], &dc);
 					free(p_wchar);
 
 					// Create Protocol PopUp
-					CDeviceProtocol *pPopUp = new CDeviceProtocol(/*&m_pt_ClickedPos[_row][_col], */caption.HB_BTN_Caption.at(pos).c_str(), port, node);
+					CDeviceProtocol *pPopUp = new CDeviceProtocol(m_pt_ClickedPos, caption.HB_BTN_Caption.at(pos).c_str(), port, node);
 					pPopUp->Create(IDD_PROTOCOL_EXCEL_DLG);
 					pPopUp->SetWindowTextW(str);
 					pPopUp->ShowWindow(SW_SHOW);

@@ -13,10 +13,10 @@
 
 IMPLEMENT_DYNAMIC(CDeviceProtocol, CDialogEx)
 
-CDeviceProtocol::CDeviceProtocol(/*BYTE *ap_IsClickedPos, */CString a_device, int a_port, int a_node, CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_PROTOCOL_EXCEL_DLG, pParent), /*mp_click(ap_IsClickedPos),*/ m_deviceName(a_device), m_port(a_port), m_node(a_node)
+CDeviceProtocol::CDeviceProtocol(BYTE **app_IsClickedPos, CString a_device, int a_port, int a_node, CWnd* pParent /*=nullptr*/)
+	: CDialogEx(IDD_PROTOCOL_EXCEL_DLG, pParent), mp_click(*app_IsClickedPos), m_deviceName(a_device), m_port(a_port), m_node(a_node)
 {
-	/**mp_click = ap_IsClickedPos;*/
+	
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -58,10 +58,10 @@ BOOL CDeviceProtocol::OnInitDialog()
 
 void CDeviceProtocol::OnClose()
 {
-	/*if (mp_click) 
-		**mp_click = 0;
-	else 
-		**mp_click = 1;*/
+	//if (*mp_click) 
+		*mp_click = 0;
+	//else 
+		//*mp_click = 1;
 
 	DestroyWindow();
 	

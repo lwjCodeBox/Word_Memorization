@@ -104,7 +104,7 @@ wchar_t *DbgLogW_P(LPCWSTR ap_str, ...)
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-void SetButtonON_OFF(BYTE a_status, wchar_t *ap_wstr, RECT btnRect, CClientDC *dc)
+void SetButtonON_OFF(BYTE a_status, wchar_t *ap_wstr, RECT btnRect, CDC *ap_dc)
 {
 	// 글꼴 객체 선언
 	CFont font;
@@ -118,32 +118,32 @@ void SetButtonON_OFF(BYTE a_status, wchar_t *ap_wstr, RECT btnRect, CClientDC *d
 		DEFAULT_PITCH | FF_SWISS, L"맑은 고딕");
 
 	// 생성된 글꼴을 사용하여 문자열을 출력하기 위해 해당 글꼴을 DC에 연결한다.
-	dc->SelectObject(&font);
+	ap_dc->SelectObject(&font);
 
-	int old_mode = dc->SetBkMode(TRANSPARENT);
+	int old_mode = ap_dc->SetBkMode(TRANSPARENT);
 	CString str;
 	str.Format(L"%s", ap_wstr);
 
 	if (1 == a_status) { // 안눌림 -> 눌림
-		dc->FillSolidRect(&btnRect, RGB(0, 50, 128)); // 눌림.
-		dc->Draw3dRect(&btnRect, RGB(0, 200, 255), RGB(0, 0, 0));
-		dc->SetTextColor(RGB(255, 255, 255));
+		ap_dc->FillSolidRect(&btnRect, RGB(0, 50, 128)); // 눌림.
+		ap_dc->Draw3dRect(&btnRect, RGB(0, 200, 255), RGB(0, 0, 0));
+		ap_dc->SetTextColor(RGB(255, 255, 255));
 		  
-		dc->DrawText(str, (CRect)btnRect + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		ap_dc->DrawText(str, (CRect)btnRect + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 	}
 	else { // 눌림 -> 안눌림
-		dc->FillSolidRect(&btnRect, RGB(192, 192, 192)); // 안눌림.							
-		dc->Draw3dRect(&btnRect, RGB(255, 255, 255), RGB(255, 255, 255));
-		dc->SetTextColor(RGB(0, 0, 0));
+		ap_dc->FillSolidRect(&btnRect, RGB(192, 192, 192)); // 안눌림.							
+		ap_dc->Draw3dRect(&btnRect, RGB(255, 255, 255), RGB(255, 255, 255));
+		ap_dc->SetTextColor(RGB(0, 0, 0));
 
-		dc->DrawText(str, &btnRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+		ap_dc->DrawText(str, &btnRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 	}
 
 	// 글꼴 객체를 제거한다.
 	font.DeleteObject();
 
 	// 배경을 이전 모드로 설정한다.
-	dc->SetBkMode(old_mode);
+	ap_dc->SetBkMode(old_mode);
 
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

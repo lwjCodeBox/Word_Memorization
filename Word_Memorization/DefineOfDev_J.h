@@ -172,5 +172,5 @@ wchar_t *DbgLogW_P(LPCWSTR ap_str, ...);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void SetButtonON_OFF(BYTE a_status, wchar_t *ap_str, RECT btnRect, CClientDC *dc);
+void SetButtonON_OFF(BYTE a_status, wchar_t *ap_str, RECT btnRect, CDC *ap_dc);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
