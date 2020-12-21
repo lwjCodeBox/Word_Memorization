@@ -1,14 +1,13 @@
 #include "pch.h"
 
-/// <Developed by developer Wonjong>
-/// * 멀티 스레드 코드임.
-/// * Copyright 2020.11.04 이원종. All rights reserved.
-/// </Developed by developer Wonjong>
-
 #include "Multi_Thread.h"
 #include "../Word_MemorizationDlg.h"
 #include "../CForm_HeartBit.h"
 
+/// <Developed by developer Wonjong>
+/// * 멀티 스레드 코드임.
+/// * Copyright 2020.11.04 이원종. All rights reserved.
+/// </Developed by developer Wonjong>
 
 void *FindThreadPtr(ThreadData *ap_data)
 {

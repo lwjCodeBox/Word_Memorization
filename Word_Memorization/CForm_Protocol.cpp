@@ -6,6 +6,7 @@
 #include "CForm_Protocol.h"
 
 #include "CDeviceProtocol.h"
+#include "C:\\lwj_Lib\\String\WJ_String.h"
 
 // CForm_Protocol
 
@@ -307,8 +308,8 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 
 					wchar_t *p_wchar = DbgLogW_P(L"%s", caption.HB_BTN_Caption.at(pos).c_str());
 					SetButtonON_OFF(m_pt_ClickedPos[_row][_col], p_wchar, protocolBTN.r[pos], &dc);
-					free(p_wchar);
-
+					free(p_wchar);					
+					
 					// Create Protocol PopUp
 					CDeviceProtocol *pPopUp = new CDeviceProtocol(m_pt_ClickedPos, caption.HB_BTN_Caption.at(pos).c_str(), port, node);
 					pPopUp->Create(IDD_PROTOCOL_EXCEL_DLG);

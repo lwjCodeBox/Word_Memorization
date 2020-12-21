@@ -198,6 +198,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\..\..\lwj_Lib\String\WJ_String.h" />
     <ClInclude Include="CDeviceProtocol.h" />
     <ClInclude Include="CForm_DuDefault_1.h" />
     <ClInclude Include="CForm_HeartBit.h" />
@@ -217,6 +218,7 @@
     <ClInclude Include="_CExcelLib.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\..\..\lwj_Lib\String\WJ_String.cpp" />
     <ClCompile Include="CDeviceProtocol.cpp" />
     <ClCompile Include="CForm_DuDefault_1.cpp" />
     <ClCompile Include="CForm_HeartBit.cpp" />
