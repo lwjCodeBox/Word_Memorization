@@ -164,13 +164,8 @@ CString GetTextFormExcel(int a_Row, int a_Col, libxl::Sheet *ap_Excel);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void DbgLog(LPCSTR ap_str, ...);
-void DbgLogW(LPCWSTR ap_str, ...);
-
-//char *DbgLog(LPCSTR ap_str, ...);
-wchar_t *DbgLogW_P(LPCWSTR ap_str, ...);
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-void SetButtonON_OFF(BYTE a_status, wchar_t *ap_str, RECT btnRect, CDC *ap_dc);
+// HeartBit screen Button
+void Set_HeartBit_OnOffcolor(BYTE a_status, wchar_t *ap_wstr, RECT btnRect, CDC *ap_dc);
+// Protocol screen Button
+void Set_Protocol_OnOffcolor(BYTE a_status, wchar_t *ap_str, RECT btnRect, CDC *ap_dc);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

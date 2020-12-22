@@ -8,21 +8,21 @@
 
 #include "Grid_Func_Group.h"
 #include "CSetDataPopUp.h"
+#include "./WJ_String.h"
 
 // CDeviceProtocol dialog
 
 IMPLEMENT_DYNAMIC(CDeviceProtocol, CDialogEx)
 
-CDeviceProtocol::CDeviceProtocol(BYTE **app_IsClickedPos, CString a_device, int a_port, int a_node, CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_PROTOCOL_EXCEL_DLG, pParent), mp_click(*app_IsClickedPos), m_deviceName(a_device), m_port(a_port), m_node(a_node)
+CDeviceProtocol::CDeviceProtocol(WJ_String a_device, WJ_String a_caption, int a_port, int a_node, CWnd* pParent /*=nullptr*/)
+	: CDialogEx(IDD_PROTOCOL_EXCEL_DLG, pParent), m_deviceName(a_device), m_caption(a_caption), m_port(a_port), m_node(a_node)
 {
-	
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 CDeviceProtocol::~CDeviceProtocol()
 {
-	
+	OnClose();
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -40,6 +40,7 @@ BEGIN_MESSAGE_MAP(CDeviceProtocol, CDialogEx)
 	// mouse click option
 	ON_NOTIFY(NM_RCLICK, IDC_PT_GRID, &CDeviceProtocol::OnGridClick)
 	ON_NOTIFY(NM_DBLCLK, IDC_PT_GRID, &CDeviceProtocol::OnGridDblClick)
+	ON_BN_CLICKED(IDC_PAGE_DOWN_BTN2, &CDeviceProtocol::OnBnClickedPageDownBtn2)
 END_MESSAGE_MAP()
 
 
@@ -58,13 +59,8 @@ BOOL CDeviceProtocol::OnInitDialog()
 
 void CDeviceProtocol::OnClose()
 {
-	//if (*mp_click) 
-		*mp_click = 0;
-	//else 
-		//*mp_click = 1;
-
 	DestroyWindow();
-	
+
 	delete mp_PT_Grid;
 
 	CDialogEx::OnClose();
@@ -73,6 +69,7 @@ void CDeviceProtocol::OnClose()
 
 void CDeviceProtocol::CreateGrid(int a_port, int a_node)
 {
+	SetDlgItemTextW(IDC_STATIC, m_caption.GetStrBuffer());
 	if (NULL != mp_PT_Grid) {
 		delete mp_PT_Grid;
 		mp_PT_Grid = NULL;
@@ -223,9 +220,9 @@ void CDeviceProtocol::OnBnClickedPageDownBtn()
 	else
 		return;
 
-	wchar_t *p_wchar = DbgLogW_P(L"%s [port : 0x%02X] [node : %d]", m_deviceName, m_port, m_node);
-	SetWindowTextW(p_wchar);
-	free(p_wchar);
+	WJ_String _str;
+	_str.Format(L"%s [port : 0x%02X] [node : %d]", m_deviceName, m_port, m_node);
+	SetWindowTextW(_str.GetString());
 
 	CreateGrid(m_port, m_node);
 }
@@ -316,9 +313,9 @@ void CDeviceProtocol::OnBnClickedPageUpBtn()
 	else
 		return;
 
-	wchar_t *p_wchar = DbgLogW_P(L"%s [port : 0x%02X] [node : %d]", m_deviceName, m_port, m_node);
-	SetWindowTextW(p_wchar);
-	free(p_wchar);
+	WJ_String _str;
+	_str.Format(L"%s [port : 0x%02X] [node : %d]", m_deviceName, m_port, m_node);
+	SetWindowTextW(_str.GetString());
 
 	CreateGrid(m_port, m_node);
 }
@@ -370,5 +367,11 @@ void CDeviceProtocol::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/
 	pDataPopUp = new CSetDataPopUp(pItem->iRow, pItem->iColumn, m_port, m_node, mp_PT_Grid);
 	pDataPopUp->Create(IDD_SETDATA_POPUP);
 	pDataPopUp->ShowWindow(5); // 5 is SH_SHOWS	
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+void CDeviceProtocol::OnBnClickedPageDownBtn2()
+{
+	OnClose();
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

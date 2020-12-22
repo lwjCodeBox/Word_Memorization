@@ -34,7 +34,7 @@ protected:
 
 private:	
 	// 어떤 버튼을 클릭 했는지 정보를 담고 있는 변수
-	unsigned char **m_pt_ClickedPos = NULL;
+	//unsigned char **m_pt_ClickedPos = NULL;
 
 	TCaption caption;
 	

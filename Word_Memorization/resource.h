@@ -20,7 +20,6 @@
 #define IDC_BUTTON1                     1016
 #define IDC_SETMVB_ADDR                 1017
 #define IDC_DFS_DEFAULT_2               1017
-#define IDC_BUTTON14                    1017
 #define IDC_PAGE_UP_BTN                 1017
 #define IDC_SETMVB_PORT                 1018
 #define IDC_SETMVB_WORD                 1018
@@ -34,6 +33,7 @@
 #define IDC_SETMVB_TM_PORT1             1022
 #define IDC_PAGE_DOWN_BTN               1022
 #define IDC_BUTTON2                     1023
+#define IDC_PAGE_DOWN_BTN2              1023
 #define IDC_BUTTON3                     1024
 #define IDC_BUTTON4                     1025
 #define IDC_ADDR_00                     1026

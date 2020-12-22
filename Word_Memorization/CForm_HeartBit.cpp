@@ -9,6 +9,7 @@
 #include <Windows.h>
 
 #include "Word_MemorizationDlg.h"
+#include "./WJ_String.h"
 
 // CForm_HeartBit
 
@@ -224,43 +225,14 @@ void CForm_HeartBit::OnDrawHeartBitButton(CDC *p_DC, CRect *p_R)
 			if (!str.Compare(L"*")) {
 				// empth
 			}
-			else {
-				int old_mode = p_DC->SetBkMode(TRANSPARENT);
-
-				// 글꼴 객체 선언
-				CFont font;
-
-				// 원하는 그림을 그리기 위해 DC를 얻는다.
-				//CClientDC dc(this);
-
-				// 원하는 속성을 지정하여 글꼴을 생성한다.
-				font.CreateFont(18, 0, 0, 0, FW_BOLD, 0, 0, 0, DEFAULT_CHARSET,
-					OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-					DEFAULT_PITCH | FF_SWISS, L"맑은 고딕");
-
-				// 생성된 글꼴을 사용하여 문자열을 출력하기 위해 해당 글꼴을 DC에 연결한다.
-				p_DC->SelectObject(&font);
-
-				if (1 == m_HB_ClickedPos[rowCnt][colCnt]) {
-					p_DC->FillSolidRect(&heartBitBTN.r[pos], RGB(0, 50, 128)); // 눌림.
-					p_DC->Draw3dRect(&heartBitBTN.r[pos], RGB(0, 200, 255), RGB(0, 0, 0));
-					p_DC->SetTextColor(RGB(255, 255, 255));
-
-					p_DC->DrawText(str, (CRect)heartBitBTN.r[pos] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
+			else {	
+				CClientDC dc(this);
+				if (1 == m_HB_ClickedPos[rowCnt][colCnt]) {					
+					Set_HeartBit_OnOffcolor(1, str.GetBuffer(), heartBitBTN.r[pos], &dc);
 				}
 				else {					
-					p_DC->FillSolidRect(&heartBitBTN.r[pos], RGB(192, 192, 192)); // 안눌림.							
-					p_DC->Draw3dRect(&heartBitBTN.r[pos], RGB(255, 255, 255), RGB(255, 255, 255));
-					p_DC->SetTextColor(RGB(0, 0, 0));
-
-					p_DC->DrawText(str, &heartBitBTN.r[pos], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-				}
-
-				// 배경을 이전 모드로 설정한다.
-				p_DC->SetBkMode(old_mode);
-
-				// 글꼴 객체를 제거한다.
-				font.DeleteObject();
+					Set_HeartBit_OnOffcolor(0, str.GetBuffer(), heartBitBTN.r[pos], &dc);
+				}				
 			}
 		}
 	}
@@ -316,6 +288,23 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 	
 	// HeartBit button
 	if (bHeartBitBTN) {	
+		WJ_String _str;
+		_str.Format(L"%s", caption.HB_BTN_Caption.at(click_HB_BTN).c_str());
+		CClientDC dc(this);
+
+		if (1 == m_HB_ClickedPos[_row][_col]) {
+			m_HB_ClickedPos[_row][_col] = false;
+			Set_HeartBit_OnOffcolor(0, _str.GetStrBuffer(), heartBitBTN.r[click_HB_BTN], &dc);
+
+			Thread_stop(_row, _col);
+		}
+		else {
+			m_HB_ClickedPos[_row][_col] = true;
+			Set_HeartBit_OnOffcolor(1, _str.GetStrBuffer(), heartBitBTN.r[click_HB_BTN], &dc);
+			
+			Thread_Start(_row, _col);
+		}
+/*
 		// 글꼴 객체 선언
 		CFont font;
 
@@ -362,6 +351,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 
 		// 배경을 이전 모드로 설정한다.
 		dc.SetBkMode(old_mode);							
+*/
 	}	
 
 	// Thread all exit button;
@@ -456,7 +446,8 @@ afx_msg LRESULT CForm_HeartBit::On27001(WPARAM wParam, LPARAM lParam)
 			break;
 		}
 		else {
-			DbgLogW(L"Do not find Thread Data!!\n");
+			WJ_String _str;
+			_str.DbgLogW(L"Do not find Thread Data!!\n");
 		}
 	}
 
@@ -473,7 +464,8 @@ void CForm_HeartBit::Thread_Allstop()
 		SetEvent(p->h_kill_event);
 	}
 
-	DbgLogW(L"Shut down the %d working threads.\n", count);
+	WJ_String _str;
+	_str.DbgLogW(L"Shut down the %d working threads.\n", count);
 
 	MSG msg;
 	while (0 < count) {
@@ -492,6 +484,6 @@ void CForm_HeartBit::Thread_Allstop()
 	std::vector<short>().swap(dataPtr.ClickedPos); // 임의 백터와 교환을 한다.
 	std::vector<void*>().swap(dataPtr.pThreadItemDataPtr); // 임의 백터와 교환을 한다.
 			
-	DbgLogW(L"*****Thread All Stop Finish!!!*****\n");	
+	_str.DbgLogW(L"*****Thread All Stop Finish!!!*****\n");	
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+Z-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

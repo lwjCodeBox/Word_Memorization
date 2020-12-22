@@ -6,7 +6,7 @@
 #include "CForm_Protocol.h"
 
 #include "CDeviceProtocol.h"
-#include "C:\\lwj_Lib\\String\WJ_String.h"
+#include "./WJ_String.h"
 
 // CForm_Protocol
 
@@ -84,28 +84,13 @@ BOOL CForm_Protocol::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD
 
 	OnInitProtocolButton();
 
-	m_pt_ClickedPos = new unsigned char *[protocolBTN.rowCount];
-
-	for (int i = 0; i < protocolBTN.rowCount; i++) {
-		m_pt_ClickedPos[i] = new unsigned char[protocolBTN.colCount];
-		memset(m_pt_ClickedPos[i], 0, sizeof(unsigned char) * protocolBTN.colCount);
-	}
 	return CFormView::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CForm_Protocol::OnDestroy()
 {
-	CFormView::OnDestroy();
-
-	// Protocol Button	
-	if (m_pt_ClickedPos != NULL) {
-		for (int i = 0; i < protocolBTN.rowCount; i++) {
-			delete[] m_pt_ClickedPos[i];
-			m_pt_ClickedPos[i] = NULL;
-		}
-		delete[] m_pt_ClickedPos;
-	}
+	CFormView::OnDestroy();	
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -212,42 +197,8 @@ void CForm_Protocol::OnDrawProtocolButton(CDC *p_DC, CRect *p_R)
 				// empth
 			}
 			else {
-				int old_mode = p_DC->SetBkMode(TRANSPARENT);
-
-				// 글꼴 객체 선언
-				CFont font;
-
-				// 원하는 그림을 그리기 위해 DC를 얻는다.
-				//CClientDC dc(this);
-
-				// 원하는 속성을 지정하여 글꼴을 생성한다.
-				font.CreateFont(18, 0, 0, 0, FW_BOLD, 0, 0, 0, DEFAULT_CHARSET,
-					OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
-					DEFAULT_PITCH | FF_SWISS, L"맑은 고딕");
-
-				// 생성된 글꼴을 사용하여 문자열을 출력하기 위해 해당 글꼴을 DC에 연결한다.
-				p_DC->SelectObject(&font);
-
-				if (1 == m_pt_ClickedPos[rowCnt][colCnt]) {
-					p_DC->FillSolidRect(&protocolBTN.r[pos], RGB(0, 50, 128)); // 눌림.
-					p_DC->Draw3dRect(&protocolBTN.r[pos], RGB(0, 200, 255), RGB(0, 0, 0));
-					p_DC->SetTextColor(RGB(255, 255, 255));
-
-					p_DC->DrawText(str, (CRect)protocolBTN.r[pos] + CPoint(2, 2), DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-				}
-				else {
-					p_DC->FillSolidRect(&protocolBTN.r[pos], RGB(192, 192, 192)); // 안눌림.							
-					p_DC->Draw3dRect(&protocolBTN.r[pos], RGB(255, 255, 255), RGB(255, 255, 255));
-					p_DC->SetTextColor(RGB(0, 0, 0));
-
-					p_DC->DrawText(str, &protocolBTN.r[pos], DT_CENTER | DT_VCENTER | DT_SINGLELINE);
-				}
-
-				// 배경을 이전 모드로 설정한다.
-				p_DC->SetBkMode(old_mode);
-
-				// 글꼴 객체를 제거한다.
-				font.DeleteObject();
+				CClientDC dc(this);
+				Set_Protocol_OnOffcolor(1, str.GetBuffer(), protocolBTN.r[pos], &dc);				
 			}
 		}
 	}
@@ -268,11 +219,11 @@ BOOL CForm_Protocol::OnEraseBkgnd(CDC *pDC)
 void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	unsigned int _col = 0, _row = 0;
-
-	short click_PT_BTN = -1;
-	short pos = 0;
 	int port = 0;
 	int node = 0;
+	
+	short pos = 0;
+	
 
 	for (int rowCnt = 0; rowCnt < protocolBTN.rowCount; rowCnt++) {
 		for (int colCnt = 0; colCnt < protocolBTN.colCount; colCnt++) {
@@ -288,35 +239,24 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 					_row = rowCnt;
 					_col = colCnt;
 
-					click_PT_BTN = pos;
-
 					try {
 						int t_map_key = _row * 10 + _col;
 						port = portAddr.used_on_Protocol.at(t_map_key); // find(t_map_key)->second;
 						node = (_col + 2) / 2;
 						str.Format(L"%s [port : 0x%02X] [node : %d]", str, port, node);
+
+						// Create Protocol PopUp					
+						CDeviceProtocol *pPopUp = new CDeviceProtocol(caption.HB_BTN_Caption.at(pos).c_str(), str.GetBuffer(), port, node);
+						pPopUp->Create(IDD_PROTOCOL_EXCEL_DLG);						
+						pPopUp->ShowWindow(SW_SHOW);
+
+						return;
 					}
 					catch (std::out_of_range &e) {
 						str.Format(L"Do not found Excel sheet [%s]", e.what());
 						AfxMessageBox(str);
 						return;
-					}
-											
-					// 안눌림 -> 눌림
-					CClientDC dc(this);
-					m_pt_ClickedPos[_row][_col] = true;
-
-					wchar_t *p_wchar = DbgLogW_P(L"%s", caption.HB_BTN_Caption.at(pos).c_str());
-					SetButtonON_OFF(m_pt_ClickedPos[_row][_col], p_wchar, protocolBTN.r[pos], &dc);
-					free(p_wchar);					
-					
-					// Create Protocol PopUp
-					CDeviceProtocol *pPopUp = new CDeviceProtocol(m_pt_ClickedPos, caption.HB_BTN_Caption.at(pos).c_str(), port, node);
-					pPopUp->Create(IDD_PROTOCOL_EXCEL_DLG);
-					pPopUp->SetWindowTextW(str);
-					pPopUp->ShowWindow(SW_SHOW);
-
-					break;
+					}																				
 				}
 				catch (std::out_of_range &e) {
 					str.Format(L"[Catch the std::out_of_range] %s", e.what());
