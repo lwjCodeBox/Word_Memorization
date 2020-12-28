@@ -19,7 +19,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 한국어(대한민국) resources
+// Korean (Korea) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
@@ -160,14 +160,14 @@ BEGIN
     EDITTEXT        IDC_POPUP_EDIT,74,11,119,14,ES_AUTOHSCROLL
 END
 
-IDD_PROTOCOL_EXCEL_DLG DIALOGEX 0, 0, 727, 449
-STYLE DS_SETFONT | WS_POPUP | WS_BORDER | WS_SYSMENU
+IDD_PROTOCOL_POPUP DIALOGEX 0, 0, 639, 407
+STYLE DS_SETFONT | DS_MODALFRAME | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_OVERLAPPEDWINDOW
 FONT 10, "Consolas", 700, 0, 0x0
 BEGIN
-    PUSHBUTTON      "▼",IDC_PAGE_DOWN_BTN,671,76,49,14
-    PUSHBUTTON      "▲",IDC_PAGE_UP_BTN,671,55,49,14
-    PUSHBUTTON      "Back(←)",IDC_PAGE_DOWN_BTN2,671,34,49,14
-    CTEXT           "Static",IDC_STATIC,587,17,133,10,WS_BORDER
+    PUSHBUTTON      "▼",IDC_PAGE_DOWN_BTN,583,76,49,14
+    PUSHBUTTON      "▲",IDC_PAGE_UP_BTN,583,55,49,14
+    PUSHBUTTON      "Back(←)",IDC_EXIT_BTN,583,34,49,14
 END
 
 
@@ -220,12 +220,12 @@ BEGIN
         BOTTOMMARGIN, 57
     END
 
-    IDD_PROTOCOL_EXCEL_DLG, DIALOG
+    IDD_PROTOCOL_POPUP, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 720
+        RIGHTMARGIN, 632
         TOPMARGIN, 7
-        BOTTOMMARGIN, 442
+        BOTTOMMARGIN, 400
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -261,17 +261,17 @@ BEGIN
     0
 END
 
-IDD_PROTOCOL_EXCEL_DLG AFX_DIALOG_LAYOUT
+IDD_PROTOCOL_POPUP AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
 
-#endif    // 한국어(대한민국) resources
+#endif    // Korean (Korea) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// 영어(미국) resources
+// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -359,7 +359,7 @@ BEGIN
     END
 END
 
-#endif    // 영어(미국) resources
+#endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

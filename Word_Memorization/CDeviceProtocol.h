@@ -24,12 +24,12 @@ private:
 
 public:
 	CDeviceProtocol(WJ_String a_device, WJ_String a_caption, int a_port, int a_node, CWnd* pParent = nullptr);   // standard constructor
-
+	
 	virtual ~CDeviceProtocol();
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_PROTOCOL_EXCEL_DLG };
+	enum { IDD = IDD_PROTOCOL_POPUP };
 #endif
 
 protected:
@@ -46,6 +46,7 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnClose();
 	afx_msg void OnBnClickedPageDownBtn();
-	afx_msg void OnBnClickedPageUpBtn();
-	afx_msg void OnBnClickedPageDownBtn2();
+	afx_msg void OnBnClickedPageUpBtn();	
+	afx_msg void OnBnClickedExitBtn();
+	afx_msg void OnDestroy();
 };

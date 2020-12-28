@@ -352,7 +352,7 @@ void CForm_DuDefault_1::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult
 	
 	CSetDataPopUp *pDataPopUp;
 	pDataPopUp = new CSetDataPopUp(pItem->iRow, pItem->iColumn, m_port, 0, mp_gridctrl);
-	pDataPopUp->Create(IDD_SETDATA_POPUP);
+	pDataPopUp->Create(IDD_SETDATA_POPUP, this);
 	pDataPopUp->ShowWindow(5); // 5 is SH_SHOWS
 }
 //--------------------------------------------------------------------------------------------

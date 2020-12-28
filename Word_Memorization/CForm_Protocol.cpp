@@ -33,6 +33,7 @@ BEGIN_MESSAGE_MAP(CForm_Protocol, CFormView)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_DESTROY()
 	ON_WM_ERASEBKGND()
+	ON_MESSAGE(27000, &CForm_Protocol::On27000)
 END_MESSAGE_MAP()
 
 
@@ -84,6 +85,13 @@ BOOL CForm_Protocol::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD
 
 	OnInitProtocolButton();
 
+	m_pt_ClickedPos = new unsigned char *[protocolBTN.rowCount];
+
+	for (int i = 0; i < protocolBTN.rowCount; i++) {
+		m_pt_ClickedPos[i] = new unsigned char[protocolBTN.colCount];
+		memset(m_pt_ClickedPos[i], 0, sizeof(unsigned char) * protocolBTN.colCount);
+	}
+
 	return CFormView::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -91,6 +99,15 @@ BOOL CForm_Protocol::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD
 void CForm_Protocol::OnDestroy()
 {
 	CFormView::OnDestroy();	
+
+	// Protocol Button	
+	if (m_pt_ClickedPos != NULL) {
+		for (int i = 0; i < protocolBTN.rowCount; i++) {
+			delete[] m_pt_ClickedPos[i];
+			m_pt_ClickedPos[i] = NULL;
+		}
+		delete[] m_pt_ClickedPos;
+	}
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -198,7 +215,7 @@ void CForm_Protocol::OnDrawProtocolButton(CDC *p_DC, CRect *p_R)
 			}
 			else {
 				CClientDC dc(this);
-				Set_Protocol_OnOffcolor(1, str.GetBuffer(), protocolBTN.r[pos], &dc);				
+				Set_Protocol_OnOffcolor(0, str.GetBuffer(), protocolBTN.r[pos], &dc);				
 			}
 		}
 	}
@@ -217,8 +234,7 @@ BOOL CForm_Protocol::OnEraseBkgnd(CDC *pDC)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
-{
-	unsigned int _col = 0, _row = 0;
+{	
 	int port = 0;
 	int node = 0;
 	
@@ -236,20 +252,33 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 				if (!str.Compare(L"*"))	return;
 
 				try {
-					_row = rowCnt;
-					_col = colCnt;
+					m_row = rowCnt;
+					m_col = colCnt;
 
 					try {
-						int t_map_key = _row * 10 + _col;
+						int t_map_key = m_row * 10 + m_col;
 						port = portAddr.used_on_Protocol.at(t_map_key); // find(t_map_key)->second;
-						node = (_col + 2) / 2;
-						str.Format(L"%s [port : 0x%02X] [node : %d]", str, port, node);
+						node = (m_col + 2) / 2;
+						
+						if (0 == m_pt_ClickedPos[m_row][m_col]) {							
+							m_pt_ClickedPos[m_row][m_col] = 1;
 
-						// Create Protocol PopUp					
-						CDeviceProtocol *pPopUp = new CDeviceProtocol(caption.HB_BTN_Caption.at(pos).c_str(), str.GetBuffer(), port, node);
-						pPopUp->Create(IDD_PROTOCOL_EXCEL_DLG);						
-						pPopUp->ShowWindow(SW_SHOW);
+							CClientDC dc(this);
+							Set_Protocol_OnOffcolor(1, str.GetBuffer(), protocolBTN.r[pos], &dc);
 
+							str.Format(L"%s [port : 0x%02X] [node : %d]", str, port, node);
+
+							// Create Protocol PopUp					
+							CDeviceProtocol *pPopUp = new CDeviceProtocol(caption.HB_BTN_Caption.at(pos).c_str(), str.GetBuffer(), port, node);							
+							pPopUp->Create(IDD_PROTOCOL_POPUP, NULL);
+							//pPopUp->ModifyStyle(WS_POPUP, WS_CHILD | WS_BORDER | WS_CAPTION); // 스타일 수정 
+							//pPopUp->ModifyStyle(WS_POPUP, WS_CHILD | WS_BORDER | WS_CAPTION | DS_MODALFRAME);							
+							//pPopUp->SetParent(this);
+							// https://blog.naver.com/kilsu1024/110156301791
+
+							pPopUp->SetWindowTextW(str.GetBuffer());
+							pPopUp->ShowWindow(SW_SHOW);
+						}
 						return;
 					}
 					catch (std::out_of_range &e) {
@@ -267,5 +296,12 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 		
 	CFormView::OnLButtonDown(nFlags, point);
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+afx_msg LRESULT CForm_Protocol::On27000(WPARAM wParam, LPARAM lParam)
+{
+	m_pt_ClickedPos[m_row][m_col] = wParam;
+	return 0;
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

@@ -96,7 +96,12 @@ void Set_Protocol_OnOffcolor(BYTE a_status, wchar_t *ap_wstr, RECT btnRect, CDC 
 
 	int old_mode = ap_dc->SetBkMode(TRANSPARENT);
 	
-	ap_dc->FillSolidRect(&btnRect, RGB(0, 64, 0));
+	if (1 == a_status) { // 안눌림 -> 눌림
+		ap_dc->FillSolidRect(&btnRect, RGB(0, 190, 0));		
+	}
+	else { // 눌림 -> 안눌림.
+		ap_dc->FillSolidRect(&btnRect, RGB(0, 64, 0));	
+	}
 	ap_dc->Draw3dRect(&btnRect, RGB(0, 255, 64), RGB(/*0, 90, 0*/0, 255, 64)); // 위가 밝음, 아래가 어두움
 	ap_dc->SetTextColor(RGB(255, 255, 255));
 

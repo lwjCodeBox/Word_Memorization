@@ -33,8 +33,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 private:	
+	unsigned int m_col = 0, m_row = 0;
 	// 어떤 버튼을 클릭 했는지 정보를 담고 있는 변수
-	//unsigned char **m_pt_ClickedPos = NULL;
+	unsigned char **m_pt_ClickedPos = NULL;
 
 	TCaption caption;
 	
@@ -57,4 +58,13 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnDestroy();
 	afx_msg BOOL OnEraseBkgnd(CDC *pDC);
+
+	HWND *GetCForm_Protocol_hwnd() 
+	{
+		HWND h = GetSafeHwnd();
+		return &h;
+	}
+	
+protected:
+	afx_msg LRESULT On27000(WPARAM wParam, LPARAM lParam);
 };

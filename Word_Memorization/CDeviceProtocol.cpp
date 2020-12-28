@@ -15,14 +15,17 @@
 IMPLEMENT_DYNAMIC(CDeviceProtocol, CDialogEx)
 
 CDeviceProtocol::CDeviceProtocol(WJ_String a_device, WJ_String a_caption, int a_port, int a_node, CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_PROTOCOL_EXCEL_DLG, pParent), m_deviceName(a_device), m_caption(a_caption), m_port(a_port), m_node(a_node)
+	: CDialogEx(IDD_PROTOCOL_POPUP, pParent), m_deviceName(a_device), m_caption(a_caption), m_port(a_port), m_node(a_node)
 {
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 CDeviceProtocol::~CDeviceProtocol()
 {
-	OnClose();
+	if (mp_PT_Grid != NULL) {
+		DestroyWindow();
+		delete mp_PT_Grid;
+	}
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -39,8 +42,9 @@ BEGIN_MESSAGE_MAP(CDeviceProtocol, CDialogEx)
 
 	// mouse click option
 	ON_NOTIFY(NM_RCLICK, IDC_PT_GRID, &CDeviceProtocol::OnGridClick)
-	ON_NOTIFY(NM_DBLCLK, IDC_PT_GRID, &CDeviceProtocol::OnGridDblClick)
-	ON_BN_CLICKED(IDC_PAGE_DOWN_BTN2, &CDeviceProtocol::OnBnClickedPageDownBtn2)
+	ON_NOTIFY(NM_DBLCLK, IDC_PT_GRID, &CDeviceProtocol::OnGridDblClick)	
+	ON_BN_CLICKED(IDC_EXIT_BTN, &CDeviceProtocol::OnBnClickedExitBtn)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -51,6 +55,8 @@ BOOL CDeviceProtocol::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
+	SetBackgroundColor(RGB(45, 45, 45));
+
 	CreateGrid(m_port, m_node);	
 
 	return TRUE;  
@@ -59,17 +65,28 @@ BOOL CDeviceProtocol::OnInitDialog()
 
 void CDeviceProtocol::OnClose()
 {
-	DestroyWindow();
-
-	delete mp_PT_Grid;
+	// 상단 x를 클릭 했을 때. 
+	if (mp_PT_Grid != NULL) {
+		DestroyWindow();
+	}
 
 	CDialogEx::OnClose();
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-void CDeviceProtocol::CreateGrid(int a_port, int a_node)
+void CDeviceProtocol::OnDestroy()
 {
-	SetDlgItemTextW(IDC_STATIC, m_caption.GetStrBuffer());
+	__super::OnDestroy();
+
+	if (mp_PT_Grid != NULL) {
+		// DestroyWindow();
+		delete mp_PT_Grid;
+	}	
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+void CDeviceProtocol::CreateGrid(int a_port, int a_node)
+{	
 	if (NULL != mp_PT_Grid) {
 		delete mp_PT_Grid;
 		mp_PT_Grid = NULL;
@@ -365,13 +382,21 @@ void CDeviceProtocol::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/
 
 	CSetDataPopUp *pDataPopUp;
 	pDataPopUp = new CSetDataPopUp(pItem->iRow, pItem->iColumn, m_port, m_node, mp_PT_Grid);
-	pDataPopUp->Create(IDD_SETDATA_POPUP);
-	pDataPopUp->ShowWindow(5); // 5 is SH_SHOWS	
+	pDataPopUp->Create(IDD_SETDATA_POPUP, this);
+	pDataPopUp->ShowWindow(5); // 5 is SH_SHOWS		
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-void CDeviceProtocol::OnBnClickedPageDownBtn2()
+void CDeviceProtocol::OnBnClickedExitBtn()
 {
+	//HWND h = ::GetDlgItem(m_hWnd, IDD_FORM_PROTOCOL);
+	//CForm_Protocol f;
+	//HWND *h = f.GetCForm_Protocol_hwnd();
+	//((CForm_Protocol *)GetParent())->PostMessage(27000, 0);
+	
+	//::PostMessage(((CForm_Protocol *)GetParent())->m_hWnd, 27000, 0, 0);
+	GetParent()->PostMessage(27000, 0);
+
 	OnClose();
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
