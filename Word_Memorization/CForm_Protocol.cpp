@@ -270,14 +270,15 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 
 							// Create Protocol PopUp					
 							CDeviceProtocol *pPopUp = new CDeviceProtocol(caption.HB_BTN_Caption.at(pos).c_str(), str.GetBuffer(), port, node);							
-							pPopUp->Create(IDD_PROTOCOL_POPUP, NULL);
+							pPopUp->Create(IDD_PROTOCOL_POPUP, this);
+							
 							//pPopUp->ModifyStyle(WS_POPUP, WS_CHILD | WS_BORDER | WS_CAPTION); // 스타일 수정 
-							//pPopUp->ModifyStyle(WS_POPUP, WS_CHILD | WS_BORDER | WS_CAPTION | DS_MODALFRAME);							
+							//pPopUp->ModifyStyle(WS_POPUP, WS_CHILD /*| WS_BORDER | WS_CAPTION | DS_MODALFRAME*/);
 							//pPopUp->SetParent(this);
 							// https://blog.naver.com/kilsu1024/110156301791
 
 							pPopUp->SetWindowTextW(str.GetBuffer());
-							pPopUp->ShowWindow(SW_SHOW);
+							//pPopUp->ShowWindow(SW_SHOW);
 						}
 						return;
 					}

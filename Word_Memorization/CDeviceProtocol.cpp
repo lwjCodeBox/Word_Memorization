@@ -389,13 +389,15 @@ void CDeviceProtocol::OnGridDblClick(NMHDR *pNotifyStruct, LRESULT * /*pResult*/
 
 void CDeviceProtocol::OnBnClickedExitBtn()
 {
+	// 부모 다이얼로그에 27000메시지를 던짐.
+
 	//HWND h = ::GetDlgItem(m_hWnd, IDD_FORM_PROTOCOL);
 	//CForm_Protocol f;
 	//HWND *h = f.GetCForm_Protocol_hwnd();
-	//((CForm_Protocol *)GetParent())->PostMessage(27000, 0);
+	//((CForm_Protocol *)GetParent())->On27000(27000, 0);
 	
 	//::PostMessage(((CForm_Protocol *)GetParent())->m_hWnd, 27000, 0, 0);
-	GetParent()->PostMessage(27000, 0);
+	GetParent()->PostMessage(27000, 0, 0);
 
 	OnClose();
 }

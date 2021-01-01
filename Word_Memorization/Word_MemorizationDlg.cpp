@@ -394,9 +394,7 @@ void CWordMemorizationDlg::ChangeScreen(UINT ID)
 		mp_Form_DuDefault_1->ShowWindow(SW_HIDE);
 		mp_Form_SetMVB->ShowWindow(SW_SHOW);
 		break;
-	}
-
-	
+	}	
 }
 //--------------------------------------------------------------------------------------------
 
@@ -676,4 +674,4 @@ void CWordMemorizationDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
-//--------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------
