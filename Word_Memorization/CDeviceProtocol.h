@@ -20,12 +20,20 @@ private:
 	short m_port;
 	int m_node;
 	
+	HWND h_handle;
+
+	int m_map_key;
 	unsigned char m_page = 0;
 
 public:
 	CDeviceProtocol(WJ_String a_device, WJ_String a_caption, int a_port, int a_node, CWnd* pParent = nullptr);   // standard constructor
 	
 	virtual ~CDeviceProtocol();
+
+	void SetHWND(HWND h) { h_handle = h; }
+
+	void SetMapKey(int a_key) { m_map_key = a_key; }
+	int GetMapKey() { return m_map_key; }
 
 // Dialog Data
 #ifdef AFX_DESIGN_TIME
@@ -48,5 +56,4 @@ public:
 	afx_msg void OnBnClickedPageDownBtn();
 	afx_msg void OnBnClickedPageUpBtn();	
 	afx_msg void OnBnClickedExitBtn();
-	afx_msg void OnDestroy();
 };

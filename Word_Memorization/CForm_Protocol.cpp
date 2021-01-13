@@ -108,6 +108,17 @@ void CForm_Protocol::OnDestroy()
 		}
 		delete[] m_pt_ClickedPos;
 	}
+
+	// PopUp Dlg
+	while (0 != m_popupPtr.size()) {
+		int pos = m_popupPtr.begin()->first;
+		mp_PopUp = m_popupPtr.find(pos)->second;
+		mp_PopUp->DestroyWindow();
+		delete mp_PopUp;
+		mp_PopUp = nullptr;
+
+		m_popupPtr.erase(pos);		
+	}	
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -214,8 +225,9 @@ void CForm_Protocol::OnDrawProtocolButton(CDC *p_DC, CRect *p_R)
 				// empth
 			}
 			else {
+				BYTE status = m_pt_ClickedPos[rowCnt][colCnt];
 				CClientDC dc(this);
-				Set_Protocol_OnOffcolor(0, str.GetBuffer(), protocolBTN.r[pos], &dc);				
+				Set_Protocol_OnOffcolor(status, str.GetBuffer(), protocolBTN.r[pos], &dc);
 			}
 		}
 	}
@@ -240,7 +252,6 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 	
 	short pos = 0;
 	
-
 	for (int rowCnt = 0; rowCnt < protocolBTN.rowCount; rowCnt++) {
 		for (int colCnt = 0; colCnt < protocolBTN.colCount; colCnt++) {
 			pos = (protocolBTN.colCount * rowCnt) + colCnt;
@@ -260,7 +271,7 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 						port = portAddr.used_on_Protocol.at(t_map_key); // find(t_map_key)->second;
 						node = (m_col + 2) / 2;
 						
-						if (0 == m_pt_ClickedPos[m_row][m_col]) {							
+						if (0 == m_pt_ClickedPos[m_row][m_col]) {
 							m_pt_ClickedPos[m_row][m_col] = 1;
 
 							CClientDC dc(this);
@@ -269,16 +280,13 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 							str.Format(L"%s [port : 0x%02X] [node : %d]", str, port, node);
 
 							// Create Protocol PopUp					
-							CDeviceProtocol *pPopUp = new CDeviceProtocol(caption.HB_BTN_Caption.at(pos).c_str(), str.GetBuffer(), port, node);							
-							pPopUp->Create(IDD_PROTOCOL_POPUP, this);
+							mp_PopUp = new CDeviceProtocol(caption.HB_BTN_Caption.at(pos).c_str(), str.GetBuffer(), port, node);
+							mp_PopUp->Create(IDD_PROTOCOL_POPUP, this);
+							mp_PopUp->SetHWND(GetSafeHwnd());
+							mp_PopUp->SetMapKey(t_map_key);
+							mp_PopUp->SetWindowTextW(str.GetBuffer());
 							
-							//pPopUp->ModifyStyle(WS_POPUP, WS_CHILD | WS_BORDER | WS_CAPTION); // 스타일 수정 
-							//pPopUp->ModifyStyle(WS_POPUP, WS_CHILD /*| WS_BORDER | WS_CAPTION | DS_MODALFRAME*/);
-							//pPopUp->SetParent(this);
-							// https://blog.naver.com/kilsu1024/110156301791
-
-							pPopUp->SetWindowTextW(str.GetBuffer());
-							//pPopUp->ShowWindow(SW_SHOW);
+							m_popupPtr.insert(std::make_pair(t_map_key, mp_PopUp));
 						}
 						return;
 					}
@@ -301,8 +309,20 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 afx_msg LRESULT CForm_Protocol::On27000(WPARAM wParam, LPARAM lParam)
-{
-	m_pt_ClickedPos[m_row][m_col] = wParam;
+{	
+	mp_PopUp = m_popupPtr.find(wParam)->second;
+	mp_PopUp->DestroyWindow();
+	delete mp_PopUp;
+	mp_PopUp = nullptr;
+
+	m_popupPtr.erase(wParam);
+	
+	int row = wParam / 10;
+	int col = wParam % 10;
+	m_pt_ClickedPos[row][col] = 0;
+
+	Invalidate();
+
 	return 0;
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

@@ -1,22 +1,22 @@
 #pragma once
-
 #include "DefineOfDev_J.h"
 #include "GridCtrl_src_new/GridCtrl.h"
 
 #include <iostream>
 #include <thread>
+#include <map>
 
 // CForm_Protocol form view
 
+class CDeviceProtocol;
 class CForm_Protocol : public CFormView
 {
 	DECLARE_DYNCREATE(CForm_Protocol)
 
-public://protected:
+public:
 	CForm_Protocol();           // protected constructor used by dynamic creation
 	virtual ~CForm_Protocol();
-
-public:
+	
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_FORM_PROTOCOL };
 #endif
@@ -43,6 +43,9 @@ private:
 	TButtonRect protocolBTN;
 
 	TMVB_Addr_Info portAddr;
+	
+	CDeviceProtocol *mp_PopUp;
+	std::map<int, CDeviceProtocol*> m_popupPtr;
 
 private:
 	void OnInitFixCaptionButton();
@@ -58,13 +61,7 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnDestroy();
 	afx_msg BOOL OnEraseBkgnd(CDC *pDC);
-
-	HWND *GetCForm_Protocol_hwnd() 
-	{
-		HWND h = GetSafeHwnd();
-		return &h;
-	}
-	
+		
 protected:
 	afx_msg LRESULT On27000(WPARAM wParam, LPARAM lParam);
 };
