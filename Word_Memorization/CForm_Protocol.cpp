@@ -65,7 +65,7 @@ BOOL CForm_Protocol::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD
 	fixCaption.spacing_W = 20; // x ÁÂÇ¥ °£°Ý
 	fixCaption.rowCount = 1;
 
-	fixCaption.yPos = 20;      // y ½ÃÀÛ ÁÂÇ¥	
+	fixCaption.yPos = 5;      // y ½ÃÀÛ ÁÂÇ¥	
 	fixCaption.height = 25;    // ³ôÀÌ
 	fixCaption.spacing_H = 0;  // y ÁÂÇ¥ °£°Ý
 	fixCaption.colCount = 8;
@@ -76,11 +76,11 @@ BOOL CForm_Protocol::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD
 	protocolBTN.xPos = 65;      // x ½ÃÀÛ ÁÂÇ¥	
 	protocolBTN.width = 100;    // Æø »çÀÌÁî
 	protocolBTN.spacing_W = 20; // x ÁÂÇ¥ °£°Ý
-	protocolBTN.rowCount = 17;
+	protocolBTN.rowCount = 20;
 
-	protocolBTN.yPos = 50;      // y ½ÃÀÛ ÁÂÇ¥	
+	protocolBTN.yPos = 35;      // y ½ÃÀÛ ÁÂÇ¥	
 	protocolBTN.height = 30;    // ³ôÀÌ
-	protocolBTN.spacing_H = 10;  // y ÁÂÇ¥ °£°Ý
+	protocolBTN.spacing_H = 5;  // y ÁÂÇ¥ °£°Ý
 	protocolBTN.colCount = 8;
 
 	OnInitProtocolButton();
@@ -214,21 +214,22 @@ void CForm_Protocol::OnDrawFixCaption(CDC *p_DC, CRect *p_R)
 void CForm_Protocol::OnDrawProtocolButton(CDC *p_DC, CRect *p_R)
 {
 	int pos = 0;
+	int recPos = 0;
 
 	for (int rowCnt = 0; rowCnt < protocolBTN.rowCount; rowCnt++) {
 		for (int colCnt = 0; colCnt < protocolBTN.colCount; colCnt++) {
-			pos = (protocolBTN.colCount * rowCnt) + colCnt;
+			pos = (10 * rowCnt) + colCnt;
+			recPos = (protocolBTN.colCount * rowCnt) + colCnt;
 
 			CString str;
 			str.Format(L"%s", caption.HB_BTN_Caption.at(pos).c_str());
-			if (!str.Compare(L"*")) {
-				// empth
-			}
-			else {
-				BYTE status = m_pt_ClickedPos[rowCnt][colCnt];
-				CClientDC dc(this);
-				Set_Protocol_OnOffcolor(status, str.GetBuffer(), protocolBTN.r[pos], &dc);
-			}
+		
+			if (!str.Compare(L"*")) continue;
+			
+			BYTE status = m_pt_ClickedPos[rowCnt][colCnt];
+			CClientDC dc(this);
+			recPos = (protocolBTN.colCount * rowCnt) + colCnt;
+			Set_Protocol_OnOffcolor(status, str.GetBuffer(), protocolBTN.r[recPos], &dc);			
 		}
 	}
 }
@@ -251,10 +252,11 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 	int node = 0;
 	
 	short pos = 0;
+	short recPos = 0;
 	
 	for (int rowCnt = 0; rowCnt < protocolBTN.rowCount; rowCnt++) {
 		for (int colCnt = 0; colCnt < protocolBTN.colCount; colCnt++) {
-			pos = (protocolBTN.colCount * rowCnt) + colCnt;
+			pos = (10 * rowCnt) + colCnt;
 
 			if (PtInRect(&protocolBTN.r[pos], point)) {
 				CString str;
@@ -274,8 +276,9 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 						if (0 == m_pt_ClickedPos[m_row][m_col]) {
 							m_pt_ClickedPos[m_row][m_col] = 1;
 
-							CClientDC dc(this);
-							Set_Protocol_OnOffcolor(1, str.GetBuffer(), protocolBTN.r[pos], &dc);
+							CClientDC dc(this);	
+							recPos = (protocolBTN.colCount * m_row) + m_col;
+							Set_Protocol_OnOffcolor(1, str.GetBuffer(), protocolBTN.r[recPos], &dc);
 
 							str.Format(L"%s [port : 0x%02X] [node : %d]", str, port, node);
 

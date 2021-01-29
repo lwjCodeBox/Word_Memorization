@@ -13,6 +13,7 @@ _CExcelLib::_CExcelLib()
 	Read_DCU_SDR_SD();
 	Read_BECU_SDR_SD();
 	Read_VVVF_SDR_SD();
+	Read_CCU_IO_VCU();	
 
 	// ¿¢¼¿ Ãß°¡ 3
 
@@ -72,6 +73,14 @@ std::map<WORD, Sheet *> _CExcelLib::m_InitSheetMap()
 	m.insert(std::make_pair(0x080, mp_Sheet_VVVF_SD1)); // VVVF4 SD1
 	m.insert(std::make_pair(0x084, mp_Sheet_VVVF_SD2)); // VVVF4 SD2
 
+	// CCU / IO / VCU
+	m.insert(std::make_pair(0x120, mp_Sheet_CCU)); // CCU1
+	m.insert(std::make_pair(0x130, mp_Sheet_CCU)); // CCU2
+	m.insert(std::make_pair(0x140, mp_Sheet_IO)); // IO1
+	m.insert(std::make_pair(0x144, mp_Sheet_IO)); // IO2
+	m.insert(std::make_pair(0x120, mp_Sheet_VCU)); // VCU1
+	m.insert(std::make_pair(0x130, mp_Sheet_VCU)); // VCU2
+	
 	// ¿¢¼¿ Ãß°¡ 1
 	return m;
 }
@@ -294,6 +303,24 @@ bool _CExcelLib::Read_DCU_SDR_SD()
 	}
 	else {
 		AfxMessageBox(L"¿¢¼¿ DCU SDR / SD¸¦ ÀÐ¾î¿ÀÁö ¸øÇß½À´Ï´Ù.");
+		return false;
+	}
+
+	return false;
+}
+//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+bool _CExcelLib::Read_CCU_IO_VCU()
+{
+	mp_Sheet_CCU = getSheetByName(m_Book, L"CCU");
+	mp_Sheet_IO = getSheetByName(m_Book, L"IO");
+	mp_Sheet_VCU = getSheetByName(m_Book, L"VCU");
+
+	if ((mp_Sheet_CCU != NULL) && (mp_Sheet_IO != NULL) && (mp_Sheet_VCU != NULL)) {
+		return true;
+	}
+	else {
+		AfxMessageBox(L"¿¢¼¿ CCU, IO, VCU¸¦ ÀÐ¾î¿ÀÁö ¸øÇß½À´Ï´Ù.");
 		return false;
 	}
 

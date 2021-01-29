@@ -41,6 +41,8 @@ private:
 	bool Read_DCU_SDR_SD(); // DCU SDR/SD
 	bool Read_BECU_SDR_SD(); // BECU SDR/SD
 	bool Read_VVVF_SDR_SD(); // VVVF SDR/SD
+	bool Read_CCU_IO_VCU(); // CCU/IO/VCU
+
 	// ¿¢¼¿ Ãß°¡ 2
 
 public:
@@ -60,6 +62,8 @@ public:
 	Sheet *mp_Sheet_EBCU_SDR1, *mp_Sheet_EBCU_SDR2, *mp_Sheet_EBCU_SDR3, *mp_Sheet_EBCU_SD;
 	// VVVF Sheet
 	Sheet *mp_Sheet_VVVF_SDR, *mp_Sheet_VVVF_SD1, *mp_Sheet_VVVF_SD2;
+	// CCU / IO / VCU Sheet
+	Sheet *mp_Sheet_CCU, *mp_Sheet_IO, *mp_Sheet_VCU;
 
 	// ¿¢¼¿ Ãß°¡ 4	
 }; 

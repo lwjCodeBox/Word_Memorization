@@ -68,7 +68,7 @@ BOOL CForm_HeartBit::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD
 	fixCaption.spacing_W = 20; // x ÁÂÇ¥ °£°Ý
 	fixCaption.rowCount = 1;
 
-	fixCaption.yPos = 20;      // y ½ÃÀÛ ÁÂÇ¥	
+	fixCaption.yPos = 5;      // y ½ÃÀÛ ÁÂÇ¥	
 	fixCaption.height = 25;    // ³ôÀÌ
 	fixCaption.spacing_H = 0;  // y ÁÂÇ¥ °£°Ý
 	fixCaption.colCount = 8;
@@ -79,11 +79,11 @@ BOOL CForm_HeartBit::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD
 	heartBitBTN.xPos = 65;      // x ½ÃÀÛ ÁÂÇ¥	
 	heartBitBTN.width = 100;    // Æø »çÀÌÁî
 	heartBitBTN.spacing_W = 20; // x ÁÂÇ¥ °£°Ý
-	heartBitBTN.rowCount = 17;
+	heartBitBTN.rowCount = 20;
 
-	heartBitBTN.yPos = 50;      // y ½ÃÀÛ ÁÂÇ¥	
+	heartBitBTN.yPos = 35;      // y ½ÃÀÛ ÁÂÇ¥	
 	heartBitBTN.height = 30;    // ³ôÀÌ
-	heartBitBTN.spacing_H = 10;  // y ÁÂÇ¥ °£°Ý
+	heartBitBTN.spacing_H = 5;  // y ÁÂÇ¥ °£°Ý
 	heartBitBTN.colCount = 8;
 
 	OnInitHeartBitButton();
@@ -215,25 +215,25 @@ void CForm_HeartBit::OnDrawFixCaption(CDC *p_DC, CRect *p_R)
 void CForm_HeartBit::OnDrawHeartBitButton(CDC *p_DC, CRect *p_R)
 {
 	int pos = 0;
+	int recPos = 0;
 
 	for (int rowCnt = 0; rowCnt < heartBitBTN.rowCount; rowCnt++) {
 		for (int colCnt = 0; colCnt < heartBitBTN.colCount; colCnt++) {		
-			pos = (heartBitBTN.colCount * rowCnt) + colCnt;
+			pos = (10 * rowCnt) + colCnt;
+			recPos = (heartBitBTN.colCount * rowCnt) + colCnt;
 
 			CString str;
 			str.Format(L"%s", caption.HB_BTN_Caption.at(pos).c_str());			
-			if (!str.Compare(L"*")) {
-				// empth
+				
+			if (!str.Compare(L"*")) continue;
+
+			CClientDC dc(this);
+			if (1 == m_HB_ClickedPos[rowCnt][colCnt]) {						
+				Set_HeartBit_OnOffcolor(1, str.GetBuffer(), heartBitBTN.r[recPos], &dc);
 			}
-			else {	
-				CClientDC dc(this);
-				if (1 == m_HB_ClickedPos[rowCnt][colCnt]) {					
-					Set_HeartBit_OnOffcolor(1, str.GetBuffer(), heartBitBTN.r[pos], &dc);
-				}
-				else {					
-					Set_HeartBit_OnOffcolor(0, str.GetBuffer(), heartBitBTN.r[pos], &dc);
-				}				
-			}
+			else {									
+				Set_HeartBit_OnOffcolor(0, str.GetBuffer(), heartBitBTN.r[recPos], &dc);
+			}							
 		}
 	}
 }
@@ -258,12 +258,15 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 	bool bHeartBitBTN = false;
 	short click_HB_BTN = -1;
 	short pos = 0;
+	short recPos = 0;
 
 	for (int rowCnt = 0; rowCnt < heartBitBTN.rowCount; rowCnt++) {
-		for (int colCnt = 0; colCnt < heartBitBTN.colCount; colCnt++) {	
-			pos = (heartBitBTN.colCount * rowCnt) + colCnt;
-			
-			if (PtInRect(&heartBitBTN.r[pos], point)) {
+		for (int colCnt = 0; colCnt < heartBitBTN.colCount; colCnt++) {				
+			recPos = (heartBitBTN.colCount * rowCnt) + colCnt;
+
+			if (PtInRect(&heartBitBTN.r[recPos], point)) {
+				pos = (10 * rowCnt) + colCnt;
+
 				CString str;
 				str.Format(L"%s", caption.HB_BTN_Caption.at(pos).c_str());
 
@@ -274,7 +277,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 					_col = colCnt;
 
 					bHeartBitBTN = true;
-					click_HB_BTN = pos;
+					click_HB_BTN = recPos;					
 
 					break;
 				}
@@ -289,7 +292,7 @@ void CForm_HeartBit::OnLButtonDown(UINT nFlags, CPoint point)
 	// HeartBit button
 	if (bHeartBitBTN) {	
 		WJ_String _str;
-		_str.Format(L"%s", caption.HB_BTN_Caption.at(click_HB_BTN).c_str());
+		_str.Format(L"%s", caption.HB_BTN_Caption.at(pos).c_str());
 		CClientDC dc(this);
 
 		if (1 == m_HB_ClickedPos[_row][_col]) {
