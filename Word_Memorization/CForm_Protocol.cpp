@@ -256,9 +256,10 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 	
 	for (int rowCnt = 0; rowCnt < protocolBTN.rowCount; rowCnt++) {
 		for (int colCnt = 0; colCnt < protocolBTN.colCount; colCnt++) {
-			pos = (10 * rowCnt) + colCnt;
+			recPos = (protocolBTN.colCount * rowCnt) + colCnt;
 
-			if (PtInRect(&protocolBTN.r[pos], point)) {
+			if (PtInRect(&protocolBTN.r[recPos], point)) {
+				pos = (10 * rowCnt) + colCnt;
 				CString str;
 				str.Format(L"%s", caption.HB_BTN_Caption.at(pos).c_str());
 				
@@ -277,7 +278,6 @@ void CForm_Protocol::OnLButtonDown(UINT nFlags, CPoint point)
 							m_pt_ClickedPos[m_row][m_col] = 1;
 
 							CClientDC dc(this);	
-							recPos = (protocolBTN.colCount * m_row) + m_col;
 							Set_Protocol_OnOffcolor(1, str.GetBuffer(), protocolBTN.r[recPos], &dc);
 
 							str.Format(L"%s [port : 0x%02X] [node : %d]", str, port, node);

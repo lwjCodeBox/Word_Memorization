@@ -223,8 +223,8 @@ void CDeviceProtocol::OnBnClickedPageDownBtn()
 		return;
 
 	WJ_String _str;
-	_str.Format(L"%s [port : 0x%02X] [node : %d]", m_deviceName, m_port, m_node);
-	SetWindowTextW(_str.GetString());
+	_str.Format(L"%s [port : 0x%02X] [node : %d]", m_deviceName.GetStrBuffer(), m_port, m_node);
+	SetWindowTextW(_str.GetStrBuffer());
 
 	CreateGrid(m_port, m_node);
 }
@@ -316,8 +316,8 @@ void CDeviceProtocol::OnBnClickedPageUpBtn()
 		return;
 
 	WJ_String _str;
-	_str.Format(L"%s [port : 0x%02X] [node : %d]", m_deviceName, m_port, m_node);
-	SetWindowTextW(_str.GetString());
+	_str.Format(L"%s [port : 0x%02X] [node : %d]", m_deviceName.GetStrBuffer(), m_port, m_node);
+	SetWindowTextW(_str.GetStrBuffer());
 
 	CreateGrid(m_port, m_node);
 }
