@@ -20,7 +20,7 @@
       <UniqueIdentifier>{f65d01c2-49ab-4ba4-9c8f-192a73e02b2e}</UniqueIdentifier>
     </Filter>
     <Filter Include="My_Lib">
-      <UniqueIdentifier>{69f5b4fb-9023-4abd-be9a-21e1d9ff3620}</UniqueIdentifier>
+      <UniqueIdentifier>{e9590ef7-8fda-4f35-ba2f-3e36ce877578}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -75,7 +75,7 @@
     <ClInclude Include="CDeviceProtocol.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\..\..\lwj_Lib\String\WJ_String.h">
+    <ClInclude Include="String\WJ_String.h">
       <Filter>My_Lib</Filter>
     </ClInclude>
   </ItemGroup>
@@ -140,7 +140,7 @@
     <ClCompile Include="CDeviceProtocol.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\..\..\lwj_Lib\String\WJ_String.cpp">
+    <ClCompile Include="String\WJ_String.cpp">
       <Filter>My_Lib</Filter>
     </ClCompile>
   </ItemGroup>

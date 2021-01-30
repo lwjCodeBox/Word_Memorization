@@ -2,7 +2,7 @@
 
 #include "GridCtrl_src_new/GridCtrl.h"
 #include "_CExcelLib.h"
-#include "./WJ_String.h"
+#include <String/WJ_String.h>
 
 #define IDC_PT_GRID		20001
 

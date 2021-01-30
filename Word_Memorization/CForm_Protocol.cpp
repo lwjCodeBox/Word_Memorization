@@ -6,7 +6,7 @@
 #include "CForm_Protocol.h"
 
 #include "CDeviceProtocol.h"
-#include "./WJ_String.h"
+#include <String/WJ_String.h>
 
 // CForm_Protocol
 

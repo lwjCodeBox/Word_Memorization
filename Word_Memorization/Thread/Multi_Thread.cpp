@@ -3,7 +3,7 @@
 #include "Multi_Thread.h"
 #include "../Word_MemorizationDlg.h"
 #include "../CForm_HeartBit.h"
-#include "./WJ_String.h"
+#include <String/WJ_String.h>
 
 /// <Developed by developer Wonjong>
 /// * 멀티 스레드 코드임.

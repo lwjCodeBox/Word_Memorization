@@ -94,7 +94,7 @@
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\lwj_Lib\String;C:\Third-party\libxl-3.8.2.0\include_cpp</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(LWJ_DIR);C:\Third-party\libxl-3.8.2.0\include_cpp</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -198,7 +198,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\..\..\lwj_Lib\String\WJ_String.h" />
     <ClInclude Include="CDeviceProtocol.h" />
     <ClInclude Include="CForm_DuDefault_1.h" />
     <ClInclude Include="CForm_HeartBit.h" />
@@ -211,6 +210,7 @@
     <ClInclude Include="Grid_Func_Group.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="String\WJ_String.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Thread\Multi_Thread.h" />
     <ClInclude Include="Word_Memorization.h" />
@@ -218,7 +218,6 @@
     <ClInclude Include="_CExcelLib.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\..\..\lwj_Lib\String\WJ_String.cpp" />
     <ClCompile Include="CDeviceProtocol.cpp" />
     <ClCompile Include="CForm_DuDefault_1.cpp" />
     <ClCompile Include="CForm_HeartBit.cpp" />
@@ -240,6 +239,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="String\WJ_String.cpp" />
     <ClCompile Include="Thread\Multi_Thread.cpp" />
     <ClCompile Include="Word_Memorization.cpp" />
     <ClCompile Include="Word_MemorizationDlg.cpp" />

@@ -9,7 +9,7 @@
 #include <Windows.h>
 
 #include "Word_MemorizationDlg.h"
-#include "./WJ_String.h"
+#include <String/WJ_String.h>
 
 // CForm_HeartBit
 

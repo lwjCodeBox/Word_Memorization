@@ -8,7 +8,7 @@
 
 #include "Grid_Func_Group.h"
 #include "CSetDataPopUp.h"
-#include "./WJ_String.h"
+#include <String/WJ_String.h>
 
 // CDeviceProtocol dialog
 
