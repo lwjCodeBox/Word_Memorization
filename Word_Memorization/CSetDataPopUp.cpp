@@ -58,3 +58,9 @@ void CSetDataPopUp::OnBnClickedButton1()
 
 	OnBnClickedPopupCancel();
 }
+
+
+void CSetDataPopUp::OnOK()
+{
+	OnBnClickedButton1();
+}

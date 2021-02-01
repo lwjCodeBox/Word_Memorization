@@ -56,4 +56,5 @@ public:
 	afx_msg void OnBnClickedPageDownBtn();
 	afx_msg void OnBnClickedPageUpBtn();	
 	afx_msg void OnBnClickedExitBtn();
+	virtual void OnCancel();
 };

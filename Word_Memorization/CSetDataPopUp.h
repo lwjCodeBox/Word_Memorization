@@ -35,4 +35,5 @@ protected:
 public:
 	afx_msg void OnBnClickedPopupCancel();
 	afx_msg void OnBnClickedButton1();
+	virtual void OnOK();
 };

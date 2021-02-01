@@ -21,11 +21,7 @@ CDeviceProtocol::CDeviceProtocol(WJ_String a_device, WJ_String a_caption, int a_
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 CDeviceProtocol::~CDeviceProtocol()
-{
-	/*if (mp_PT_Grid != NULL) {
-		DestroyWindow();
-		delete mp_PT_Grid;
-	}*/
+{		
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
@@ -379,3 +375,8 @@ void CDeviceProtocol::OnBnClickedExitBtn()
 	::PostMessage(h_handle, 27000, key, 0);
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+void CDeviceProtocol::OnCancel()
+{
+	OnBnClickedExitBtn();
+}

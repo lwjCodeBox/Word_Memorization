@@ -19,7 +19,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Korean (Korea) resources
+// 한국어(대한민국) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
@@ -151,13 +151,13 @@ END
 
 IDD_SETDATA_POPUP DIALOGEX 0, 0, 213, 64
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Set Data PopUp"
+CAPTION "1"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+    EDITTEXT        IDC_POPUP_EDIT,74,11,119,14,ES_AUTOHSCROLL
     PUSHBUTTON      "입력",IDC_BUTTON1,52,35,50,14
     PUSHBUTTON      "취소",IDC_POPUP_CANCEL,107,35,50,14
     CTEXT           "설정할 값 입력",IDC_STATIC,19,14,49,8
-    EDITTEXT        IDC_POPUP_EDIT,74,11,119,14,ES_AUTOHSCROLL
 END
 
 IDD_PROTOCOL_POPUP DIALOGEX 0, 0, 639, 407
@@ -266,12 +266,12 @@ BEGIN
     0
 END
 
-#endif    // Korean (Korea) resources
+#endif    // 한국어(대한민국) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
+// 영어(미국) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -359,7 +359,7 @@ BEGIN
     END
 END
 
-#endif    // English (United States) resources
+#endif    // 영어(미국) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
