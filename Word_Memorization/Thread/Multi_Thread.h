@@ -18,6 +18,7 @@ struct ThreadData
 		
 	unsigned int node;
 	unsigned int port;	
+	unsigned int devicePort;
 };
 
 struct TDataPtr
@@ -33,6 +34,6 @@ void *FindThreadPtr(ThreadData *ap_data);
 void *GetThreadPtr(int a_pos);
 // 벡터 배열에 있는 스레드 정보를 가져옴.
 void *GetThreadPtr_2(int a_pos);
-int ThreadWorking(unsigned int a_heartbit, int a_port, ThreadData *ap_data);
+int ThreadWorking(unsigned int a_heartbit, int a_port, int a_wordPos, ThreadData *ap_data);
 DWORD WINAPI SM_Thread_Run(void *ap_data);
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

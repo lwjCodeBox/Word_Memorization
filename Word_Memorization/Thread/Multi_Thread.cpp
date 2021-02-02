@@ -56,10 +56,11 @@ void *GetThreadPtr_2(int a_pos)
 }
 //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-int ThreadWorking(unsigned int a_heartbit, int a_port, ThreadData *ap_data)
+int ThreadWorking(unsigned int a_heartbit, int a_port, int a_wordPos, ThreadData *ap_data)
 {	
 	CWordMemorizationDlg *main = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
-	memset(&(main->m_pData->data[a_port][1]), a_heartbit, 1);	
+	
+	memset(&(main->m_pData->data[a_port][a_wordPos]), a_heartbit, 1);
 	Sleep(200);
 
 	return 1;	
@@ -78,6 +79,16 @@ DWORD WINAPI SM_Thread_Run(void *ap_data)
 	CWordMemorizationDlg *main = (CWordMemorizationDlg *)::AfxGetApp()->GetMainWnd();
 	int port = p_data->port + main->mp_Libxl->m_totalNodeCnt * p_data->node;
 
+	int wordPos = 1;
+	// 0x180 = EVR SD1 (HB word3 upper)
+	if (p_data->devicePort == 0x180) wordPos = 6;
+	// 0x190 = RADIO SD (HB word1 upper)
+	else if(p_data->devicePort == 0x190) wordPos = 2;
+	// 0x154 = ATC SD1 (HB word15 upper)
+	else if (p_data->devicePort == 0x154) wordPos = 30;
+	// 0x168 = ATC SD2 (HB word15 upper)
+	else if (p_data->devicePort == 0x168) wordPos = 30;
+		
 	while(true){
 		if (WaitForSingleObject(p_data->h_kill_event, 10) == WAIT_OBJECT_0) {
 			_str.DbgLogW(L"[%08x] Thread Stop!\n", p_data->thread_id);
@@ -85,7 +96,7 @@ DWORD WINAPI SM_Thread_Run(void *ap_data)
 			break;
 		}
 
-		ThreadWorking(heartbit, port, p_data);
+		ThreadWorking(heartbit, port, wordPos, p_data);
 		heartbit++;
 		if (heartbit == 200) heartbit = 0;
 	}

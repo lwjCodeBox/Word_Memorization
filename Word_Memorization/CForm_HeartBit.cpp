@@ -386,6 +386,7 @@ void CForm_HeartBit::Thread_Start(int a_row, int a_col)
 	// 공유메모리상에서는 0이 MyNode 1, 2, 3, 4이기 때문에 +1을 해준다.
 	p->node = node + 1;
 	p->port = port;
+	p->devicePort = find;
 
 	p->h_kill_event = CreateEvent(NULL, 1, 0, NULL); // 스레드를 위한 이벤트 큐 생성.
 	p->h_thread = CreateThread(NULL, 0x80000, SM_Thread_Run, p, 10, &p->thread_id); // 스레드 생성.
